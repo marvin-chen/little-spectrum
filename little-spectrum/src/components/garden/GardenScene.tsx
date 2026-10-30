@@ -55,6 +55,7 @@ export function GardenScene({ theme, items, compact, className, selectable, onSe
   return (
     <svg
       viewBox={compact ? "0 30 400 180" : "0 0 400 210"}
+      preserveAspectRatio={compact ? "xMidYMid slice" : "xMidYMid meet"}
       className={className}
       role="img"
       aria-label={items.length === 0 ? "An empty garden, ready to grow" : `A garden with ${items.length} ${items.length === 1 ? "item" : "items"}`}

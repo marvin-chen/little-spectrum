@@ -4,6 +4,7 @@ import { Wordmark } from "@/components/shell/Brand";
 import { getCurrentUser } from "@/lib/auth";
 import { safeNextPath } from "@/lib/paths";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { randomAvatar } from "@/lib/avatars";
 import { ProfileForm } from "./ProfileForm";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +35,7 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
         <ProfileForm
           next={next}
           initialName={user?.displayName ?? ""}
-          initialAvatar={user?.avatar ?? ""}
+          initialAvatar={user?.avatar ?? randomAvatar()}
           submitLabel={editing ? "Save changes" : "Continue"}
         />
         {!editing ? (

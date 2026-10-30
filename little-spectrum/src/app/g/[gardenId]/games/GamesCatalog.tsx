@@ -43,7 +43,7 @@ export function GamesCatalog({ gardenId, currentUserId, members, availability, i
         </Card>
       ) : null}
 
-      <div role="group" aria-label="Filter by color" className="hide-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+      <div role="group" aria-label="Filter by color" className="hide-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
         <button
           type="button"
           aria-pressed={filter === "all"}
@@ -72,7 +72,7 @@ export function GamesCatalog({ gardenId, currentUserId, members, availability, i
         ))}
       </div>
 
-      <ul className="grid gap-3 sm:grid-cols-2">
+      <ul className="grid gap-3">
         {games.map((key) => {
           const game = GAMES[key];
           const available = availability[key];
@@ -87,11 +87,11 @@ export function GamesCatalog({ gardenId, currentUserId, members, availability, i
                 <span className="flex items-start gap-3">
                   <GameIcon game={key} size="lg" />
                   <span className="min-w-0 flex-1">
-                    <span className="flex items-center gap-2">
-                      <span className="text-title-3 font-semibold text-ink">{game.name}</span>
+                    <span className="block text-title-3 font-semibold text-ink">{game.name}</span>
+                    <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="text-footnote font-semibold text-ink-2">{game.descriptor}</span>
                       <Badge tone={game.color}>{game.colorLabel}</Badge>
                     </span>
-                    <span className="block text-footnote font-semibold text-ink-2">{game.descriptor}</span>
                     <span className="mt-1 block text-footnote text-ink-3">{game.blurb}</span>
                   </span>
                   <ChevronRight className="mt-3 size-5 shrink-0 text-ink-3" aria-hidden />

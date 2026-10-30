@@ -13,6 +13,9 @@ type AppShellProps = {
 export function AppShell({ base, children, sidebarExtra, wide }: AppShellProps) {
   return (
     <div className="min-h-dvh md:flex">
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-capsule focus:bg-ink focus:px-4 focus:py-2 focus:text-ivory">
+        Skip to content
+      </a>
       <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-6 border-r border-line bg-ivory-deep/60 px-4 py-6 md:flex">
         <Link href="/" className="px-2">
           <Wordmark />
@@ -21,10 +24,12 @@ export function AppShell({ base, children, sidebarExtra, wide }: AppShellProps) 
         {sidebarExtra ? <div className="mt-auto">{sidebarExtra}</div> : null}
       </aside>
       <main
+        id="main"
+        tabIndex={-1}
         className={
           wide
-            ? "mx-auto w-full max-w-5xl px-4 pt-[max(0.75rem,var(--safe-top))] pb-[calc(var(--tabbar-height)+2rem+var(--safe-bottom))] md:px-8 md:pb-12"
-            : "mx-auto w-full max-w-[var(--content-max)] px-4 pt-[max(0.75rem,var(--safe-top))] pb-[calc(var(--tabbar-height)+2rem+var(--safe-bottom))] md:px-8 md:pb-12"
+            ? "mx-auto w-full min-w-0 max-w-5xl px-4 pt-[max(0.75rem,var(--safe-top))] pb-[calc(var(--tabbar-height)+2rem+var(--safe-bottom))] md:px-8 md:pb-12"
+            : "mx-auto w-full min-w-0 max-w-[var(--content-max)] px-4 pt-[max(0.75rem,var(--safe-top))] pb-[calc(var(--tabbar-height)+2rem+var(--safe-bottom))] md:px-8 md:pb-12"
         }
       >
         {children}

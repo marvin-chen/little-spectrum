@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
+import { raiseIfUnavailable } from "./backend";
 import { createServiceClient, createUserClient } from "./supabase/server";
 import { isSupabaseConfigured } from "./supabase/env";
 
@@ -14,14 +15,16 @@ export type CurrentUser = {
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   if (!isSupabaseConfigured()) return null;
   const supabase = await createUserClient();
-  const { data } = await supabase.auth.getClaims();
+  const { data, error } = await supabase.auth.getClaims();
+  raiseIfUnavailable(error);
   const userId = data?.claims?.sub;
   if (!userId) return null;
-  const { data: profile } = await createServiceClient()
+  const { data: profile, error: profileError } = await createServiceClient()
     .from("profiles")
     .select("id, display_name, avatar")
     .eq("id", userId)
     .maybeSingle();
+  raiseIfUnavailable(profileError);
   if (!profile) return null;
   return { id: profile.id, displayName: profile.display_name, avatar: profile.avatar };
 });

@@ -118,5 +118,12 @@ test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, 
   await expect(ada.page.getByText("Your garden grew something new this week.")).toBeVisible();
   await shot(ada.page, "home-group");
   await ada.page.goto(`/g/${gardenId}/garden`);
-  await expect(ada.page.getByText("1 item earned")).toBeVisible();
+  await expect(ada.page.getByText("Three friends added a little color this week.")).toBeVisible();
+  await shot(ada.page, "garden");
+  // The earned item opens a sheet listing that week's rounds. Bo was only left out of Color Quest, so that one shows no details.
+  await bo.page.goto(`/g/${gardenId}/garden`);
+  await bo.page.locator("ul li button").first().click();
+  await expect(bo.page.getByText(/Earned the week of/)).toBeVisible();
+  await expect(bo.page.getByText("Not in this one")).toHaveCount(1);
+  await shot(bo.page, "garden-sheet");
 });

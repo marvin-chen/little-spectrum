@@ -72,6 +72,18 @@ test("two friends create a garden, join by invite, and play Hue Knew? with a pri
   await expect(bo.page.getByText("1 of 3 little moments this week.")).toBeVisible();
   await shot(bo.page, "home-after");
 
+  // Ada plants a second garden and switches between the two. Each keeps its own state.
+  const secondId = await createGarden(ada.page, "Second patch", "group");
+  expect(secondId).not.toBe(gardenId);
+  await expect(ada.page.getByText("0 of 3 little moments this week.")).toBeVisible();
+  await ada.page.getByRole("button", { name: "Switch" }).click();
+  await ada.page.getByRole("link", { name: /Our little patch/ }).click();
+  await ada.page.waitForURL(`**/g/${gardenId}`);
+  await expect(ada.page.getByText("1 of 3 little moments this week.")).toBeVisible();
+  // Visiting the root returns to the last garden.
+  await ada.page.goto("/");
+  await ada.page.waitForURL(`**/g/${gardenId}`);
+
   // Cy cannot open the session even with the URL.
   await createProfile(cy.page, "Cy");
   await cy.page.goto(sessionUrl);

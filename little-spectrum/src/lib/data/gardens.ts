@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { raiseIfUnavailable } from "@/lib/backend";
 import type { GardenRow, MembershipRow, ProfileRow } from "@/lib/db";
 import { createServiceClient } from "@/lib/supabase/server";
 import { newInviteToken } from "@/lib/tokens";
@@ -44,11 +45,12 @@ export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f
 
 export const listGardens = cache(async (userId: string): Promise<GardenSummary[]> => {
   const db = createServiceClient();
-  const { data: memberships } = await db
+  const { data: memberships, error } = await db
     .from("memberships")
     .select("garden_id, role, joined_at")
     .eq("user_id", userId)
     .order("joined_at", { ascending: true });
+  raiseIfUnavailable(error);
   const ids = (memberships ?? []).map((m) => m.garden_id as string);
   if (ids.length === 0) return [];
   const [{ data: gardens }, { data: counts }] = await Promise.all([
@@ -78,12 +80,13 @@ export const listGardens = cache(async (userId: string): Promise<GardenSummary[]
 export const getGardenContext = cache(async (gardenId: string, userId: string): Promise<GardenContext | null> => {
   if (!UUID_RE.test(gardenId)) return null;
   const db = createServiceClient();
-  const { data: membership } = await db
+  const { data: membership, error } = await db
     .from("memberships")
     .select("role")
     .eq("garden_id", gardenId)
     .eq("user_id", userId)
     .maybeSingle();
+  raiseIfUnavailable(error);
   if (!membership) return null;
   const [{ data: garden }, { data: memberships }, { data: invitation }] = await Promise.all([
     db.from("gardens").select("*").eq("id", gardenId).single<GardenRow>(),

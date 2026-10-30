@@ -41,3 +41,9 @@ export function isValidAvatar(value: string): boolean {
     (COLORS as string[]).includes(color)
   );
 }
+
+export function randomAvatar(): string {
+  const icon = AVATAR_ICONS[Math.floor(Math.random() * AVATAR_ICONS.length)];
+  const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+  return `${icon}:${color}`;
+}

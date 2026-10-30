@@ -8,9 +8,79 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Little Spectrum agent notes
+# Little Spectrum agent guide
 
-Read SPEC.md for the product specification and PROGRESS.md for the current state before changing anything.
+This is the quick pickup guide for the repository.
+Read it first, then `SPEC.md` (product specification, the source of truth for behavior), `PROGRESS.md` (current state and checks), and `README.md` (setup guide for people deploying the app).
+
+## What this project is
+
+Little Spectrum is a private, mobile-first website where long-distance friends play six short asynchronous games, share photos, and grow an illustrated garden together.
+It is a small personal, noncommercial project that must run on free tiers only: Next.js on Vercel Hobby, Supabase Free for Postgres, anonymous auth, and private photo storage.
+There are no paid APIs, no email or SMS, no cron jobs, and no always-on server.
+
+## Repository layout
+
+The git root is one level up and doubles as the author's home directory.
+The root `.gitignore` is a whitelist: only `README.md`, `.gitignore`, and `little-spectrum/` are tracked.
+The root `AGENTS.md` is the author's personal global instructions file (symlinked from `~/.claude/CLAUDE.md`) and is intentionally untracked.
+Never run `git add -A` from the root. Stage `little-spectrum`, `README.md`, and `.gitignore` explicitly.
+
+```
+little-spectrum/               the Next.js application (Vercel Root Directory)
+  SPEC.md                      product specification
+  PROGRESS.md                  completed work, checks performed, next steps
+  AGENTS.md                    this guide plus learnings
+  README.md                    setup guide, limits, privacy model, known limitations
+  .env.example                 environment variable template
+  supabase/migrations/         schema, RLS policies, private photos bucket, SECURITY DEFINER functions
+  supabase/config.toml         local stack config (anonymous sign-ins enabled)
+  src/app/                     App Router routes
+    page.tsx                   landing, redirects signed-in users to their last garden
+    welcome/ start/ join/      onboarding: profile, create garden, accept invitation
+    g/[gardenId]/              garden shell: home, games, play/[sessionId], garden, memories, settings
+    api/photos/                photo upload route (multipart) and delete action
+    demo/                      read-only demo mode, used when Supabase env vars are missing
+    error.tsx not-found.tsx    friendly retry and 404 states
+  src/proxy.ts                 refreshes Supabase auth cookies, remembers the last garden
+  src/lib/
+    supabase/                  env detection, cookie-backed user client, service-role client
+    auth.ts                    getCurrentUser and requireUser (profile required)
+    data/                      server data layer: gardens, sessions, growth, memories
+    games/                     engine.ts interface plus one module per game, all unit tested
+    photos/                    client resize (canvas) and server validation (sharp), signed URLs
+    week.ts themes.ts colors.ts games.ts avatars.ts ratelimit.ts backend.ts demo.ts
+  src/components/
+    ui/                        design system: Button, Card, Sheet, SegmentedControl, Avatar, Badge, Slider, ShareButton
+    shell/                     AppShell with bottom tab bar on mobile and sidebar on desktop
+    garden/                    GardenScene and the twelve illustrated items
+    games/<game>/              play screen (client) and reveal component (server safe) per game
+    session/                   SessionFrame, AutoRefresh polling, early reveal sheet, session rows
+    memories/                  memory cards with reactions and notes
+  src/content/                 bundled prompts, questions, categories, ranking sets, photo prompts
+  tests/db/                    vitest integration tests against a local Supabase
+  tests/e2e/                   Playwright flows with several independent browser sessions
+```
+
+## Architecture in one minute
+
+- Identity: Supabase anonymous auth. A profile (display name, avatar string "icon:color") is required before anything else.
+- Gardens have a capacity of 2 or 8 and store the creator's timezone. Membership and game participation are separate.
+- Every game is a session with locked participants, a prompt snapshot, an optional secret, submissions per round, and a result written at reveal.
+- The engine interface in `src/lib/games/engine.ts` defines pickPrompt, validateSubmission, isRoundComplete, earlyRevealCheck, computeReveal, view (per viewer, never leaks secrets), optional hydrateView (signed URLs), and turnStatus (home copy).
+- Reads use the service role client with explicit membership and participation checks in `src/lib/data`. Views are shaped per viewer before reaching the browser.
+- Writes go through SECURITY DEFINER Postgres functions that only the service role can execute: join with a capacity lock, submit with a session lock, reveal with growth and the weekly reward awarded exactly once.
+- Row level security read policies exist as defense in depth and are tested in `tests/db`.
+- Updates arrive through polling (`AutoRefresh`) every few seconds while the tab is visible. No realtime subscriptions.
+- Growth: one point per completed session, three in a Monday to Sunday week unlock one deterministic garden item, at most one per week, never removed.
+
+## Working on it
+
+- Run everything from this directory so asdf picks Node 22 from `.tool-versions`.
+- Local backend: `pnpm supabase start`, then `pnpm supabase db reset` after editing migrations.
+- Before committing: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:db`, `pnpm test:e2e` (dev server on port 3000), `pnpm build`.
+- Commit messages are concise and imperative, with no agent co-author lines. New branches start with `marvinc/`.
+- Keep `PROGRESS.md` current at every checkpoint so another session can resume.
 
 ## Learnings
 

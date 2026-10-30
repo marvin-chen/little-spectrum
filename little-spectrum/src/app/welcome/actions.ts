@@ -21,7 +21,13 @@ export async function saveProfile(_prev: ProfileFormState, formData: FormData): 
   let userId = data?.claims?.sub;
   if (!userId) {
     const { data: signIn, error } = await supabase.auth.signInAnonymously();
-    if (error || !signIn.user) return { error: "Could not start a guest session. Please try again." };
+    if (error || !signIn.user) {
+      return {
+        error: error?.message.toLowerCase().includes("anonymous")
+          ? "Anonymous sign-ins are turned off in the Supabase project. Enable them under Authentication to continue."
+          : "Could not start a guest session. The backend may be paused or unreachable. Please try again in a moment.",
+      };
+    }
     userId = signIn.user.id;
   }
   try {

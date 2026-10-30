@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Check, Copy, Share } from "lucide-react";
 import { Button, type ButtonStyleProps } from "./Button";
 
@@ -14,6 +14,11 @@ type Props = ButtonStyleProps & {
 
 export function ShareButton({ url, title, text, label = "Share invite link", className, ...style }: Props) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+  const canShare = useSyncExternalStore(
+    () => () => {},
+    () => typeof navigator.share === "function",
+    () => false,
+  );
 
   async function share() {
     const nav = typeof navigator === "undefined" ? undefined : navigator;
@@ -34,7 +39,6 @@ export function ShareButton({ url, title, text, label = "Share invite link", cla
     setTimeout(() => setState("idle"), 2200);
   }
 
-  const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
   const icon =
     state === "copied" ? (
       <Check className="size-4" aria-hidden />

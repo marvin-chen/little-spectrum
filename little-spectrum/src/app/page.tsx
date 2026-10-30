@@ -64,13 +64,18 @@ export default async function LandingPage() {
             </p>
           </div>
         ) : (
-          <Card className="p-4">
-            <p className="text-callout font-semibold">Backend not configured</p>
-            <p className="mt-1 text-footnote text-ink-2">
-              Add your Supabase keys to <code>.env.local</code> to enable real multiplayer. See the README for
-              setup steps.
-            </p>
-          </Card>
+          <div className="flex flex-col gap-3">
+            <ButtonLink href="/demo" size="lg" full>
+              Explore the demo garden
+            </ButtonLink>
+            <Card className="p-4">
+              <p className="text-callout font-semibold">Demo mode</p>
+              <p className="mt-1 text-footnote text-ink-2">
+                No backend is configured, so this copy runs as a read-only sample. Add Supabase keys to{" "}
+                <code>.env.local</code> to play for real. The demo explains how.
+              </p>
+            </Card>
+          </div>
         )}
       </div>
     </PlainShell>

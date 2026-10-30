@@ -11,9 +11,7 @@ import { saveProfile, type ProfileFormState } from "./actions";
 type Props = { next: string; initialName: string; initialAvatar: string; submitLabel: string };
 
 export function ProfileForm({ next, initialName, initialAvatar, submitLabel }: Props) {
-  const [initial] = useState(() =>
-    parseAvatar(initialAvatar || `${AVATAR_ICONS[Math.floor(Math.random() * AVATAR_ICONS.length)]}:amber`),
-  );
+  const initial = parseAvatar(initialAvatar);
   const [icon, setIcon] = useState<AvatarIcon>(initial.icon);
   const [color, setColor] = useState<ColorKey>(initial.color);
   const [name, setName] = useState(initialName);

@@ -3,76 +3,27 @@
 import { useState, useTransition } from "react";
 import { Lock, RotateCcw, Sparkles } from "lucide-react";
 import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionId]/actions";
-import { Avatar } from "@/components/ui/Avatar";
-import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Slider } from "@/components/ui/Slider";
 import type { SessionView } from "@/lib/data/sessions";
 import { joinNames } from "@/lib/games/engine";
 import { MAX_CLUE_LENGTH, type HueKnewView } from "@/lib/games/hueKnew";
-import { SpectrumScale, type ScaleMarker } from "./SpectrumScale";
+import { HueKnewReveal } from "./HueKnewReveal";
+import { SpectrumScale } from "./SpectrumScale";
 
 type Props = { gardenId: string; session: SessionView; game: HueKnewView; userId: string };
 
 export function HueKnewPlay({ gardenId, session, game, userId }: Props) {
   const nameOf = (id: string) => session.participants.find((p) => p.userId === id)?.name ?? "Someone";
-  const avatarOf = (id: string) => session.participants.find((p) => p.userId === id)?.avatar ?? "sun:amber";
   const clueGiverName = nameOf(game.clueGiverId);
 
   if (game.phase === "revealed" && game.result) {
     const result = game.result;
-    const markers: ScaleMarker[] = [
-      { id: "target", position: result.target, kind: "target", label: `Target ${result.target}` },
-      ...result.guesses.map((g) => ({
-        id: g.userId,
-        position: g.guess,
-        kind: g.userId === userId ? ("mine" as const) : ("guess" as const),
-        label: String(g.guess),
-        avatar: avatarOf(g.userId),
-        name: nameOf(g.userId),
-      })),
-    ];
     const suggestedIsMe = result.suggestedClueGiverId === userId;
     return (
       <div className="flex flex-col gap-4">
-        <Card className="p-5">
-          <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">{clueGiverName}&apos;s clue</p>
-          <p className="mt-1 font-display text-title-2 font-bold">&ldquo;{result.clue}&rdquo;</p>
-          <div className="mt-6">
-            <SpectrumScale left={game.left} right={game.right} markers={markers} />
-          </div>
-        </Card>
-
-        <Card className="p-5">
-          <div className="flex items-baseline justify-between">
-            <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Shared score</p>
-            <p className="font-display text-title-1 font-bold text-coral-ink tabular-nums">{result.shared ?? "–"}</p>
-          </div>
-          <ul className="mt-2 divide-y divide-line">
-            {result.guesses
-              .slice()
-              .sort((a, b) => b.score - a.score)
-              .map((g) => (
-                <li key={g.userId} className="flex items-center gap-3 py-2.5">
-                  <Avatar avatar={avatarOf(g.userId)} name={nameOf(g.userId)} size="sm" />
-                  <span className="flex-1 text-body">
-                    {g.userId === userId ? "You" : nameOf(g.userId)}
-                    <span className="text-ink-3"> guessed {g.guess}</span>
-                  </span>
-                  <span className="text-body font-semibold tabular-nums">{g.score}</span>
-                </li>
-              ))}
-            {result.missing.map((id) => (
-              <li key={id} className="flex items-center gap-3 py-2.5">
-                <Avatar avatar={avatarOf(id)} name={nameOf(id)} size="sm" />
-                <span className="flex-1 text-body text-ink-2">{id === userId ? "You" : nameOf(id)}</span>
-                <Badge>Didn&apos;t play this round</Badge>
-              </li>
-            ))}
-          </ul>
-        </Card>
-
+        <HueKnewReveal session={session} result={result} left={game.left} right={game.right} userId={userId} />
         <PlayAgain
           gardenId={gardenId}
           sessionId={session.id}
