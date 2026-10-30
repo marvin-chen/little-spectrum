@@ -10,6 +10,17 @@ export type Submission = {
   createdAt: string;
 };
 
+export type PhotoRef = {
+  id: string;
+  userId: string;
+  storagePath: string;
+  caption: string | null;
+  width: number | null;
+  height: number | null;
+  status: "pending" | "ready";
+  createdAt: string;
+};
+
 export type SessionState = {
   id: string;
   gardenId: string;
@@ -26,6 +37,7 @@ export type SessionState = {
   participants: Participant[];
   submissions: Submission[];
   secret: unknown;
+  photos: PhotoRef[];
 };
 
 export type ValidationResult =
@@ -38,7 +50,13 @@ export type EarlyRevealCheck = { ok: boolean; reason: string; pending: string[] 
 
 export type TurnStatus = { needsYou: boolean; line: string };
 
-export type PromptPick = { promptId: string; prompt: unknown; secret: unknown | null };
+export type PromptPick = {
+  promptId: string;
+  prompt: unknown;
+  secret: unknown | null;
+  // Optional circular assignment, predictor user id to predicted user id.
+  predictions?: Record<string, string>;
+};
 
 export interface GameEngine {
   key: GameKey;
@@ -48,6 +66,8 @@ export interface GameEngine {
   earlyRevealCheck(state: SessionState): EarlyRevealCheck;
   computeReveal(state: SessionState, early: boolean): RevealOutcome;
   view(state: SessionState, userId: string): unknown;
+  // Optional async step for views that need signed URLs or other lookups.
+  hydrateView?(state: SessionState, userId: string, view: unknown): Promise<unknown>;
   turnStatus(state: SessionState, userId: string): TurnStatus;
 }
 
@@ -102,27 +122,38 @@ export function pickUnused<T extends { id: string }>(
   return pool[Math.floor(random() * pool.length)];
 }
 
+export type NounForms = { one: string; many: string; pluralSubject?: boolean };
+
 // Status line for games where everyone answers at once.
-export function simultaneousTurnStatus(
-  state: SessionState,
-  userId: string,
-  noun: string,
-  pluralNoun = `${noun}s`,
-): TurnStatus {
+export function simultaneousTurnStatus(state: SessionState, userId: string, noun: NounForms): TurnStatus {
   if (state.status === "revealed") return { needsYou: false, line: "The reveal is ready." };
   const submitted = new Set(roundSubmissions(state).map((s) => s.userId));
+  const subject = noun.pluralSubject ? noun.many : noun.one;
+  const verb = noun.pluralSubject ? "are" : "is";
   if (!submitted.has(userId)) {
     const prefix = state.round > 1 ? `Attempt ${state.round}. ` : "";
-    return { needsYou: true, line: `${prefix}Your ${noun} is needed.` };
+    return { needsYou: true, line: `${prefix}Your ${subject} ${verb} needed.` };
   }
   const pending = state.participants.filter((p) => !submitted.has(p.userId));
   if (pending.length === 1) {
-    return { needsYou: false, line: `Waiting for ${possessive(pending[0].name)} ${noun}.` };
+    return { needsYou: false, line: `Waiting for ${possessive(pending[0].name)} ${subject}.` };
   }
   return {
     needsYou: false,
-    line: `${countWord(submitted.size)} of ${countWord(state.participants.length).toLowerCase()} ${pluralNoun} are in.`,
+    line: `${countWord(submitted.size)} of ${countWord(state.participants.length).toLowerCase()} ${noun.many} are in.`,
   };
+}
+
+// Simultaneous games reveal early with at least two submitted players.
+export function simultaneousEarlyRevealCheck(state: SessionState): EarlyRevealCheck {
+  const pending = pendingParticipants(state).map((p) => p.userId);
+  const submitted = state.participants.length - pending.length;
+  if (submitted < 2) return { ok: false, reason: "At least two people need to answer before a reveal.", pending };
+  return { ok: true, reason: "", pending };
+}
+
+export function allSubmitted(state: SessionState): boolean {
+  return pendingParticipants(state).length === 0;
 }
 
 export function pendingParticipants(state: SessionState): Participant[] {

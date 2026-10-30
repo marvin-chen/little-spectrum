@@ -1,5 +1,5 @@
 import "server-only";
-import type { ParticipantRow, ProfileRow, SessionRow, SubmissionRow } from "@/lib/db";
+import type { ParticipantRow, PhotoRow, ProfileRow, SessionRow, SubmissionRow } from "@/lib/db";
 import { GAMES, type GameKey, isGameKey } from "@/lib/games";
 import {
   pendingParticipants,
@@ -51,6 +51,7 @@ function toState(
   profiles: Map<string, ProfileRow>,
   submissions: SubmissionRow[],
   secret: unknown,
+  photos: PhotoRow[],
 ): SessionState {
   return {
     id: row.id,
@@ -76,6 +77,16 @@ function toState(
       .sort((a, b) => a.created_at.localeCompare(b.created_at))
       .map((s) => ({ userId: s.user_id, round: s.round, kind: s.kind, payload: s.payload, createdAt: s.created_at })),
     secret,
+    photos: photos.map((p) => ({
+      id: p.id,
+      userId: p.user_id,
+      storagePath: p.storage_path,
+      caption: p.caption,
+      width: p.width,
+      height: p.height,
+      status: p.status,
+      createdAt: p.created_at,
+    })),
   };
 }
 
@@ -83,12 +94,14 @@ function toState(
 export async function loadStates(sessionIds: string[]): Promise<SessionState[]> {
   if (sessionIds.length === 0) return [];
   const db = createServiceClient();
-  const [{ data: sessions }, { data: participants }, { data: submissions }, { data: secrets }] = await Promise.all([
-    db.from("sessions").select("*").in("id", sessionIds),
-    db.from("session_participants").select("*").in("session_id", sessionIds),
-    db.from("submissions").select("*").in("session_id", sessionIds),
-    db.from("session_secrets").select("session_id, payload").in("session_id", sessionIds),
-  ]);
+  const [{ data: sessions }, { data: participants }, { data: submissions }, { data: secrets }, { data: photos }] =
+    await Promise.all([
+      db.from("sessions").select("*").in("id", sessionIds),
+      db.from("session_participants").select("*").in("session_id", sessionIds),
+      db.from("submissions").select("*").in("session_id", sessionIds),
+      db.from("session_secrets").select("session_id, payload").in("session_id", sessionIds),
+      db.from("photos").select("*").in("session_id", sessionIds),
+    ]);
   const participantRows = (participants ?? []) as ParticipantRow[];
   const userIds = [...new Set(participantRows.map((p) => p.user_id))];
   const { data: profiles } = userIds.length
@@ -103,6 +116,7 @@ export async function loadStates(sessionIds: string[]): Promise<SessionState[]> 
       profileBy,
       ((submissions ?? []) as SubmissionRow[]).filter((s) => s.session_id === row.id),
       secretBy.get(row.id) ?? null,
+      ((photos ?? []) as PhotoRow[]).filter((p) => p.session_id === row.id),
     ),
   );
 }
@@ -131,9 +145,11 @@ function cardFor(state: SessionState, userId: string): SessionCard {
   };
 }
 
-export function viewFor(state: SessionState, userId: string): SessionView {
+export async function viewFor(state: SessionState, userId: string): Promise<SessionView> {
   const engine = getEngine(state.game);
   const check = engine.earlyRevealCheck(state);
+  const baseView = engine.view(state, userId);
+  const view = engine.hydrateView ? await engine.hydrateView(state, userId, baseView) : baseView;
   return {
     id: state.id,
     gardenId: state.gardenId,
@@ -152,7 +168,7 @@ export function viewFor(state: SessionState, userId: string): SessionView {
       ...check,
       pendingNames: check.pending.map((id) => state.participants.find((p) => p.userId === id)?.name ?? "Someone"),
     },
-    view: engine.view(state, userId),
+    view,
   };
 }
 
@@ -226,8 +242,7 @@ export async function createSession(
     .filter((id): id is string => typeof id === "string");
   const engine = getEngine(game);
   const pick = engine.pickPrompt(recentIds, participants, Math.random);
-  const predictions: Record<string, string> = {};
-  for (const p of participants) if (p.predictsUserId) predictions[p.userId] = p.predictsUserId;
+  const predictions = pick.predictions ?? {};
   const { data, error } = await db.rpc("create_session", {
     p_user: userId,
     p_garden: gardenId,
@@ -268,19 +283,19 @@ export async function submitAnswer(userId: string, sessionId: string, input: unk
   const fresh = await loadState(sessionId);
   if (!fresh) return { ok: false, error: "Game not found." };
   const settled = await ensureRevealed(fresh);
-  return { ok: true, value: viewFor(settled, userId) };
+  return { ok: true, value: await viewFor(settled, userId) };
 }
 
 export async function revealEarly(userId: string, sessionId: string): Promise<Result<SessionView>> {
   const state = await loadState(sessionId);
   if (!state || !isParticipant(state, userId)) return { ok: false, error: "This game is not yours to play." };
   if (state.createdBy !== userId) return { ok: false, error: "Only the person who started this can reveal early." };
-  if (state.status !== "active") return { ok: true, value: viewFor(state, userId) };
+  if (state.status !== "active") return { ok: true, value: await viewFor(state, userId) };
   const engine = getEngine(state.game);
   const check = engine.earlyRevealCheck(state);
   if (!check.ok) return { ok: false, error: check.reason };
   const settled = (await revealRound(state, true)) ?? state;
-  return { ok: true, value: viewFor(settled, userId) };
+  return { ok: true, value: await viewFor(settled, userId) };
 }
 
 export async function listSessionCards(gardenId: string, userId: string, limit = 60): Promise<SessionCard[]> {

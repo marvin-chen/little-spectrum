@@ -22,6 +22,7 @@ function state(overrides: Partial<SessionState> = {}): SessionState {
       { userId: "c", name: "Cy", avatar: "leaf:green", predictsUserId: null },
     ],
     submissions: [],
+    photos: [],
     secret: { target: 70 },
     ...overrides,
   };
