@@ -34,7 +34,9 @@
 - `pnpm test:e2e` third spec: memories privacy (non-participant never receives session content), reactions and notes persist across reloads, note removal, URL filter, garden activity entries.
 - Garden item sheet, Ada's second garden plus switcher and landing redirect are covered in the first two specs.
 - Screenshots reviewed at 390px, 820px, and 1280px for home, games, settings, play screens, garden, memories, and demo pages. No console errors or hydration warnings on the garden routes.
-- `pnpm exec tsc --noEmit`, `pnpm lint`, `pnpm build` pass.
+- Resilience: with a signed-in session and the Supabase URL pointed at a closed port, the landing and a garden route both render the "out of reach" retry state on the same URL. With the three variables blank, the landing offers the demo, `/demo/*` renders, and garden routes redirect to `/`.
+- Accessibility: skip link is the first tab stop, the tab bar links show a 3px focus ring under `:focus-visible`, with `prefers-reduced-motion` the start sheet opens with animations at 0.01 ms, focus lands inside the dialog, and Escape closes it.
+- Final run (all green): `pnpm test` 61 tests, `pnpm test:db` 12 tests, `pnpm test:e2e` 3 specs, `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm build`.
 
 ## Configuration still needed
 
@@ -50,4 +52,7 @@
 - A memories spec step was observed to flake once when a note was saved while a reaction request was still in flight. The test now waits for the network to settle. Not reproduced since.
 
 ## Next steps
+
+- Deploy: create the Supabase project, apply the migration, set the variables on Vercel with Root Directory `little-spectrum`, and play a round from two phones.
+- Optional later: Supabase Realtime instead of polling, dark mode, removing members.
 
