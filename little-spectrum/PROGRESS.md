@@ -25,6 +25,8 @@
   - Backend unavailable handling: connection errors raise `BackendUnavailableError`, caught by `error.tsx` boundaries with a retry button that preserves the route. Friendly not-found page.
   - Polish: app icon and web manifest, skip link, main column shrinks on tablets, catalog layout, hydration fixes (random avatar, share capability), contrast of tertiary text raised to about 4.9:1.
 
+- Redesign (liquid glass pass): new tokens in `globals.css` (warm canvas, ink scale, concentric radii 14/16/20/26/32, glass material with specular edge, spring motion, type scale), floating glass tab bar with a gliding highlight and a circular Start action, glass toolbar buttons beside large titles, inset grouped lists, six original gradient motif tiles and stage art (`src/components/games/motifs`), custom tab icons, richer garden scene drawn edge to edge, Home led by the garden and the next turn, Games with a daily featured pick and a compact list, Garden keepsakes, shared game frame with player status dots, count-up scores and staggered reveals, loading skeleton, shared field styles.
+
 ## Checks performed
 
 - `pnpm test`: engine scoring, validation, turn status, week boundaries (10 tests).
@@ -36,6 +38,7 @@
 - Screenshots reviewed at 390px, 820px, and 1280px for home, games, settings, play screens, garden, memories, and demo pages. No console errors or hydration warnings on the garden routes.
 - Resilience: with a signed-in session and the Supabase URL pointed at a closed port, the landing and a garden route both render the "out of reach" retry state on the same URL. With the three variables blank, the landing offers the demo, `/demo/*` renders, and garden routes redirect to `/`.
 - Accessibility: skip link is the first tab stop, the tab bar links show a 3px focus ring under `:focus-visible`, with `prefers-reduced-motion` the start sheet opens with animations at 0.01 ms, focus lands inside the dialog, and Escape closes it.
+- Redesign verification: three end-to-end specs green after the restyle, screenshots compared before and after at 390px (home, games, garden, memories, each game, reveals, join, welcome, settings), desktop 1280 and tablet 820 home and games, an eight-person garden (home, start sheet, play, early reveal), demo pages under blank variables, retry state unchanged.
 - Final run (all green): `pnpm test` 61 tests, `pnpm test:db` 12 tests, `pnpm test:e2e` 3 specs, `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm build`.
 
 ## Configuration still needed

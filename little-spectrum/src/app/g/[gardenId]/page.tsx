@@ -56,7 +56,7 @@ export default async function HomePage({ params, searchParams }: { params: Promi
           <p className="text-footnote font-semibold text-ink-2">
             {greeting(garden.timezone)}, {user.displayName}.
           </p>
-          <h1 className="truncate font-display text-large-title font-bold text-ink">{garden.name}</h1>
+          <h1 className="line-clamp-2 font-display text-large-title font-bold text-ink">{garden.name}</h1>
         </div>
         <ToolbarGroup>
           {gardens.length > 1 ? <GardenSwitcher gardens={gardens} currentId={gardenId} variant="toolbar" /> : null}
@@ -68,7 +68,9 @@ export default async function HomePage({ params, searchParams }: { params: Promi
 
       <div className="mb-4 flex items-center gap-3">
         <AvatarStack people={garden.members.map((m) => ({ id: m.userId, name: m.name, avatar: m.avatar }))} size="sm" max={8} />
-        <p className="truncate text-callout text-ink-2">{garden.members.map((m) => (m.userId === user.id ? "You" : m.name)).join(", ")}</p>
+        <p className="truncate text-callout text-ink-2">
+          {garden.members.length > 4 ? `You and ${garden.members.length - 1} friends` : garden.members.map((m) => (m.userId === user.id ? "You" : m.name)).join(", ")}
+        </p>
       </div>
 
       {query.joined ? (

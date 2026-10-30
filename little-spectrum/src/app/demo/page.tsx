@@ -27,7 +27,7 @@ export default function DemoHomePage() {
   return (
     <>
       <header className="pt-2 pb-5">
-        <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">{greeting(DEMO_GARDEN.timezone, viewer.name)}</p>
+        <p className="text-footnote font-semibold text-ink-2">{greeting(DEMO_GARDEN.timezone, viewer.name)}</p>
         <h1 className="truncate font-display text-title-1 font-bold text-ink">{DEMO_GARDEN.name}</h1>
         <p className="mt-1 text-callout text-ink-2">{context}</p>
       </header>
@@ -58,8 +58,8 @@ export default function DemoHomePage() {
       ) : null}
 
       <section className="mb-6">
-        <ButtonLink href="/demo/games" size="lg" full accent="coral" icon={<Sparkles className="size-5" aria-hidden />}>
-          Start something colorful
+        <ButtonLink href="/demo/games" variant="tinted" accent="coral" icon={<Sparkles className="size-4" aria-hidden />}>
+          Browse the games
         </ButtonLink>
       </section>
 

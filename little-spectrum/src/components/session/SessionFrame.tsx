@@ -37,7 +37,7 @@ export function SessionFrame({ gardenId, session, userId, children }: { gardenId
       </header>
 
       <section className="relative mb-4 overflow-hidden rounded-group">
-        <GameStageArt game={session.game} className="pointer-events-none absolute -top-3 -right-6 h-28 w-auto" />
+        <GameStageArt game={session.game} className={cn("pointer-events-none absolute -top-3 -right-6 h-28 w-auto", session.participants.length > 5 && "hidden")} />
         <div className="relative flex flex-col gap-3 px-1 pt-2 pb-1">
           <ul className="flex items-center gap-1.5" aria-label="Players">
             {session.participants.map((p) => {

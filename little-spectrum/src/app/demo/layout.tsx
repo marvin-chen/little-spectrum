@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
+import { Plus } from "lucide-react";
 import { AppShell } from "@/components/shell/AppShell";
 import { Badge } from "@/components/ui/Badge";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -12,7 +13,7 @@ export default function DemoLayout({ children }: { children: ReactNode }) {
   // Demo mode must never shadow a real backend.
   if (isSupabaseConfigured()) redirect("/");
   return (
-    <AppShell base="/demo">
+    <AppShell base="/demo" action={{ href: "/demo/games", label: "Browse games", icon: <Plus className="size-6" strokeWidth={2.5} aria-hidden /> }}>
       <div
         role="note"
         className="mt-1 mb-4 flex flex-col gap-2 rounded-card bg-amber-soft px-4 py-3 ring-1 ring-amber/40 sm:flex-row sm:items-center sm:gap-3"
