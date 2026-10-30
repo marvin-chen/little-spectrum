@@ -1,11 +1,32 @@
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { Flower2, Images, Sparkles } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { PlainShell } from "@/components/shell/AppShell";
 import { Wordmark } from "@/components/shell/Brand";
+import { getCurrentUser } from "@/lib/auth";
+import { listGardens } from "@/lib/data/gardens";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
 
-export default function LandingPage() {
+export const dynamic = "force-dynamic";
+
+export default async function LandingPage() {
+  if (isSupabaseConfigured()) {
+    const user = await getCurrentUser();
+    if (user) {
+      const gardens = await listGardens(user.id);
+      if (gardens.length === 0) redirect("/start");
+      const last = (await cookies()).get("ls_garden")?.value;
+      const target = gardens.find((g) => g.id === last) ?? gardens[0];
+      redirect(`/g/${target.id}`);
+    }
+  }
+  const configured = isSupabaseConfigured();
+
   return (
     <PlainShell narrow>
-      <div className="flex flex-1 flex-col justify-center gap-8 py-10">
+      <div className="flex flex-1 flex-col justify-center gap-8 py-8">
         <Wordmark />
         <div>
           <h1 className="font-display text-title-1 font-bold text-ink">A little color. A little closer.</h1>
@@ -14,9 +35,43 @@ export default function LandingPage() {
             garden together.
           </p>
         </div>
-        <ButtonLink href="/styleguide" size="lg">
-          See the style guide
-        </ButtonLink>
+        <ul className="grid gap-3">
+          {[
+            { Icon: Sparkles, title: "Six short games", body: "Play on your own time. Reveal together." },
+            { Icon: Flower2, title: "A garden that grows", body: "Three moments a week unlock something new." },
+            { Icon: Images, title: "Private memories", body: "Only the people in a round can see it." },
+          ].map(({ Icon, title, body }) => (
+            <li key={title}>
+              <Card className="flex items-center gap-3 p-4">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-row bg-amber-soft text-amber-ink">
+                  <Icon className="size-5" aria-hidden />
+                </span>
+                <span>
+                  <span className="block text-body font-semibold">{title}</span>
+                  <span className="block text-footnote text-ink-2">{body}</span>
+                </span>
+              </Card>
+            </li>
+          ))}
+        </ul>
+        {configured ? (
+          <div className="flex flex-col gap-3">
+            <ButtonLink href="/welcome" size="lg" full>
+              Get started
+            </ButtonLink>
+            <p className="text-center text-footnote text-ink-3">
+              No email needed. Your guest account lives in this browser.
+            </p>
+          </div>
+        ) : (
+          <Card className="p-4">
+            <p className="text-callout font-semibold">Backend not configured</p>
+            <p className="mt-1 text-footnote text-ink-2">
+              Add your Supabase keys to <code>.env.local</code> to enable real multiplayer. See the README for
+              setup steps.
+            </p>
+          </Card>
+        )}
       </div>
     </PlainShell>
   );

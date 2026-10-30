@@ -20,3 +20,5 @@ Keep this list short and concrete. Add a line whenever a mistake or a non-obviou
 - Node is managed by asdf. Run commands from this directory so `.tool-versions` resolves Node 22, or export `ASDF_NODEJS_VERSION=22.23.4`.
 - The git repository root is the home directory, one level up. Only `little-spectrum/`, `README.md`, and `.gitignore` are tracked there. Stage files explicitly, never with `git add -A` from the root.
 - Local Supabase runs through Docker on colima. The user's Docker credential helpers are not on PATH, so start it with an isolated config: `DOCKER_CONFIG=<empty dir with {} config.json> DOCKER_HOST=unix://$HOME/.colima/default/docker.sock pnpm supabase start -x studio,imgproxy,logflare,vector,edge-runtime,postgres-meta,supavisor`.
+- Supabase grants EXECUTE on new functions to `anon` and `authenticated` through default privileges. Revoking from `public` is not enough. Revoke from `public, anon, authenticated` explicitly and keep the integration test that proves a signed-in user cannot call privileged functions.
+- Full-page Playwright screenshots draw fixed elements (tab bar, sheets) mid-page. Judge layout from viewport screenshots.
