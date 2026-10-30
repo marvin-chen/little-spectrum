@@ -1,5 +1,6 @@
 "use client";
 
+import { inputClass } from "@/components/ui/Field";
 import { useState, useTransition } from "react";
 import { MessageSquarePlus, Pencil } from "lucide-react";
 import { saveCommentAction, toggleReactionAction } from "@/app/g/[gardenId]/memories/actions";
@@ -153,7 +154,7 @@ export function MemoryFooter({ gardenId, sessionId, userId, participants, reacti
               maxLength={MAX_NOTE}
               rows={2}
               placeholder="Something worth remembering about this one"
-              className="w-full resize-none rounded-row bg-fill px-4 py-3 text-body outline-none focus-visible:ring-2 focus-visible:ring-blue"
+              className={cn(inputClass, "h-auto resize-none py-3")}
             />
           </label>
           <div className="flex items-center justify-between gap-2">

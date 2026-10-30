@@ -15,7 +15,7 @@ import { GAMES, GAME_KEYS, isGameKey } from "@/lib/games";
 
 export const metadata = { title: "Memories" };
 
-const CHIP = "pressable flex h-11 shrink-0 items-center gap-2 rounded-capsule px-4 text-callout font-semibold ring-1";
+const CHIP = "pressable flex h-9 shrink-0 items-center gap-1.5 rounded-capsule px-3.5 text-footnote font-semibold";
 
 export default async function MemoriesPage({
   params,
@@ -38,7 +38,7 @@ export default async function MemoriesPage({
       <PageTitle title="Memories" subtitle="Every finished round you were part of." />
 
       <nav aria-label="Filter by game" className="hide-scrollbar -mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1">
-        <Link href={base} aria-current={filter === null ? "page" : undefined} className={cn(CHIP, filter === null ? "bg-ink text-ivory ring-ink" : "bg-surface text-ink-2 ring-line")}>
+        <Link href={base} aria-current={filter === null ? "page" : undefined} className={cn(CHIP, filter === null ? "bg-ink text-canvas" : "glass text-ink-2")}>
           All games
         </Link>
         {GAME_KEYS.map((key) => {
@@ -49,7 +49,7 @@ export default async function MemoriesPage({
               key={key}
               href={`${base}?game=${key}`}
               aria-current={on ? "page" : undefined}
-              className={cn(CHIP, on ? `${colors.soft} ${colors.ink} ring-current` : "bg-surface text-ink-2 ring-line")}
+              className={cn(CHIP, on ? `${colors.soft} ${colors.ink}` : "glass text-ink-2")}
             >
               <span className={cn("size-3 rounded-full", colors.bg)} aria-hidden />
               {GAMES[key].name}

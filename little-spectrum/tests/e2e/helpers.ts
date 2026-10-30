@@ -49,5 +49,7 @@ export async function joinGarden(page: Page, invitePath: string, name: string) {
 export async function shot(page: Page, name: string) {
   const dir = process.env.E2E_SHOTS;
   if (!dir) return;
+  await page.waitForTimeout(900);
   await page.screenshot({ path: `${dir}/${name}.png`, fullPage: true });
+  await page.screenshot({ path: `${dir}/${name}-viewport.png` });
 }

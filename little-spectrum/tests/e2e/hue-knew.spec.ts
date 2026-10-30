@@ -7,7 +7,7 @@ test("two friends create a garden, join by invite, and play Hue Knew? with a pri
 
   await createProfile(ada.page, "Ada");
   const gardenId = await createGarden(ada.page, "Our little patch", "two");
-  await expect(ada.page.getByText("Waiting for a friend")).toBeVisible();
+  await expect(ada.page.getByText("Invite a friend to start playing")).toBeVisible();
   await shot(ada.page, "home-solo");
 
   const invite = await inviteUrlFor(ada.page, gardenId);
@@ -76,7 +76,7 @@ test("two friends create a garden, join by invite, and play Hue Knew? with a pri
   const secondId = await createGarden(ada.page, "Second patch", "group");
   expect(secondId).not.toBe(gardenId);
   await expect(ada.page.getByText("0 of 3 little moments this week.")).toBeVisible();
-  await ada.page.getByRole("button", { name: "Switch" }).click();
+  await ada.page.getByRole("button", { name: "Switch garden" }).click();
   await ada.page.getByRole("link", { name: /Our little patch/ }).click();
   await ada.page.waitForURL(`**/g/${gardenId}`);
   await expect(ada.page.getByText("1 of 3 little moments this week.")).toBeVisible();

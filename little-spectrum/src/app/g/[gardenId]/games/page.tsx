@@ -3,6 +3,7 @@ import { PageTitle } from "@/components/ui/PageTitle";
 import { requireUser } from "@/lib/auth";
 import { getGardenContext } from "@/lib/data/gardens";
 import { GAME_KEYS } from "@/lib/games";
+import { weekStartFor } from "@/lib/week";
 import { isGameAvailable } from "@/lib/games/registry";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { GamesCatalog } from "./GamesCatalog";
@@ -22,9 +23,13 @@ export default async function GamesPage({
   const garden = await getGardenContext(gardenId, user.id);
   if (!garden) notFound();
 
+  // A different featured pick each day, the same for everyone in the garden.
+  const day = Number(weekStartFor(new Date(), garden.timezone).replace(/-/g, "")) + new Date().getUTCDay();
+  const featured = GAME_KEYS[day % GAME_KEYS.length];
+
   return (
     <>
-      <PageTitle title="Games" subtitle="Six short games. Play on your own time, reveal together." />
+      <PageTitle title="Games" subtitle="Short rounds. Play now, reveal together." />
       <GamesCatalog
         gardenId={gardenId}
         currentUserId={user.id}
@@ -32,6 +37,7 @@ export default async function GamesPage({
         availability={Object.fromEntries(GAME_KEYS.map((k) => [k, isGameAvailable(k)]))}
         inviteUrl={garden.inviteToken ? `${getSiteUrl()}/join/${garden.inviteToken}` : null}
         initialGame={query.start ?? null}
+        featured={featured}
       />
     </>
   );

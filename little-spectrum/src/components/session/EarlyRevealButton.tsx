@@ -30,7 +30,7 @@ export function EarlyRevealButton({ gardenId, sessionId, check, game }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="pressable flex h-11 items-center gap-1 rounded-capsule px-3 text-callout font-semibold text-ink-2 hover:bg-fill"
+        className="glass pressable flex h-10 items-center gap-1.5 rounded-capsule px-3.5 text-footnote font-semibold text-ink"
       >
         <Eye className="size-4" aria-hidden />
         Reveal

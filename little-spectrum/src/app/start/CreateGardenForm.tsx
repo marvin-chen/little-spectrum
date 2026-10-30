@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { Field, TextInput } from "@/components/ui/Field";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { cn } from "@/lib/cn";
 import { THEMES, type ThemeKey } from "@/lib/themes";
@@ -37,24 +38,17 @@ export function CreateGardenForm() {
             { value: "8", label: "A group of friends" },
           ]}
         />
-        <p className="mt-2 text-footnote text-ink-3">
+        <p className="mt-2 px-1 text-footnote text-ink-3">
           {capacity === "2" ? "Room for two. You can make space for up to eight later." : "Up to eight people, including you."}
         </p>
       </div>
 
-      <label className="block">
-        <span className="mb-1 block text-footnote font-semibold text-ink-2">Garden name</span>
-        <input
-          name="name"
-          maxLength={40}
-          required
-          placeholder={capacity === "2" ? "Our little patch" : "The Thursday crew"}
-          className="h-12 w-full rounded-row bg-surface px-4 text-body shadow-card ring-1 ring-line outline-none focus-visible:ring-2 focus-visible:ring-blue"
-        />
-      </label>
+      <Field label="Garden name">
+        <TextInput name="name" maxLength={40} required placeholder={capacity === "2" ? "Our little patch" : "The Thursday crew"} />
+      </Field>
 
       <fieldset>
-        <legend className="mb-2 text-footnote font-semibold text-ink-2">Starting theme</legend>
+        <legend className="mb-2 px-1 text-footnote font-semibold text-ink-2">Starting theme</legend>
         <div role="radiogroup" aria-label="Starting theme" className="grid grid-cols-2 gap-3">
           {Object.values(THEMES).map((t) => {
             const selected = t.key === theme;
@@ -66,7 +60,7 @@ export function CreateGardenForm() {
                 aria-checked={selected}
                 onClick={() => setTheme(t.key)}
                 className={cn(
-                  "pressable overflow-hidden rounded-card bg-surface text-left shadow-card ring-1 ring-line",
+                  "pressable overflow-hidden rounded-tile bg-surface text-left shadow-card ring-1 ring-line",
                   selected && "ring-2 ring-ink",
                 )}
               >

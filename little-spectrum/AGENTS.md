@@ -94,3 +94,4 @@ Keep this list short and concrete. Add a line whenever a mistake or a non-obviou
 - Full-page Playwright screenshots draw fixed elements (tab bar, sheets) mid-page. Judge layout from viewport screenshots.
 - Next 16 refuses a second `next dev` in the same directory. To test another environment (blank or bogus Supabase variables), stop the main server, edit `.env.local` with a backup, restart, and restore afterwards. Copies of the project with a symlinked `node_modules` do not build under Turbopack.
 - `getByText` in Playwright can match the text inside a textarea, so after saving a note assert on the rendered note, not just the text, and let pending server actions settle with `waitForLoadState("networkidle")` before the next one.
+- Turbopack's persistent dev cache in `.next/dev` can keep serving a stale `globals.css` after a large rewrite. If new tokens do not show up, stop the server, delete `.next/dev`, and start it again.

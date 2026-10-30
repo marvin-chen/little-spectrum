@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronsUpDown, Plus, Settings } from "lucide-react";
-import { Group, RowLink, RowButton } from "@/components/ui/Card";
+import { Check, ChevronsUpDown, Plus, Settings } from "lucide-react";
+import { Group, RowLink } from "@/components/ui/Card";
 import { Sheet } from "@/components/ui/Sheet";
-import type { GardenSummary } from "@/lib/data/gardens";
 import { cn } from "@/lib/cn";
+import type { GardenSummary } from "@/lib/data/gardens";
 
-type Props = { gardens: GardenSummary[]; currentId: string; variant: "title" | "sidebar" };
+type Props = { gardens: GardenSummary[]; currentId: string; variant: "toolbar" | "sidebar" };
 
 export function GardenSwitcher({ gardens, currentId, variant }: Props) {
   const [open, setOpen] = useState(false);
@@ -20,35 +20,33 @@ export function GardenSwitcher({ gardens, currentId, variant }: Props) {
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
+        aria-label={variant === "toolbar" ? "Switch garden" : undefined}
         className={cn(
-          "pressable flex items-center gap-1.5 rounded-capsule text-callout font-semibold hover:bg-fill",
-          variant === "title" ? "h-9 px-3 text-ink-2" : "h-11 w-full justify-between px-3 text-ink",
+          "pressable flex items-center justify-center rounded-capsule font-semibold text-ink",
+          variant === "toolbar" ? "size-9 hover:bg-fill" : "glass h-11 w-full justify-between px-3 text-callout",
         )}
       >
-        <span className="truncate">{variant === "title" ? "Switch" : (current?.name ?? "Gardens")}</span>
-        <ChevronsUpDown className="size-4 shrink-0" aria-hidden />
+        {variant === "sidebar" ? <span className="truncate">{current?.name ?? "Gardens"}</span> : null}
+        <ChevronsUpDown className="size-[18px] shrink-0" aria-hidden />
       </button>
       <Sheet open={open} onClose={() => setOpen(false)} title="Your gardens" description="Each garden keeps its own members, games, and growth.">
         <Group>
           {gardens.map((g) => (
-            <RowButton
-              key={g.id}
-              onClick={() => setOpen(false)}
-              label={
-                <Link href={`/g/${g.id}`} className="block w-full">
-                  {g.name}
-                  {g.id === currentId ? <span className="text-ink-3"> · Current</span> : null}
-                </Link>
-              }
-              detail={`${g.memberCount} of ${g.capacity}`}
-              chevron={false}
-            />
+            <Link key={g.id} href={`/g/${g.id}`} onClick={() => setOpen(false)} className="pressable flex min-h-[52px] items-center gap-3 px-4 py-2.5 not-last:border-b not-last:border-line hover:bg-fill">
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-body text-ink">{g.name}</span>
+                <span className="block text-footnote text-ink-3">
+                  {g.memberCount} of {g.capacity}
+                </span>
+              </span>
+              {g.id === currentId ? <Check className="size-5 text-tint" aria-hidden /> : null}
+            </Link>
           ))}
         </Group>
-        <div className="mt-4 flex flex-col gap-2">
-          <RowLink href="/start" icon={<Plus className="size-5 text-ink-2" aria-hidden />} label="Plant another garden" className="rounded-row bg-surface ring-1 ring-line" />
-          <RowLink href={`/g/${currentId}/settings`} icon={<Settings className="size-5 text-ink-2" aria-hidden />} label="Garden settings" className="rounded-row bg-surface ring-1 ring-line" />
-        </div>
+        <Group className="mt-3">
+          <RowLink href="/start" icon={<Plus className="size-5 text-ink-2" aria-hidden />} label="Plant another garden" />
+          <RowLink href={`/g/${currentId}/settings`} icon={<Settings className="size-5 text-ink-2" aria-hidden />} label="Garden settings" />
+        </Group>
       </Sheet>
     </>
   );

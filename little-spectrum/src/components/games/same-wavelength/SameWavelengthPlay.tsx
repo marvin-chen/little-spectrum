@@ -1,5 +1,6 @@
 "use client";
 
+import { inputClass } from "@/components/ui/Field";
 import { useState, useTransition } from "react";
 import { Lock, RotateCcw, Sparkles } from "lucide-react";
 import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionId]/actions";
@@ -102,7 +103,7 @@ function AnswerPanel({ gardenId, sessionId, game }: { gardenId: string; sessionI
           onKeyDown={(e) => {
             if (e.key === "Enter" && word.trim()) lockIn();
           }}
-          className="h-12 w-full rounded-row bg-fill px-4 text-body outline-none focus-visible:ring-2 focus-visible:ring-blue"
+          className={inputClass}
         />
       </label>
       <div className="mt-2 flex items-center justify-between text-footnote text-ink-3">

@@ -60,15 +60,15 @@ export function Sheet({
         if (dismissible && event.target === event.currentTarget) onClose();
       }}
       className={cn(
-        "fixed inset-x-0 top-auto bottom-0 m-0 w-full max-w-none max-h-[92dvh] overflow-hidden",
-        "rounded-t-sheet bg-surface text-ink shadow-float outline-none",
-        "sm:inset-auto sm:top-1/2 sm:left-1/2 sm:w-[min(30rem,calc(100%-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-sheet",
+        "fixed inset-x-2 top-auto bottom-2 m-0 w-auto max-w-none max-h-[92dvh] overflow-hidden",
+        "glass-strong rounded-sheet text-ink outline-none",
+        "sm:inset-auto sm:top-1/2 sm:left-1/2 sm:w-[min(30rem,calc(100%-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2",
         "open:anim-sheet",
       )}
     >
       {open ? (
         <div className={cn("flex max-h-[92dvh] flex-col", tone)}>
-          <div className="mx-auto mt-2 h-1.5 w-10 rounded-full bg-line-strong sm:hidden" aria-hidden />
+          <div className="mx-auto mt-2.5 h-[5px] w-9 rounded-full bg-ink/15 sm:hidden" aria-hidden />
           <div className="flex items-start gap-3 px-5 pt-3 pb-2 sm:pt-5">
             <div className="min-w-0 flex-1">
               <h2 id={titleId} className="font-display text-title-2 font-bold">
@@ -85,7 +85,7 @@ export function Sheet({
                 type="button"
                 onClick={onClose}
                 aria-label="Close"
-                className="pressable -mr-2 -mt-1 flex size-11 shrink-0 items-center justify-center rounded-full text-ink-2 hover:bg-fill"
+                className="pressable -mt-1 -mr-1 flex size-9 shrink-0 items-center justify-center rounded-full bg-fill text-ink-2 hover:bg-fill-2"
               >
                 <X className="size-5" aria-hidden />
               </button>
@@ -93,7 +93,7 @@ export function Sheet({
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-4">{children}</div>
           {footer ? (
-            <div className="border-t border-line bg-surface px-5 pt-3 pb-[max(1rem,var(--safe-bottom))] sm:pb-5">
+            <div className="border-t border-line px-5 pt-3 pb-[max(1rem,calc(var(--safe-bottom)+0.25rem))] sm:pb-5">
               {footer}
             </div>
           ) : (

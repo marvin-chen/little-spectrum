@@ -43,7 +43,7 @@ export default function DemoHomePage() {
         <Link href="/demo/garden" className="pressable block overflow-hidden rounded-card shadow-card ring-1 ring-line">
           <GardenScene theme={DEMO_GARDEN.theme} items={DEMO_GROWTH.rewards} compact className="block h-40 w-full" />
         </Link>
-        <WeeklyProgress growth={DEMO_GROWTH} memberCount={DEMO_GARDEN.members.length} />
+        <WeeklyProgress growth={DEMO_GROWTH} />
       </section>
 
       {yourTurn.length > 0 ? (

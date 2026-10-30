@@ -1,5 +1,6 @@
 "use client";
 
+import { inputClass } from "@/components/ui/Field";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Camera, Images, RotateCcw, Trash2, Upload } from "lucide-react";
@@ -182,7 +183,7 @@ function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
                 maxLength={MAX_CAPTION}
                 rows={2}
                 placeholder="A few words about it"
-                className="w-full resize-none rounded-row bg-fill px-4 py-3 text-body outline-none focus-visible:ring-2 focus-visible:ring-blue"
+                className={cn(inputClass, "h-auto resize-none py-3")}
               />
               <span className="mt-1 block text-right text-caption text-ink-3 tabular-nums">
                 {caption.length}/{MAX_CAPTION}

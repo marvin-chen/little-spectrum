@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { Field, TextInput } from "@/components/ui/Field";
 import { AVATAR_ICON_COMPONENTS, Avatar } from "@/components/ui/Avatar";
 import { AVATAR_ICONS, parseAvatar, serializeAvatar, type AvatarIcon } from "@/lib/avatars";
 import { cn } from "@/lib/cn";
@@ -25,24 +26,13 @@ export function ProfileForm({ next, initialName, initialAvatar, submitLabel }: P
 
       <div className="flex items-center gap-4">
         <Avatar avatar={avatar} name={name || "Your avatar"} size="xl" />
-        <label className="flex-1">
-          <span className="mb-1 block text-footnote font-semibold text-ink-2">Display name</span>
-          <input
-            name="displayName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            maxLength={24}
-            autoComplete="nickname"
-            autoCapitalize="words"
-            required
-            placeholder="Jamie"
-            className="h-12 w-full rounded-row bg-surface px-4 text-body shadow-card ring-1 ring-line outline-none focus-visible:ring-2 focus-visible:ring-blue"
-          />
-        </label>
+        <Field label="Display name" className="flex-1">
+          <TextInput name="displayName" value={name} onChange={(e) => setName(e.target.value)} maxLength={24} autoComplete="nickname" autoCapitalize="words" required placeholder="Jamie" />
+        </Field>
       </div>
 
       <fieldset>
-        <legend className="mb-2 text-footnote font-semibold text-ink-2">Avatar</legend>
+        <legend className="mb-2 px-1 text-footnote font-semibold text-ink-2">Avatar</legend>
         <div role="radiogroup" aria-label="Avatar icon" className="grid grid-cols-6 gap-2">
           {AVATAR_ICONS.map((key) => {
             const Icon = AVATAR_ICON_COMPONENTS[key];
@@ -56,8 +46,8 @@ export function ProfileForm({ next, initialName, initialAvatar, submitLabel }: P
                 aria-label={key}
                 onClick={() => setIcon(key)}
                 className={cn(
-                  "pressable flex aspect-square items-center justify-center rounded-row",
-                  selected ? `${COLOR_CLASSES[color].soft} ${COLOR_CLASSES[color].ink} ring-2 ring-ink` : "bg-surface text-ink-2 ring-1 ring-line",
+                  "pressable flex aspect-square items-center justify-center rounded-control",
+                  selected ? `${COLOR_CLASSES[color].soft} ${COLOR_CLASSES[color].ink} ring-2 ring-ink` : "bg-surface text-ink-2 shadow-hairline",
                 )}
               >
                 <Icon className="size-6" aria-hidden strokeWidth={2.25} />
@@ -68,7 +58,7 @@ export function ProfileForm({ next, initialName, initialAvatar, submitLabel }: P
       </fieldset>
 
       <fieldset>
-        <legend className="mb-2 text-footnote font-semibold text-ink-2">Color</legend>
+        <legend className="mb-2 px-1 text-footnote font-semibold text-ink-2">Color</legend>
         <div role="radiogroup" aria-label="Avatar color" className="flex flex-wrap gap-2">
           {COLOR_KEYS.map((key) => {
             const selected = key === color;
@@ -80,7 +70,7 @@ export function ProfileForm({ next, initialName, initialAvatar, submitLabel }: P
                 aria-checked={selected}
                 onClick={() => setColor(key)}
                 className={cn(
-                  "pressable flex h-11 items-center gap-2 rounded-capsule px-3 text-callout font-semibold",
+                  "pressable flex h-10 items-center gap-2 rounded-capsule px-3 text-footnote font-semibold",
                   COLOR_CLASSES[key].soft,
                   COLOR_CLASSES[key].ink,
                   selected && "ring-2 ring-ink",

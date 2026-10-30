@@ -1,63 +1,63 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ChevronLeft } from "lucide-react";
+import { GameMotif, GameStageArt } from "@/components/games/motifs/GameMotif";
 import { AutoRefresh } from "@/components/session/AutoRefresh";
 import { EarlyRevealButton } from "@/components/session/EarlyRevealButton";
 import { Avatar } from "@/components/ui/Avatar";
-import { Badge } from "@/components/ui/Badge";
-import { CompactHeader } from "@/components/ui/PageTitle";
 import { cn } from "@/lib/cn";
 import { COLOR_CLASSES } from "@/lib/colors";
 import type { SessionView } from "@/lib/data/sessions";
 import { GAMES } from "@/lib/games";
 
-export function SessionFrame({
-  gardenId,
-  session,
-  userId,
-  children,
-}: {
-  gardenId: string;
-  session: SessionView;
-  userId: string;
-  children: ReactNode;
-}) {
+// Shared chrome for every game: glass header, a tinted stage with the players and status, then the game.
+export function SessionFrame({ gardenId, session, userId, children }: { gardenId: string; session: SessionView; userId: string; children: ReactNode }) {
   const game = GAMES[session.game];
   const colors = COLOR_CLASSES[game.color];
   const active = session.status === "active";
+  const submitted = new Set<string>();
+  const view = session.view as { submitted?: string[]; guessers?: Array<{ userId: string; submitted: boolean }>; clue?: string | null; clueGiverId?: string } | null;
+  for (const id of view?.submitted ?? []) submitted.add(id);
+  for (const g of view?.guessers ?? []) if (g.submitted) submitted.add(g.userId);
+  if (view?.clue && view.clueGiverId) submitted.add(view.clueGiverId);
+
   return (
-    <div className="-mt-[max(0.75rem,var(--safe-top))] md:mt-0">
+    <div className="-mt-[max(0.5rem,var(--safe-top))] md:mt-0">
       <AutoRefresh enabled={active} />
-      <CompactHeader
-        leading={
-          <Link href={`/g/${gardenId}`} className="pressable flex h-11 items-center gap-0.5 rounded-capsule pr-3 pl-1 text-callout font-semibold text-ink-2 hover:bg-fill">
-            <ChevronLeft className="size-5" aria-hidden />
-            Home
-          </Link>
-        }
-        title={
-          <span className="inline-flex items-center gap-2">
-            <span className={cn("size-2.5 rounded-full", colors.bg)} aria-hidden />
-            {game.name}
-          </span>
-        }
-        trailing={
-          active && session.isCreator ? (
-            <EarlyRevealButton gardenId={gardenId} sessionId={session.id} check={session.earlyReveal_} game={session.game} />
-          ) : null
-        }
-      />
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <ul className="flex items-center" aria-label="Players">
-          {session.participants.map((p, i) => (
-            <li key={p.userId} className={i > 0 ? "-ml-2" : undefined}>
-              <Avatar avatar={p.avatar} name={p.userId === userId ? `${p.name} (you)` : p.name} size="sm" ring />
-            </li>
-          ))}
-        </ul>
-        <Badge tone={active ? (session.turn.needsYou ? game.color : "neutral") : "green"}>{session.turn.line}</Badge>
-        {session.earlyReveal ? <Badge>Revealed early</Badge> : null}
-      </div>
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80" style={{ background: `linear-gradient(180deg, color-mix(in srgb, var(--color-${game.color}-soft) 85%, white) 0%, rgba(245,241,234,0) 100%)` }} />
+      <header className="sticky top-0 z-20 -mx-4 flex h-[60px] items-center gap-2 px-3 pt-[var(--safe-top)] md:-mx-8 md:px-6">
+        <Link href={`/g/${gardenId}`} aria-label="Back to home" className="glass pressable flex size-10 items-center justify-center rounded-capsule text-ink">
+          <ChevronLeft className="size-5" aria-hidden />
+        </Link>
+        <div className="flex min-w-0 flex-1 items-center justify-center gap-2 text-headline font-semibold text-ink">
+          <GameMotif game={session.game} size={24} />
+          <span className="truncate">{game.name}</span>
+        </div>
+        <div className="flex w-10 justify-end sm:w-auto">{active && session.isCreator ? <EarlyRevealButton gardenId={gardenId} sessionId={session.id} check={session.earlyReveal_} game={session.game} /> : null}</div>
+      </header>
+
+      <section className="relative mb-4 overflow-hidden rounded-group">
+        <GameStageArt game={session.game} className="pointer-events-none absolute -top-3 -right-6 h-28 w-auto" />
+        <div className="relative flex flex-col gap-3 px-1 pt-2 pb-1">
+          <ul className="flex items-center gap-1.5" aria-label="Players">
+            {session.participants.map((p) => {
+              const done = submitted.has(p.userId);
+              return (
+                <li key={p.userId} className="relative">
+                  <Avatar avatar={p.avatar} name={`${p.userId === userId ? `${p.name} (you)` : p.name}${done ? ", in" : active ? ", pending" : ""}`} size="sm" ring />
+                  {active ? (
+                    <span aria-hidden className={cn("absolute -right-0.5 -bottom-0.5 size-3 rounded-full ring-2 ring-canvas", done ? "bg-green" : "bg-ink/20")} />
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+          <p className={cn("text-callout font-semibold", active ? (session.turn.needsYou ? colors.ink : "text-ink-2") : "text-green-ink")}>
+            {session.turn.line}
+            {session.earlyReveal ? <span className="font-normal text-ink-3"> · Revealed early</span> : null}
+          </p>
+        </div>
+      </section>
       {children}
     </div>
   );

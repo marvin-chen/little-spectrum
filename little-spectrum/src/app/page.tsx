@@ -26,16 +26,17 @@ export default async function LandingPage() {
 
   return (
     <PlainShell narrow>
+      <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[46vh]" style={{ background: "linear-gradient(180deg, #dbeeff 0%, rgba(245,241,234,0) 100%)" }} />
       <div className="flex flex-1 flex-col justify-center gap-8 py-8">
         <Wordmark />
-        <div>
-          <h1 className="font-display text-title-1 font-bold text-ink">A little color. A little closer.</h1>
+        <div className="anim-rise">
+          <h1 className="font-display text-large-title font-bold text-ink">A little color. A little closer.</h1>
           <p className="mt-3 text-body text-ink-2">
             A private place for far-apart friends to play short games, swap moments from the day, and grow a
             garden together.
           </p>
         </div>
-        <ul className="grid gap-3">
+        <ul className="anim-rise grid gap-2" style={{ "--i": 1 } as React.CSSProperties}>
           {[
             { Icon: Sparkles, title: "Six short games", body: "Play on your own time. Reveal together." },
             { Icon: Flower2, title: "A garden that grows", body: "Three moments a week unlock something new." },
@@ -43,7 +44,7 @@ export default async function LandingPage() {
           ].map(({ Icon, title, body }) => (
             <li key={title}>
               <Card className="flex items-center gap-3 p-4">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-row bg-amber-soft text-amber-ink">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-control bg-amber-soft text-amber-ink">
                   <Icon className="size-5" aria-hidden />
                 </span>
                 <span>
@@ -55,7 +56,7 @@ export default async function LandingPage() {
           ))}
         </ul>
         {configured ? (
-          <div className="flex flex-col gap-3">
+          <div className="anim-rise flex flex-col gap-3" style={{ "--i": 2 } as React.CSSProperties}>
             <ButtonLink href="/welcome" size="lg" full>
               Get started
             </ButtonLink>

@@ -115,7 +115,7 @@ test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, 
 
   // Home and memories reflect five completed games this week with one reward.
   await ada.page.goto(`/g/${gardenId}`);
-  await expect(ada.page.getByText("Your garden grew something new this week.")).toBeVisible();
+  await expect(ada.page.getByText("Your garden grew this week.")).toBeVisible();
   await shot(ada.page, "home-group");
   await ada.page.goto(`/g/${gardenId}/garden`);
   await expect(ada.page.getByText("Three friends added a little color this week.")).toBeVisible();
