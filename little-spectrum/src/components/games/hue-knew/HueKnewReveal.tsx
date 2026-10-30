@@ -1,4 +1,5 @@
 import { Avatar } from "@/components/ui/Avatar";
+import { CountUp } from "@/components/ui/CountUp";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
@@ -42,14 +43,14 @@ export function HueKnewReveal({ session, result, left, right, userId, compact }:
       <Card className={compact ? "p-4" : "p-5"}>
         <div className="flex items-baseline justify-between">
           <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Shared score</p>
-          <p className={cn("font-display font-bold text-coral-ink tabular-nums", compact ? "text-title-2" : "text-title-1")}>{result.shared ?? "–"}</p>
+          <p className={cn("font-display font-bold text-coral-ink tabular-nums", compact ? "text-title-2" : "text-title-1")}>{result.shared === null ? "–" : <CountUp value={result.shared} />}</p>
         </div>
         <ul className="mt-2 divide-y divide-line">
           {result.guesses
             .slice()
             .sort((a, b) => b.score - a.score)
-            .map((g) => (
-              <li key={g.userId} className="flex items-center gap-3 py-2.5">
+            .map((g, index) => (
+              <li key={g.userId} className="anim-rise flex items-center gap-3 py-2.5" style={{ "--i": index + 2 } as React.CSSProperties}>
                 <Avatar avatar={avatarOf(g.userId)} name={nameOf(g.userId)} size="sm" />
                 <span className="flex-1 text-body">
                   {g.userId === userId ? "You" : nameOf(g.userId)}

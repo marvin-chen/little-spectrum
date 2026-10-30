@@ -116,7 +116,7 @@ export function SameWavelengthReveal({ session, result, userId, compact }: Props
     headline = (
       <div
         className={cn(
-          "flex items-center gap-3 rounded-card bg-gradient-to-br from-blue to-blue-deep text-white shadow-card",
+          "anim-pop lit flex items-center gap-3 rounded-card bg-gradient-to-br from-blue to-blue-deep text-white shadow-card",
           compact ? "px-4 py-3" : "px-5 py-6",
         )}
       >

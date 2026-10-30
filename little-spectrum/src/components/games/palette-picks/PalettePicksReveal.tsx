@@ -1,4 +1,5 @@
 import { Avatar } from "@/components/ui/Avatar";
+import { CountUp } from "@/components/ui/CountUp";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
@@ -31,7 +32,7 @@ export function PalettePicksReveal({ session, result, items, userId, compact = f
           <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Overall similarity</p>
           {result.overallSimilarity !== null ? (
             <p className={cn("font-display font-bold text-amber-ink tabular-nums", compact ? "text-title-2" : "text-title-1")}>
-              {result.overallSimilarity}
+              <CountUp value={result.overallSimilarity} />
             </p>
           ) : null}
         </div>

@@ -1,4 +1,5 @@
 import { Avatar } from "@/components/ui/Avatar";
+import { CountUp } from "@/components/ui/CountUp";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
@@ -35,7 +36,7 @@ export function HueClueReveal({ session, result, userId, compact }: { session: S
       <Card className={compact ? "p-4" : "p-5"}>
         <div className="flex items-baseline justify-between">
           <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Shared score</p>
-          <p className={cn("font-display font-bold text-violet-ink tabular-nums", compact ? "text-title-2" : "text-title-1")}>{result.shared ?? "–"}</p>
+          <p className={cn("font-display font-bold text-violet-ink tabular-nums", compact ? "text-title-2" : "text-title-1")}>{result.shared === null ? "–" : <CountUp value={result.shared} />}</p>
         </div>
         <ul className="mt-2 divide-y divide-line">
           {result.guesses

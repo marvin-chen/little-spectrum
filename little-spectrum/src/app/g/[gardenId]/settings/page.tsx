@@ -58,7 +58,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ garde
         <Group>
           <Row icon={<Users className="size-5 text-ink-2" aria-hidden />} label="Size" trailing={garden.capacity === 2 ? "Just us two" : "A group of friends"} />
           <Row icon={<span className="size-5 rounded-full" style={{ background: themeFor(garden.theme).hillFront }} aria-hidden />} label="Theme" trailing={themeFor(garden.theme).name} />
-          <Row icon={<Clock className="size-5 text-ink-2" aria-hidden />} label="Week resets" detail="Monday, in the creator's timezone" trailing={garden.timezone.replace(/_/g, " ")} />
+          <Row icon={<Clock className="size-5 text-ink-2" aria-hidden />} label="Week resets" detail="Mondays, in the creator's timezone" trailing={garden.timezone.split("/").pop()?.replace(/_/g, " ")} />
         </Group>
       </section>
 
