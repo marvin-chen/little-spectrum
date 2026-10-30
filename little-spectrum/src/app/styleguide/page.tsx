@@ -10,7 +10,7 @@ export default function StyleguidePage() {
       <PageTitle
         eyebrow="Design system"
         title="Style guide"
-        subtitle="Tokens and shared components used across Little Spectrum."
+        subtitle="Tokens, materials, motifs, and shared components."
       />
       <StyleguideClient />
     </AppShell>
