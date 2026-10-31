@@ -25,6 +25,8 @@
   --color-danger: #d4333b;
   --color-danger-soft: #fde4e5;
   --color-tint: #3b82f6;
+  --color-tint-soft: #dfeaff;
+  --color-tint-ink: #1f53b8;
 
   /* Game identities */
   --color-coral: #ff7a59;
@@ -107,6 +109,71 @@
   --content-max: 42rem;
   --glass-bg: rgba(255, 255, 255, 0.62);
   --glass-bg-strong: rgba(255, 255, 255, 0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-canvas: #15131d;
+    --color-canvas-deep: #1c1926;
+    --color-ivory: #15131d;
+    --color-ivory-deep: #1c1926;
+    --color-surface: #211e2c;
+    --color-surface-2: #262232;
+    --color-surface-3: #2c2839;
+    --color-ink: #f3efe8;
+    --color-ink-2: #bdb7c8;
+    --color-ink-3: #948ea1;
+    --color-line: rgba(255, 255, 255, 0.08);
+    --color-line-strong: rgba(255, 255, 255, 0.16);
+    --color-fill: rgba(255, 255, 255, 0.06);
+    --color-fill-2: rgba(255, 255, 255, 0.1);
+    --color-fill-3: rgba(255, 255, 255, 0.16);
+    --color-danger: #ff6b70;
+    --color-danger-soft: #4a2226;
+    --color-tint: #7aa6ff;
+    --color-tint-soft: #22304f;
+    --color-tint-ink: #b9cfff;
+    --color-coral-soft: #452219;
+    --color-coral-ink: #ffb59e;
+    --color-rose-soft: #47202c;
+    --color-rose-ink: #ffb3c6;
+    --color-violet-soft: #2e2650;
+    --color-violet-ink: #c9b8ff;
+    --color-blue-soft: #1f2d4d;
+    --color-blue-ink: #b3cbff;
+    --color-amber-soft: #43301a;
+    --color-amber-ink: #ffd089;
+    --color-green-soft: #1b3a2a;
+    --color-green-ink: #9fe0b8;
+    --shadow-hairline: 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+    --shadow-float: 0 12px 32px -8px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.4);
+    --shadow-glass: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+    --glass-bg: rgba(33, 30, 44, 0.62);
+    --glass-bg-strong: rgba(33, 30, 44, 0.85);
+  }
+  .glass {
+    background: var(--glass-bg-strong);
+  }
+  .glass-strong {
+    background: rgba(33, 30, 44, 0.94);
+  }
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass {
+      background: var(--glass-bg);
+    }
+    .glass-strong {
+      background: var(--glass-bg-strong);
+    }
+  }
+  .lit {
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 55%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 8px 20px -10px rgba(0, 0, 0, 0.6);
+  }
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
 }
 
 @layer base {
@@ -304,5 +371,72 @@ dialog::backdrop {
   }
   .sway {
     animation: none;
+  }
+}
+
+/* View transitions: shared element morphs and directional page motion. */
+::view-transition-group(.morph) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out-soft);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% {
+    filter: blur(2px);
+  }
+}
+::view-transition-old(.nav-forward) {
+  animation: 180ms ease-out both vt-fade reverse, 180ms ease-out both vt-slide-left-out;
+}
+::view-transition-new(.nav-forward) {
+  animation: 240ms ease-out 60ms both vt-fade, 360ms var(--ease-out-soft) both vt-slide-left-in;
+}
+::view-transition-old(.nav-back) {
+  animation: 180ms ease-out both vt-fade reverse, 180ms ease-out both vt-slide-right-out;
+}
+::view-transition-new(.nav-back) {
+  animation: 240ms ease-out 60ms both vt-fade, 360ms var(--ease-out-soft) both vt-slide-right-in;
+}
+::view-transition-old(.tab-fade) {
+  animation: 120ms ease-out both vt-fade reverse;
+}
+::view-transition-new(.tab-fade) {
+  animation: 200ms ease-out both vt-fade;
+}
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes vt-slide-left-out {
+  to {
+    transform: translateX(-24px);
+  }
+}
+@keyframes vt-slide-left-in {
+  from {
+    transform: translateX(32px);
+  }
+}
+@keyframes vt-slide-right-out {
+  to {
+    transform: translateX(24px);
+  }
+}
+@keyframes vt-slide-right-in {
+  from {
+    transform: translateX(-32px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }

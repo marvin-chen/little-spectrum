@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { GamesIcon, GardenIcon, HomeIcon, MemoriesIcon } from "@/components/icons/TabIcons";
 import { useSlidingIndicator } from "@/components/ui/useSlidingIndicator";
 import { cn } from "@/lib/cn";
@@ -28,17 +28,56 @@ export function activeTabKey(pathname: string, base: string): string | null {
 }
 
 // Floating liquid glass tab bar with a gliding highlight and an optional prominent action.
+// Tracks scroll direction so the bar can compact on the way down and expand on the way up.
+function useCompactOnScroll(): boolean {
+  const [compact, setCompact] = useState(false);
+  useEffect(() => {
+    let last = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const delta = y - last;
+        const nearBottom = window.innerHeight + y >= document.documentElement.scrollHeight - 8;
+        if (y < 48 || delta < -6 || nearBottom) setCompact(false);
+        else if (delta > 6) setCompact(true);
+        last = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return compact;
+}
+
 export function TabBar({ base, action, hidden }: { base: string; action?: TabAction; hidden?: boolean }) {
   const pathname = usePathname();
   const tabs = tabsFor(base);
   const active = activeTabKey(pathname, base);
   const { containerRef, rect } = useSlidingIndicator<HTMLUListElement>(active);
+  const compact = useCompactOnScroll();
 
   if (hidden) return null;
 
   return (
-    <nav aria-label="Primary" className="fixed inset-x-0 bottom-0 z-30 flex justify-center gap-2.5 px-4 pb-[max(0.875rem,var(--safe-bottom))] md:hidden">
-      <ul ref={containerRef} className="glass relative flex h-[var(--tabbar-height)] w-full max-w-sm items-stretch rounded-capsule p-1.5">
+    <nav
+      aria-label="Primary"
+      data-compact={compact || undefined}
+      className={cn(
+        "fixed inset-x-0 bottom-0 z-30 flex justify-center gap-2.5 px-4 pb-[max(0.875rem,var(--safe-bottom))] transition-[padding] duration-300 ease-[var(--ease-out-soft)] md:hidden",
+        compact && "pb-[max(0.5rem,var(--safe-bottom))]",
+      )}
+    >
+      <ul
+        ref={containerRef}
+        className={cn(
+          "glass relative flex w-full max-w-sm items-stretch rounded-capsule p-1.5 transition-[height,max-width] duration-300 ease-[var(--ease-out-soft)]",
+          compact ? "h-11 max-w-[15rem]" : "h-[var(--tabbar-height)]",
+        )}
+      >
         <span
           aria-hidden
           className={cn(
@@ -59,8 +98,8 @@ export function TabBar({ base, action, hidden }: { base: string; action?: TabAct
                   isActive ? "text-ink" : "text-ink-2",
                 )}
               >
-                <Icon active={isActive} className="text-[22px]" />
-                <span>{label}</span>
+                <Icon active={isActive} className={cn("transition-[font-size] duration-300", compact ? "text-[20px]" : "text-[22px]")} />
+                <span className={cn("overflow-hidden transition-[max-height,opacity] duration-200", compact ? "max-h-0 opacity-0" : "max-h-4 opacity-100")}>{label}</span>
               </Link>
             </li>
           );
@@ -70,7 +109,10 @@ export function TabBar({ base, action, hidden }: { base: string; action?: TabAct
         <Link
           href={action.href}
           aria-label={action.label}
-          className="pressable lit flex size-[var(--tabbar-height)] shrink-0 items-center justify-center rounded-capsule bg-ink text-canvas shadow-float"
+          className={cn(
+            "pressable lit flex shrink-0 items-center justify-center rounded-capsule bg-tint text-white shadow-float transition-[width,height] duration-300 ease-[var(--ease-out-soft)]",
+            compact ? "size-11" : "size-[var(--tabbar-height)]",
+          )}
         >
           {action.icon}
         </Link>

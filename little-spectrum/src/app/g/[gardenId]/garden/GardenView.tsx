@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, ViewTransition } from "react";
 import { ChevronRight } from "lucide-react";
 import { GardenScene } from "@/components/garden/GardenScene";
 import { getGardenItem } from "@/components/garden/items";
@@ -12,21 +12,25 @@ import { Sheet } from "@/components/ui/Sheet";
 import { cn } from "@/lib/cn";
 import type { GardenItemDetail } from "@/lib/data/growth";
 import { GAMES } from "@/lib/games";
+import { ThemePicker } from "./ThemePicker";
 
 function weekLabel(weekStart: string): string {
   const [y, m, d] = weekStart.split("-").map(Number);
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(y, m - 1, d)));
 }
 
-export function GardenView({ gardenId, theme, items }: { gardenId: string; theme: string; items: GardenItemDetail[] }) {
+export function GardenView({ gardenId, theme, items, hour, canEditTheme }: { gardenId: string; theme: string; items: GardenItemDetail[]; hour: number; canEditTheme: boolean }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = items.find((i) => i.id === selectedId) ?? null;
   const def = selected ? getGardenItem(selected.itemKey) : null;
 
   return (
     <>
-      <div className="-mx-4 overflow-hidden md:mx-0 md:rounded-group md:shadow-card md:ring-1 md:ring-line">
-        <GardenScene theme={theme} items={items} className="block h-[300px] w-full md:h-[360px]" selectable selectedId={selectedId} onSelect={setSelectedId} animate />
+      <div className="relative -mx-4 overflow-hidden md:mx-0 md:rounded-group md:shadow-card md:ring-1 md:ring-line">
+        <ViewTransition name="garden-scene" share="morph" default="none">
+          <GardenScene theme={theme} items={items} className="block h-[300px] w-full md:h-[360px]" selectable selectedId={selectedId} onSelect={setSelectedId} animate hour={hour} />
+        </ViewTransition>
+        {canEditTheme ? <ThemePicker gardenId={gardenId} current={theme} /> : null}
       </div>
 
       {items.length > 0 ? (

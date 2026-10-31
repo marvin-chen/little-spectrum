@@ -34,7 +34,7 @@ export type GardenSummary = {
   role: "creator" | "member";
 };
 
-export const GARDEN_THEMES = ["meadow", "sunset", "lagoon", "orchard"] as const;
+export const GARDEN_THEMES = ["meadow", "sunset", "lagoon", "orchard", "dusk", "citrus"] as const;
 export type GardenTheme = (typeof GARDEN_THEMES)[number];
 
 export function isGardenTheme(value: string): value is GardenTheme {
@@ -217,5 +217,13 @@ export async function updateProfile(userId: string, displayName: string, avatar:
   const { error } = await db
     .from("profiles")
     .upsert({ id: userId, display_name: displayName, avatar, updated_at: new Date().toISOString() });
+  if (error) throw new Error(error.message);
+}
+
+export async function updateGardenTheme(userId: string, gardenId: string, theme: GardenTheme): Promise<void> {
+  const db = createServiceClient();
+  const { data: membership } = await db.from("memberships").select("role").eq("garden_id", gardenId).eq("user_id", userId).maybeSingle();
+  if (membership?.role !== "creator") throw new Error("not_creator");
+  const { error } = await db.from("gardens").update({ theme }).eq("id", gardenId);
   if (error) throw new Error(error.message);
 }

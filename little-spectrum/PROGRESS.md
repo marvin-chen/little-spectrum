@@ -31,6 +31,8 @@
 
 - Realtime presence: game pages and Home subscribe to session changes over Supabase Realtime (publication added in `20261031000000_realtime.sql`, row level security decides who receives events), players show a green "here now" ring, and polling remains as the fallback at a slower cadence once the socket is live. The Hue Knew? spec asserts presence and that a clue arrives within 3.5 seconds.
 
+- Refinements: shared-element view transitions (session motif rows morph into the game header, the home garden morphs into the Garden screen, forward and back slides, tab crossfades, all off under reduced motion), automatic dark appearance with the same game identities, a scroll-aware tab bar that compacts on the way down, and garden themes as the personalization lever (six themes, chrome tint variables, time-of-day skies from the garden timezone, creator theme picker on the Garden screen). The home page moved into a `(home)` route group so its loading skeleton does not block morphs elsewhere.
+
 ## Checks performed
 
 - `pnpm test`: engine scoring, validation, turn status, week boundaries (10 tests).

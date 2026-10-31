@@ -1,6 +1,6 @@
 import { useId } from "react";
 import { getGardenItem } from "@/components/garden/items";
-import { themeFor } from "@/lib/themes";
+import { mix, skyFor, themeFor } from "@/lib/themes";
 
 export type PlacedItem = { id: string; itemKey: string; variant: number; ordinal: number };
 
@@ -49,10 +49,13 @@ type Props = {
   onSelect?: (id: string) => void;
   selectedId?: string | null;
   animate?: boolean;
+  hour?: number;
 };
 
-export function GardenScene({ theme, items, compact, className, selectable, onSelect, selectedId, animate }: Props) {
+export function GardenScene({ theme, items, compact, className, selectable, onSelect, selectedId, animate, hour = 12 }: Props) {
   const t = themeFor(theme);
+  const sky = skyFor(t, hour);
+  const shade = (hex: string) => (sky.night ? mix(hex, "#2b2f55", 0.3) : hex);
   const uid = useId();
   const skyId = `${uid}-sky`;
   const sunId = `${uid}-sun`;
@@ -68,32 +71,42 @@ export function GardenScene({ theme, items, compact, className, selectable, onSe
     >
       <defs>
         <linearGradient id={skyId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor={t.skyTop} />
-          <stop offset="1" stopColor={t.skyBottom} />
+          <stop offset="0" stopColor={sky.top} />
+          <stop offset="1" stopColor={sky.bottom} />
         </linearGradient>
         <radialGradient id={sunId} cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor={t.sun} stopOpacity="0.9" />
-          <stop offset="0.55" stopColor={t.sun} stopOpacity="0.35" />
-          <stop offset="1" stopColor={t.sun} stopOpacity="0" />
+          <stop offset="0" stopColor={sky.sun} stopOpacity={sky.night ? 0.5 : 0.9} />
+          <stop offset="0.55" stopColor={sky.sun} stopOpacity={sky.night ? 0.18 : 0.35} />
+          <stop offset="1" stopColor={sky.sun} stopOpacity="0" />
         </radialGradient>
         <linearGradient id={groundId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor={t.ground} />
-          <stop offset="1" stopColor={t.ground} stopOpacity="0.85" />
+          <stop offset="0" stopColor={shade(t.ground)} />
+          <stop offset="1" stopColor={shade(t.ground)} stopOpacity="0.85" />
         </linearGradient>
       </defs>
       <rect x="0" y="0" width="400" height="214" fill={`url(#${skyId})`} />
       <circle cx="322" cy="64" r="44" fill={`url(#${sunId})`} />
-      <circle cx="322" cy="64" r="16" fill={t.sun} />
-      <g fill="#ffffff" opacity="0.55">
+      <circle cx="322" cy="64" r="16" fill={sky.sun} />
+      {sky.night ? (
+        <g fill="#ffffff" opacity="0.8">
+          <circle cx="60" cy="40" r="1.2" />
+          <circle cx="130" cy="30" r="0.9" />
+          <circle cx="200" cy="48" r="1.1" />
+          <circle cx="250" cy="26" r="0.8" />
+          <circle cx="90" cy="76" r="0.8" />
+          <circle cx="170" cy="70" r="1" />
+        </g>
+      ) : null}
+      <g fill="#ffffff" opacity={sky.night ? 0.12 : 0.55}>
         <ellipse cx="90" cy="62" rx="30" ry="9" />
         <ellipse cx="108" cy="56" rx="20" ry="10" />
         <ellipse cx="250" cy="42" rx="22" ry="7" />
         <ellipse cx="262" cy="38" rx="14" ry="7" />
       </g>
-      <ellipse cx="80" cy="156" rx="200" ry="48" fill={t.hillBack} />
-      <ellipse cx="340" cy="164" rx="180" ry="42" fill={t.hillFront} />
+      <ellipse cx="80" cy="156" rx="200" ry="48" fill={shade(t.hillBack)} />
+      <ellipse cx="340" cy="164" rx="180" ry="42" fill={shade(t.hillFront)} />
       <rect x="0" y="176" width="400" height="40" fill={`url(#${groundId})`} />
-      <ellipse cx="200" cy="178" rx="250" ry="14" fill={t.ground} />
+      <ellipse cx="200" cy="178" rx="250" ry="14" fill={shade(t.ground)} />
       <g opacity="0.18" fill="#ffffff">
         <ellipse cx="60" cy="196" rx="16" ry="2" />
         <ellipse cx="330" cy="204" rx="22" ry="2.5" />

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import { ArrowRight, Play, Settings, Sparkles } from "lucide-react";
 import { GardenScene } from "@/components/garden/GardenScene";
@@ -18,9 +19,9 @@ import { getGrowthSummary } from "@/lib/data/growth";
 import { listSessionCards } from "@/lib/data/sessions";
 import { GAMES } from "@/lib/games";
 import { getSiteUrl } from "@/lib/supabase/env";
-import { themeFor } from "@/lib/themes";
-import { GardenSwitcher } from "./GardenSwitcher";
-import { WeeklyProgress } from "./WeeklyProgress";
+import { hourIn, skyFor, themeFor } from "@/lib/themes";
+import { GardenSwitcher } from "../GardenSwitcher";
+import { WeeklyProgress } from "../WeeklyProgress";
 
 export const metadata = { title: "Home" };
 
@@ -42,6 +43,8 @@ export default async function HomePage({ params, searchParams }: { params: Promi
   const inviteUrl = garden.inviteToken ? `${getSiteUrl()}/join/${garden.inviteToken}` : null;
   const solo = garden.members.length < 2;
   const theme = themeFor(garden.theme);
+  const hour = hourIn(garden.timezone);
+  const sky = skyFor(theme, hour);
   const hero = yourTurn[0];
   const moreTurns = yourTurn.slice(1);
 
@@ -49,7 +52,7 @@ export default async function HomePage({ params, searchParams }: { params: Promi
     <>
       <LiveGarden gardenId={gardenId} fallbackMs={waiting.length > 0 || yourTurn.length > 0 || solo ? 10000 : 60000} />
       {/* Sky header: the theme's sky bleeds behind the title and fades into the canvas. */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72" style={{ background: `linear-gradient(180deg, ${theme.skyTop} 0%, rgba(245,241,234,0) 100%)` }} />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72" style={{ background: `linear-gradient(180deg, ${sky.top} 0%, transparent 100%)`, opacity: sky.night ? 0.5 : 1 }} />
 
       <header className="flex items-start justify-between gap-3 pt-3 pb-4">
         <div className="min-w-0">
@@ -81,8 +84,10 @@ export default async function HomePage({ params, searchParams }: { params: Promi
 
       {/* The garden, edge to edge, with the weekly indicator resting on the ground. */}
       <section className="relative -mx-4 mb-7 md:mx-0">
-        <Link href={`/g/${gardenId}/garden`} aria-label="Open the garden" className="block overflow-hidden md:rounded-group">
-          <GardenScene theme={garden.theme} items={growth.rewards} compact className="block h-56 w-full md:h-64" animate />
+        <Link href={`/g/${gardenId}/garden`} aria-label="Open the garden" transitionTypes={["nav-forward"]} className="block overflow-hidden md:rounded-group">
+          <ViewTransition name="garden-scene" share="morph" default="none">
+            <GardenScene theme={garden.theme} items={growth.rewards} compact className="block h-56 w-full md:h-64" animate hour={hour} />
+          </ViewTransition>
         </Link>
         <div className="glass mx-4 -mt-4 rounded-row px-4 py-3 md:mx-4">
           <WeeklyProgress growth={growth} />
@@ -102,10 +107,13 @@ export default async function HomePage({ params, searchParams }: { params: Promi
           <SectionLabel>Up next</SectionLabel>
           <Link
             href={`/g/${gardenId}/play/${hero.id}`}
+            transitionTypes={["nav-forward"]}
             className={cn("pressable anim-rise block overflow-hidden rounded-group p-5 shadow-card ring-1 ring-line", COLOR_CLASSES[GAMES[hero.game].color].soft)}
           >
             <span className="flex items-center gap-4">
-              <GameMotif game={hero.game} size={64} />
+              <ViewTransition name={`session-${hero.id}`} share="morph" default="none">
+                <GameMotif game={hero.game} size={64} />
+              </ViewTransition>
               <span className="min-w-0 flex-1">
                 <span className="block text-title-3 font-bold text-ink">{GAMES[hero.game].name}</span>
                 <span className={cn("block text-callout font-medium", COLOR_CLASSES[GAMES[hero.game].color].ink)}>{hero.turn.line}</span>
