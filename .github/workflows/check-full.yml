@@ -1,0 +1,64 @@
+name: check-full
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: check-full-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: little-spectrum
+
+jobs:
+  full:
+    name: Full verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: little-spectrum/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: little-spectrum/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('little-spectrum/pnpm-lock.yaml') }}
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Start local Supabase
+        run: pnpm supabase start -x studio,imgproxy,logflare,vector,edge-runtime,postgres-meta,supavisor
+      - name: Write local environment
+        run: |
+          pnpm supabase status -o env > status.env
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$(grep '^API_URL=' status.env | cut -d= -f2- | tr -d '"')"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$(grep '^PUBLISHABLE_KEY=' status.env | cut -d= -f2- | tr -d '"')"
+            echo "SUPABASE_SECRET_KEY=$(grep '^SECRET_KEY=' status.env | cut -d= -f2- | tr -d '"')"
+            echo "NEXT_PUBLIC_SITE_URL=http://localhost:3100"
+            echo "MAILPIT_URL=$(grep '^MAILPIT_URL=' status.env | cut -d= -f2- | tr -d '"')"
+          } > .env.local
+          rm status.env
+      - run: pnpm check:full
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            little-spectrum/test-results
+            little-spectrum/playwright-report
+          retention-days: 7
+      - name: Stop local Supabase
+        if: always()
+        run: pnpm supabase stop --no-backup

@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { assertTestBackend } from "../guard";
 
 function loadEnv(): Record<string, string> {
   const env: Record<string, string> = { ...process.env } as Record<string, string>;
@@ -14,6 +15,7 @@ function loadEnv(): Record<string, string> {
 
 const env = loadEnv();
 export const URL = env.NEXT_PUBLIC_SUPABASE_URL;
+assertTestBackend(URL);
 export const PUBLISHABLE = env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 export const SECRET = env.SUPABASE_SECRET_KEY ?? env.SUPABASE_SERVICE_ROLE_KEY;
 

@@ -1,5 +1,6 @@
 # This repository lives at the home directory root. Ignore everything except the project.
 /*
 !/.gitignore
+!/.github/
 !/README.md
 !/little-spectrum/

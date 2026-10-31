@@ -50,19 +50,25 @@ export async function processImage(buffer: Buffer): Promise<{ data: Buffer; widt
   throw new PhotoError("Could not compress that photo.", 500);
 }
 
+// Maps a storage provider failure to something a person can act on.
+export function storageFailure(message: string): PhotoError {
+  const text = message.toLowerCase();
+  if (text.includes("quota") || text.includes("exceeded") || text.includes("limit")) {
+    return new PhotoError("Photo storage is full for this project. Delete some old photos to make room.", 507);
+  }
+  if (text.includes("bucket") && text.includes("not found")) {
+    return new PhotoError("The photos bucket is missing. Run the database migration on this project.", 500);
+  }
+  return new PhotoError("Could not store the photo. Please try again.", 502);
+}
+
 export async function uploadPhotoFile(path: string, data: Buffer): Promise<void> {
   const { error } = await createServiceClient().storage.from(PHOTO_BUCKET).upload(path, data, {
     contentType: "image/jpeg",
     upsert: false,
     cacheControl: "31536000",
   });
-  if (error) {
-    const message = error.message.toLowerCase();
-    if (message.includes("quota") || message.includes("exceeded") || message.includes("limit")) {
-      throw new PhotoError("Photo storage is full for this project. Delete some old photos to make room.", 507);
-    }
-    throw new PhotoError("Could not store the photo. Please try again.", 502);
-  }
+  if (error) throw storageFailure(error.message);
 }
 
 export async function removePhotoFiles(paths: string[]): Promise<void> {

@@ -106,16 +106,12 @@ The second browser sees the clue appear within a few seconds without reloading.
 ## Checks
 
 ```bash
-pnpm test        # engine scoring, normalization, week boundaries, backend detection
-pnpm test:db     # policies, capacity, rewards against a running local Supabase
-pnpm test:e2e    # Playwright, two and three real browser sessions against http://localhost:3000
-pnpm lint
-pnpm typecheck
-pnpm build
+pnpm check        # type check, lint, unit tests. Run before every commit.
+pnpm check:full   # plus production build, database and policy tests, browser journeys. Run before pushing.
 ```
 
-`pnpm test:db` and `pnpm test:e2e` need `pnpm supabase start`, `.env.local` pointing at it, and for e2e a running `pnpm dev`.
-Playwright needs `pnpm exec playwright install chromium` once.
+`check:full` needs Docker, `pnpm supabase start`, `.env.local` pointing at it, and `pnpm exec playwright install chromium` once.
+Both run in GitHub Actions on every push. [TESTING.md](./TESTING.md) explains what each check protects and how to investigate a failure.
 
 ## How it is put together
 

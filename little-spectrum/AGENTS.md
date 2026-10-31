@@ -76,6 +76,11 @@ little-spectrum/               the Next.js application (Vercel Root Directory)
 
 ## Working on it
 
+- Run focused checks while changing code, `pnpm check` before every commit, and `pnpm check:full` before the final push when Docker is available. See `TESTING.md` for what each check protects.
+- When fixing a bug, reproduce it through the user-facing flow first, then add a regression test that fails before the fix.
+- When adding or changing behavior, update its tests in the same change. Do not weaken assertions or delete coverage to get green.
+- Review screenshot or snapshot changes deliberately. Nothing updates baselines automatically.
+
 - Run everything from this directory so asdf picks Node 22 from `.tool-versions`.
 - Local backend: `pnpm supabase start`, then `pnpm supabase db reset` after editing migrations.
 - Before committing: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:db`, `pnpm test:e2e` (dev server on port 3000), `pnpm build`.

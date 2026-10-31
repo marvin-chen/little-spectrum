@@ -33,6 +33,8 @@
 
 - Refinements: shared-element view transitions (session motif rows morph into the game header, the home garden morphs into the Garden screen, forward and back slides, tab crossfades, all off under reduced motion), automatic dark appearance with the same game identities, a scroll-aware tab bar that compacts on the way down, and garden themes as the personalization lever (six themes, chrome tint variables, time-of-day skies from the garden timezone, creator theme picker on the Garden screen). The home page moved into a `(home)` route group so its loading skeleton does not block morphs elsewhere.
 
+- Quality checks: `pnpm check` (typecheck, lint, unit) and `pnpm check:full` (`scripts/check-full.mjs`: fast checks, production build, database and policy tests, browser journeys against the built app on port 3100, explicit readiness waits, server cleanup, non-zero exit on any failure, refusal to touch non-local backends). New coverage: session lifecycle and late submissions, week boundaries with daylight saving in the garden timezone, rewards surviving a missed week, photo and secret visibility after reveal, table-driven scoring, photo processing and storage error mapping, invalid upload through the UI, a navigation smoke spec on phone and desktop that fails on console errors and on controls hidden behind the tab bar. Playwright fails on retry-only passes. GitHub Actions `check` and `check-full` at the repository root. `TESTING.md` documents commands, prerequisites, CI, investigation, regression tests, and the behavior to check mapping.
+
 ## Checks performed
 
 - `pnpm test`: engine scoring, validation, turn status, week boundaries (10 tests).
@@ -45,6 +47,7 @@
 - Resilience: with a signed-in session and the Supabase URL pointed at a closed port, the landing and a garden route both render the "out of reach" retry state on the same URL. With the three variables blank, the landing offers the demo, `/demo/*` renders, and garden routes redirect to `/`.
 - Accessibility: skip link is the first tab stop, the tab bar links show a 3px focus ring under `:focus-visible`, with `prefers-reduced-motion` the start sheet opens with animations at 0.01 ms, focus lands inside the dialog, and Escape closes it.
 - Redesign verification: three end-to-end specs green after the restyle, screenshots compared before and after at 390px (home, games, garden, memories, each game, reveals, join, welcome, settings), desktop 1280 and tablet 820 home and games, an eight-person garden (home, start sheet, play, early reveal), demo pages under blank variables, retry state unchanged.
+- Quality system baseline: `pnpm check:full` passed locally (95 unit, 23 database, 6 browser journeys against the production build).
 - Final run (all green): `pnpm test` 61 tests, `pnpm test:db` 12 tests, `pnpm test:e2e` 3 specs, `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm build`.
 
 ## Configuration still needed

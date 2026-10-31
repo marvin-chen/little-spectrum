@@ -92,6 +92,10 @@ test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, 
   url = await startGame(cy.page, gardenId, /Color Quest/, 2, ["Bo"]);
   const jpeg = await sharp({ create: { width: 2400, height: 1600, channels: 3, background: { r: 79, g: 179, b: 122 } } }).jpeg().toBuffer();
   const png = await sharp({ create: { width: 800, height: 1200, channels: 3, background: { r: 242, g: 169, b: 59 } } }).png().toBuffer();
+  // A text file is refused with a useful message before anything is uploaded.
+  await cy.page.goto(url);
+  await cy.page.getByLabel("Choose a photo").setInputFiles({ name: "notes.txt", mimeType: "text/plain", buffer: Buffer.from("not an image") });
+  await expect(cy.page.getByRole("alert").filter({ hasText: /image/ }).first()).toContainText(/could not read that image|JPEG, PNG, or WebP/);
   for (const [p, buffer, mime] of [[cy, jpeg, "image/jpeg"], [ada, png, "image/png"]] as const) {
     await p.page.goto(url);
     await p.page.getByLabel("Choose a photo").setInputFiles({ name: "test.img", mimeType: mime, buffer });
