@@ -9,6 +9,8 @@ export type CurrentUser = {
   id: string;
   displayName: string;
   avatar: string;
+  email: string | null;
+  isAnonymous: boolean;
 };
 
 // Returns the signed-in user with a profile, or null when signed out or still without a profile.
@@ -26,7 +28,14 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     .maybeSingle();
   raiseIfUnavailable(profileError);
   if (!profile) return null;
-  return { id: profile.id, displayName: profile.display_name, avatar: profile.avatar };
+  const claims = data?.claims as { email?: string; is_anonymous?: boolean } | undefined;
+  return {
+    id: profile.id,
+    displayName: profile.display_name,
+    avatar: profile.avatar,
+    email: claims?.email ? claims.email : null,
+    isAnonymous: claims?.is_anonymous !== false,
+  };
 });
 
 export async function requireUser(next: string): Promise<CurrentUser> {

@@ -8,12 +8,14 @@ import { requireUser } from "@/lib/auth";
 import { getGardenContext, listGardens } from "@/lib/data/gardens";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { themeFor } from "@/lib/themes";
+import { AccountSection } from "./AccountSection";
 import { ExpandGarden, InviteManager } from "./SettingsClient";
 
 export const metadata = { title: "Settings" };
 
-export default async function SettingsPage({ params }: { params: Promise<{ gardenId: string }> }) {
+export default async function SettingsPage({ params, searchParams }: { params: Promise<{ gardenId: string }>; searchParams: Promise<Record<string, string | undefined>> }) {
   const { gardenId } = await params;
+  const query = await searchParams;
   const user = await requireUser(`/g/${gardenId}/settings`);
   const garden = await getGardenContext(gardenId, user.id);
   if (!garden) notFound();
@@ -72,9 +74,11 @@ export default async function SettingsPage({ params }: { params: Promise<{ garde
             detail="Change your name or avatar"
           />
         </Group>
-        <p className="mt-2 px-1 text-footnote text-ink-3">
-          Your guest account lives in this browser. Clearing browsing data signs you out for good, so keep an invite link handy if you switch devices.
-        </p>
+      </section>
+
+      <section className="mb-6">
+        <SectionLabel>Account</SectionLabel>
+        <AccountSection gardenId={gardenId} email={user.email} isAnonymous={user.isAnonymous} justKept={query.kept === "1"} />
       </section>
 
       <section className="mb-6">

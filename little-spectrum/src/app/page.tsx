@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Flower2, Images, Sparkles } from "lucide-react";
@@ -63,6 +64,9 @@ export default async function LandingPage() {
             <p className="text-center text-footnote text-ink-3">
               No email needed. Your guest account lives in this browser.
             </p>
+            <Link href="/signin" className="text-center text-footnote font-semibold text-tint">
+              Already kept an account? Sign in with email
+            </Link>
           </div>
         ) : (
           <div className="flex flex-col gap-3">

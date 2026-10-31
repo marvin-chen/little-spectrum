@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PlainShell } from "@/components/shell/AppShell";
 import { Wordmark } from "@/components/shell/Brand";
@@ -40,8 +41,11 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
         />
         {!editing ? (
           <p className="text-footnote text-ink-3">
-            No email or password. Your guest account belongs to this browser, so it may be lost if you clear
-            browsing data. You can always create a new one and get re-invited.
+            No email or password to start. Your guest account belongs to this browser until you keep it with an email in
+            Settings.{" "}
+            <Link href={`/signin?next=${encodeURIComponent(next)}`} className="font-semibold text-tint">
+              Already kept one? Sign in
+            </Link>
           </p>
         ) : null}
       </div>

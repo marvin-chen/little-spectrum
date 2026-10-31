@@ -51,6 +51,15 @@ In the Supabase dashboard open **Authentication**, then **Sign In / Providers**,
 No email provider is needed.
 Guests are tied to the browser they signed up in, which is explained inside the app.
 
+### 2b. Allow the sign-in link to return to your site
+
+Guests can keep their account by attaching an email in Settings, then sign in on another device with an emailed link.
+For that link to land back in the app, open **Authentication**, then **URL Configuration**, set **Site URL** to your deployed address, and add `https://<your-site>/auth/callback` to **Redirect URLs** (use `http://localhost:3000/auth/callback` for local work).
+Supabase sends these emails itself.
+Its built-in sender is rate limited to a few emails per hour, which is fine for a small group.
+If you need more, point **Authentication, SMTP settings** at a free provider such as Resend or Brevo.
+Optional: add `{{ .Token }}` to the magic link email template so people can type a code instead of opening the link.
+
 ### 3. Apply the migration and storage configuration
 
 The schema, row level security policies, atomic game functions, and the private `photos` bucket are all in `supabase/migrations/20261029000000_init.sql`.
@@ -127,7 +136,7 @@ Playwright needs `pnpm exec playwright install chromium` once.
 
 ## Known limitations
 
-- Guest accounts live in one browser. Clearing site data loses access. There is no account recovery or email login by design.
+- Guest accounts live in one browser until an email is attached in Settings. After that, a sign-in link restores the gardens on any device.
 - Updates arrive by polling every few seconds while the tab is visible, not by push. That is quick enough for live play and costs nothing.
 - Request throttling is in memory per server instance, which is fine for a personal project but not a hard guarantee on serverless hosting.
 - Light appearance only. Dark mode was left out to keep the core experience polished.

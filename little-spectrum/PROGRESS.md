@@ -27,6 +27,8 @@
 
 - Redesign (liquid glass pass): new tokens in `globals.css` (warm canvas, ink scale, concentric radii 14/16/20/26/32, glass material with specular edge, spring motion, type scale), floating glass tab bar with a gliding highlight and a circular Start action, glass toolbar buttons beside large titles, inset grouped lists, six original gradient motif tiles and stage art (`src/components/games/motifs`), custom tab icons, richer garden scene drawn edge to edge, Home led by the garden and the next turn, Games with a daily featured pick and a compact list, Garden keepsakes, shared game frame with player status dots, count-up scores and staggered reveals, loading skeleton, shared field styles.
 
+- Account portability: guests attach an email in Settings (`updateUser`), sign in elsewhere with a magic link or code (`/signin`, `/auth/callback`), sign out when kept. Local config allows localhost redirects. Covered by `tests/e2e/account.spec.ts` using the local Mailpit inbox.
+
 ## Checks performed
 
 - `pnpm test`: engine scoring, validation, turn status, week boundaries (10 tests).
