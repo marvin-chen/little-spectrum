@@ -9,6 +9,7 @@ import { getGardenContext, listGardens } from "@/lib/data/gardens";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { themeFor } from "@/lib/themes";
 import { AccountSection } from "./AccountSection";
+import { InviteCardEditor } from "./InviteCardEditor";
 import { ExpandGarden, InviteManager } from "./SettingsClient";
 
 export const metadata = { title: "Settings" };
@@ -37,6 +38,24 @@ export default async function SettingsPage({ params, searchParams }: { params: P
           isCreator={isCreator}
           full={full}
           spotsLeft={garden.capacity - garden.members.length}
+        />
+      </section>
+
+      <section className="mb-6">
+        <SectionLabel>Invite card</SectionLabel>
+        <InviteCardEditor
+          gardenId={gardenId}
+          isCreator={isCreator}
+          previewImageUrl={garden.inviteToken ? `/join/${garden.inviteToken}/opengraph-image?v=${new Date(garden.inviteCardUpdatedAt).getTime()}` : null}
+          data={{
+            gardenName: garden.name,
+            theme: garden.theme,
+            timezone: garden.timezone,
+            creatorName: garden.members.find((m) => m.role === "creator")?.name ?? user.displayName,
+            members: garden.members.map((m) => ({ id: m.userId, name: m.name, avatar: m.avatar })),
+            capacity: garden.capacity,
+            card: garden.inviteCard,
+          }}
         />
       </section>
 

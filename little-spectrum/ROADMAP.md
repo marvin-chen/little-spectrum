@@ -10,6 +10,8 @@ Sizes are rough: S is an afternoon, M is a day or two, L is a week.
 - Realtime presence: instant session updates and "here now" rings, polling as the fallback.
 - Shared-element view transitions, automatic dark appearance, scroll-aware tab bar.
 - Garden themes as personalization: six themes, chrome tinting, time-of-day skies, creator theme picker.
+- Invite cards: creator-designed card (poster, postcard, ticket, headline, note, sticker, accent) shown on the join page and as the link preview image, with a screenshot archive command.
+- Quality checks: `check` and `check:full`, GitHub Actions on every push, weekly drift run.
 
 ## Decisions pending
 
@@ -33,7 +35,7 @@ Capabilities that change what the product can do. All stay within free tiers.
 
 - Install as an app (M). Service worker, offline shell, and optional web push with free VAPID keys for "your turn" nudges.
 - Nudge a friend (S). A one-tap "your move" that becomes a push once the app is installable, and a quiet in-app badge until then.
-- Invite cards (S). Open Graph images for invite links rendered with next/og so a shared link previews the garden and its members.
+- Invite card refinements (S). Draw the sticker as the real motif glyph in the preview image, show more of the garden scene behind the card, add a "copy image" action that works inside chat apps, and let the creator pick a keepsake as the sticker.
 - Member management (S). Leave a garden, remove a member, hand over the creator role.
 - More games on the same engine (M each). "Caption This" (everyone captions one photo), "Two Truths" (spot the made-up answer), a small drawing game, and team variants of Hue Knew?.
 - Yearly recap (M). A Memories view that gathers a year of rounds, best scores, and favorite photos, with a downloadable album.
@@ -47,7 +49,6 @@ Capabilities that change what the product can do. All stay within free tiers.
 - Database-backed throttling (S) so limits hold across serverless instances.
 - Opportunistic orphan photo cleanup with Supabase's free scheduler (S).
 - Error reporting on a free tier (S), only if it stays free and private.
-- Quality checks on every push (M). Fast `check` and complete `check:full` commands, GitHub Actions, regression tests for every fixed bug. In progress.
 
 ## Not planned
 

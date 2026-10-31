@@ -107,6 +107,12 @@ try {
 
 console.log("\nSummary");
 for (const r of results) console.log(`  ${r.ok ? "✓" : "✗"} ${r.name} (${r.seconds}s)`);
+// GitHub shows this table on the job page.
+if (process.env.GITHUB_STEP_SUMMARY) {
+  const { appendFileSync } = await import("node:fs");
+  const rows = results.map((r) => `| ${r.ok ? "✅" : "❌"} | ${r.name} | ${r.seconds}s |`).join("\n");
+  appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## check:full ${failed ? "failed" : "passed"}\n\n| | Step | Time |\n|---|---|---|\n${rows}\n`);
+}
 if (failed) {
   console.log("\ncheck:full failed. Fix the failures above before pushing.");
   process.exit(1);

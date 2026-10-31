@@ -111,7 +111,8 @@ pnpm check:full   # plus production build, database and policy tests, browser jo
 ```
 
 `check:full` needs Docker, `pnpm supabase start`, `.env.local` pointing at it, and `pnpm exec playwright install chromium` once.
-Both run in GitHub Actions on every push. [TESTING.md](./TESTING.md) explains what each check protects and how to investigate a failure.
+`pnpm shots` archives screenshots of every page under `screenshots/<date>-<commit>/`.
+Both checks run in GitHub Actions on every push. [TESTING.md](./TESTING.md) explains what each check protects and how to investigate a failure.
 
 ## How it is put together
 

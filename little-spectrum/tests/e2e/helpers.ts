@@ -49,7 +49,9 @@ export async function joinGarden(page: Page, invitePath: string, name: string) {
 export async function shot(page: Page, name: string) {
   const dir = process.env.E2E_SHOTS;
   if (!dir) return;
+  // Let entrance animations settle so archived shots are comparable between versions.
   await page.waitForTimeout(900);
-  await page.screenshot({ path: `${dir}/${name}.png`, fullPage: true });
-  await page.screenshot({ path: `${dir}/${name}-viewport.png` });
+  const scale = process.env.E2E_SHOTS_SCALE === "device" ? "device" : "css";
+  await page.screenshot({ path: `${dir}/${name}.png`, fullPage: true, scale });
+  await page.screenshot({ path: `${dir}/${name}-viewport.png`, scale });
 }

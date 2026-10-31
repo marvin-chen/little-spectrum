@@ -35,7 +35,7 @@ The account journey reads the sign-in email from the local Mailpit inbox at `htt
 ## How CI runs
 
 - `check` workflow: every push and pull request, about two minutes. Runs `pnpm check`.
-- `check-full` workflow: pull requests, pushes to `main`, and manual runs from the Actions tab. Starts a local Supabase on the runner with the Supabase CLI, writes `.env.local` from it, runs `pnpm check:full`, uploads Playwright traces and screenshots on failure, and stops the stack.
+- `check-full` workflow: pull requests, pushes to `main`, manual runs from the Actions tab, and a weekly scheduled run on Mondays to catch drift in dependencies and Supabase images. Starts a local Supabase on the runner with the Supabase CLI, writes `.env.local` from it, runs `pnpm check:full`, uploads Playwright traces and screenshots on failure, and stops the stack.
 
 Superseded runs for the same commit are cancelled, and a pull request plus its push to `main` share one concurrency key so the same commit is not verified twice.
 No production credentials are needed, and nothing deploys.
@@ -68,9 +68,28 @@ If you turn on branch protection for `main`, require these two checks: `Fast che
 | Growth once per session, multi-attempt once, three completions make one reward, concurrency, week boundaries in the garden timezone including daylight saving, rewards surviving a missed week | `tests/db/rewards.test.ts`, `tests/db/sessions.test.ts`, `src/lib/week.test.ts` |
 | Photo validation, resizing, metadata removal, storage errors, upload and reveal, invalid files, access restrictions, deletion | `src/lib/photos/server.test.ts`, `tests/db/sessions.test.ts`, `tests/e2e/all-games.spec.ts` |
 | Account portability with email links | `tests/e2e/account.spec.ts` |
+| Invite card design, join landing, link preview image, dead links | `src/lib/inviteCard.test.ts`, `tests/e2e/invite.spec.ts` |
 | Memories visibility, reactions, notes, filters | `tests/e2e/memories.spec.ts` |
 | Navigation, dialogs, controls not hidden by the tab bar, no unhandled errors, phone and desktop | `tests/e2e/smoke.spec.ts` |
 | Backend unreachable detection | `src/lib/backend.test.ts` |
+
+## Growing the pipeline with the product
+
+Every feature lands with its checks, in the same change, so the pipeline keeps describing the whole app:
+
+1. Pure logic (scoring, parsing, formatting) gets a unit test in `src/**/*.test.ts`. It runs in `pnpm check` on every push.
+2. Anything that touches tables, policies, or the SECURITY DEFINER functions gets a database test in `tests/db`, written with ordinary user credentials where visibility matters.
+3. Each new screen or flow gets one browser journey in `tests/e2e`, and the smoke spec gets a line if it adds primary navigation.
+4. Add the new row to the "What protects what" table above, and a capture to `tests/e2e/screenshots.spec.ts` if the journeys do not already photograph it.
+5. Run `pnpm check:full` once locally before pushing, then let the `check-full` workflow confirm it on a clean runner.
+
+If a check cannot run somewhere (for example no Docker on a laptop), say so in the pull request rather than skipping it quietly.
+
+## Screenshot archive
+
+`pnpm shots` runs the browser journeys with captures enabled and stores every page and game in `screenshots/<date>-<commit>/` at 390px CSS width, with a README listing the files.
+Each set is about 7 MB and is committed so the design can be compared across versions.
+Pass a label to name the set, for example `pnpm shots v0.3-dark`.
 
 ## Habits
 
@@ -79,4 +98,4 @@ If you turn on branch protection for `main`, require these two checks: `Fast che
 - When adding or changing behavior, update its tests in the same change.
 - Avoid tests that restate the implementation. Test what a person or another system can observe.
 - Investigate failures rather than weakening assertions or deleting coverage.
-- Review any screenshot or snapshot change on purpose. There are no pixel baselines to update automatically.
+- Review any screenshot or snapshot change on purpose. There are no pixel baselines to update automatically, and archived sets are never used as test oracles.

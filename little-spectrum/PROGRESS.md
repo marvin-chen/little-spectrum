@@ -35,6 +35,8 @@
 
 - Quality checks: `pnpm check` (typecheck, lint, unit) and `pnpm check:full` (`scripts/check-full.mjs`: fast checks, production build, database and policy tests, browser journeys against the built app on port 3100, explicit readiness waits, server cleanup, non-zero exit on any failure, refusal to touch non-local backends). New coverage: session lifecycle and late submissions, week boundaries with daylight saving in the garden timezone, rewards surviving a missed week, photo and secret visibility after reveal, table-driven scoring, photo processing and storage error mapping, invalid upload through the UI, a navigation smoke spec on phone and desktop that fails on console errors and on controls hidden behind the tab bar. Playwright fails on retry-only passes. GitHub Actions `check` and `check-full` at the repository root. `TESTING.md` documents commands, prerequisites, CI, investigation, regression tests, and the behavior to check mapping.
 
+- Invite cards: `gardens.invite_card` JSON, `src/lib/inviteCard.ts` parsing, `InviteCardView` in three layouts, builder sheet in Settings with live preview, join landing shows the card, `opengraph-image` route paints the link preview with plain boxes (satori has no SVG motif support yet), `generateMetadata` sets Open Graph and Twitter tags with a versioned image URL. Screenshot archive via `pnpm shots` into `screenshots/<date>-<commit>/`.
+
 ## Checks performed
 
 - `pnpm test`: engine scoring, validation, turn status, week boundaries (10 tests).

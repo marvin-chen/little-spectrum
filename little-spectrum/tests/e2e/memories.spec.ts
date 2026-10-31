@@ -145,7 +145,7 @@ test("memories feed shows rounds, reactions, notes, filters, and garden activity
   // Desktop width sanity check.
   const wide = await browser.newContext({ viewport: { width: 1100, height: 900 }, storageState: await ada.context.storageState() });
   const widePage = await wide.newPage();
-  await widePage.goto(`http://localhost:3000${memories}`);
+  await widePage.goto(memories);
   await expect(widePage.getByRole("heading", { name: "Memories" })).toBeVisible();
   await shot(widePage, "memories-ada-desktop");
   await wide.close();

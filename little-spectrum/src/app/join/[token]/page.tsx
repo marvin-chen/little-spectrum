@@ -1,17 +1,30 @@
 import { redirect } from "next/navigation";
 import { PlainShell } from "@/components/shell/AppShell";
 import { Wordmark } from "@/components/shell/Brand";
-import { AvatarStack } from "@/components/ui/Avatar";
 import { ButtonLink } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { getCurrentUser } from "@/lib/auth";
 import { getInviteInfo, listGardens } from "@/lib/data/gardens";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { themeFor } from "@/lib/themes";
+import { InviteCardView } from "@/components/invite/InviteCardView";
+import { getSiteUrl } from "@/lib/supabase/env";
 import { JoinForm } from "./JoinForm";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "You're invited" };
+export async function generateMetadata({ params }: { params: Promise<{ token: string }> }) {
+  if (!isSupabaseConfigured()) return { title: "You're invited" };
+  const { token } = await params;
+  const info = await getInviteInfo(token);
+  if (info.status === "invalid") return { title: "This invite has wilted" };
+  const image = `${getSiteUrl()}/join/${token}/opengraph-image?v=${info.cardVersion}`;
+  const description = info.card.note || `Join ${info.creatorName} and friends in ${info.gardenName} on Little Spectrum.`;
+  return {
+    title: `${info.card.headline} · ${info.gardenName}`,
+    description,
+    openGraph: { title: info.card.headline, description, siteName: "Little Spectrum", images: [{ url: image, width: 1200, height: 630 }] },
+    twitter: { card: "summary_large_image", title: info.card.headline, description, images: [image] },
+  };
+}
 
 export default async function JoinPage({ params }: { params: Promise<{ token: string }> }) {
   if (!isSupabaseConfigured()) redirect("/");
@@ -44,31 +57,26 @@ export default async function JoinPage({ params }: { params: Promise<{ token: st
   }
 
   const theme = themeFor(info.theme);
-  const spotsLeft = info.capacity - info.memberCount;
 
   return (
     <PlainShell narrow>
+      <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[40vh]" style={{ background: `linear-gradient(180deg, ${theme.skyTop} 0%, transparent 100%)` }} />
       <div className="flex flex-1 flex-col justify-center gap-6 py-8">
         <Wordmark />
-        <Card className="overflow-hidden">
-          <div
-            aria-hidden
-            className="h-28"
-            style={{ background: `linear-gradient(180deg, ${theme.skyTop} 0%, ${theme.skyBottom} 55%, ${theme.hillFront} 56%, ${theme.ground} 100%)` }}
+        <h1 className="sr-only">{info.card.headline}</h1>
+        <div className="anim-pop">
+          <InviteCardView
+            data={{
+              gardenName: info.gardenName,
+              theme: info.theme,
+              timezone: info.timezone,
+              creatorName: info.creatorName,
+              members: info.members,
+              capacity: info.capacity,
+              card: info.card,
+            }}
           />
-          <div className="p-5">
-            <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">You&apos;re invited to</p>
-            <h1 className="mt-1 font-display text-title-1 font-bold">{info.gardenName}</h1>
-            <div className="mt-3 flex items-center gap-3">
-              <AvatarStack people={info.members} />
-              <p className="text-callout text-ink-2">
-                {info.members.map((m) => m.name).join(", ")}
-                {info.members.length > 0 ? " · " : ""}
-                {info.status === "full" ? "Full" : `${spotsLeft} ${spotsLeft === 1 ? "spot" : "spots"} left`}
-              </p>
-            </div>
-          </div>
-        </Card>
+        </div>
 
         {info.status === "full" ? (
           <div className="flex flex-col gap-3">

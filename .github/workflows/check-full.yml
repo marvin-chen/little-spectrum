@@ -5,6 +5,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # Weekly drift check against fresh dependencies and Supabase images, Mondays 09:00 UTC.
+    - cron: "0 9 * * 1"
 
 concurrency:
   group: check-full-${{ github.event.pull_request.head.sha || github.sha }}
@@ -17,7 +20,7 @@ defaults:
 jobs:
   full:
     name: Full verification
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4

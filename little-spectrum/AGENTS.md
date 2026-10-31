@@ -80,6 +80,7 @@ little-spectrum/               the Next.js application (Vercel Root Directory)
 - When fixing a bug, reproduce it through the user-facing flow first, then add a regression test that fails before the fix.
 - When adding or changing behavior, update its tests in the same change. Do not weaken assertions or delete coverage to get green.
 - Review screenshot or snapshot changes deliberately. Nothing updates baselines automatically.
+- Every new feature extends the CI pipeline in the same change: a unit test for its logic, a database test if it touches tables or policies, a browser journey for its flow, and a row in the TESTING.md table. Archive a screenshot set with `pnpm shots` after visible changes.
 
 - Run everything from this directory so asdf picks Node 22 from `.tool-versions`.
 - Local backend: `pnpm supabase start`, then `pnpm supabase db reset` after editing migrations.

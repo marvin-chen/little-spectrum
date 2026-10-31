@@ -4,6 +4,7 @@ import { raiseIfUnavailable } from "@/lib/backend";
 import type { GardenRow, MembershipRow, ProfileRow } from "@/lib/db";
 import { createServiceClient } from "@/lib/supabase/server";
 import { newInviteToken } from "@/lib/tokens";
+import { parseInviteCard, type InviteCard } from "@/lib/inviteCard";
 
 export type GardenMember = {
   userId: string;
@@ -23,6 +24,8 @@ export type GardenContext = {
   role: "creator" | "member";
   members: GardenMember[];
   inviteToken: string | null;
+  inviteCard: InviteCard;
+  inviteCardUpdatedAt: string;
 };
 
 export type GardenSummary = {
@@ -126,6 +129,8 @@ export const getGardenContext = cache(async (gardenId: string, userId: string): 
       joinedAt: m.joined_at,
     })),
     inviteToken: (invitation?.token as string | undefined) ?? null,
+    inviteCard: parseInviteCard((garden as unknown as { invite_card?: unknown }).invite_card),
+    inviteCardUpdatedAt: (garden as unknown as { invite_card_updated_at?: string }).invite_card_updated_at ?? garden.created_at,
   };
 });
 
@@ -167,6 +172,10 @@ export type InviteInfo =
       capacity: number;
       memberCount: number;
       members: Array<{ id: string; name: string; avatar: string }>;
+      creatorName: string;
+      timezone: string;
+      card: InviteCard;
+      cardVersion: string;
     };
 
 export async function getInviteInfo(token: string): Promise<InviteInfo> {
@@ -179,12 +188,14 @@ export async function getInviteInfo(token: string): Promise<InviteInfo> {
     .maybeSingle();
   if (!invitation || invitation.revoked_at) return { status: "invalid" };
   const [{ data: garden }, { data: memberships }] = await Promise.all([
-    db.from("gardens").select("id, name, theme, capacity").eq("id", invitation.garden_id).single(),
-    db.from("memberships").select("user_id").eq("garden_id", invitation.garden_id),
+    db.from("gardens").select("id, name, theme, capacity, timezone, created_by, invite_card, invite_card_updated_at").eq("id", invitation.garden_id).single(),
+    db.from("memberships").select("user_id").eq("garden_id", invitation.garden_id).order("joined_at", { ascending: true }),
   ]);
   if (!garden) return { status: "invalid" };
   const ids = (memberships ?? []).map((m) => m.user_id as string);
   const { data: profiles } = await db.from("profiles").select("id, display_name, avatar").in("id", ids);
+  const rows = (profiles ?? []) as ProfileRow[];
+  const byId = new Map(rows.map((p) => [p.id, p]));
   return {
     status: ids.length >= garden.capacity ? "full" : "open",
     gardenId: garden.id,
@@ -192,7 +203,11 @@ export async function getInviteInfo(token: string): Promise<InviteInfo> {
     theme: garden.theme,
     capacity: garden.capacity,
     memberCount: ids.length,
-    members: ((profiles ?? []) as ProfileRow[]).map((p) => ({ id: p.id, name: p.display_name, avatar: p.avatar })),
+    members: ids.map((id) => ({ id, name: byId.get(id)?.display_name ?? "Friend", avatar: byId.get(id)?.avatar ?? "sun:amber" })),
+    creatorName: byId.get(garden.created_by as string)?.display_name ?? "A friend",
+    timezone: garden.timezone as string,
+    card: parseInviteCard(garden.invite_card),
+    cardVersion: String(new Date((garden.invite_card_updated_at as string) ?? 0).getTime()),
   };
 }
 
@@ -225,5 +240,13 @@ export async function updateGardenTheme(userId: string, gardenId: string, theme:
   const { data: membership } = await db.from("memberships").select("role").eq("garden_id", gardenId).eq("user_id", userId).maybeSingle();
   if (membership?.role !== "creator") throw new Error("not_creator");
   const { error } = await db.from("gardens").update({ theme }).eq("id", gardenId);
+  if (error) throw new Error(error.message);
+}
+
+export async function updateInviteCard(userId: string, gardenId: string, card: InviteCard): Promise<void> {
+  const db = createServiceClient();
+  const { data: membership } = await db.from("memberships").select("role").eq("garden_id", gardenId).eq("user_id", userId).maybeSingle();
+  if (membership?.role !== "creator") throw new Error("not_creator");
+  const { error } = await db.from("gardens").update({ invite_card: card, invite_card_updated_at: new Date().toISOString() }).eq("id", gardenId);
   if (error) throw new Error(error.message);
 }
