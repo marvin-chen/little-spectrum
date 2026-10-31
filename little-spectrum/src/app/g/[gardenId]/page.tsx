@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, Play, Settings, Sparkles } from "lucide-react";
 import { GardenScene } from "@/components/garden/GardenScene";
 import { GameMotif } from "@/components/games/motifs/GameMotif";
-import { AutoRefresh } from "@/components/session/AutoRefresh";
+import { LiveGarden } from "@/components/session/LiveGarden";
 import { SessionCardRow } from "@/components/session/SessionCardRow";
 import { AvatarStack } from "@/components/ui/Avatar";
 import { ButtonLink } from "@/components/ui/Button";
@@ -47,7 +47,7 @@ export default async function HomePage({ params, searchParams }: { params: Promi
 
   return (
     <>
-      <AutoRefresh intervalMs={10000} enabled={waiting.length > 0 || yourTurn.length > 0 || solo} />
+      <LiveGarden gardenId={gardenId} fallbackMs={waiting.length > 0 || yourTurn.length > 0 || solo ? 10000 : 60000} />
       {/* Sky header: the theme's sky bleeds behind the title and fades into the canvas. */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72" style={{ background: `linear-gradient(180deg, ${theme.skyTop} 0%, rgba(245,241,234,0) 100%)` }} />
 

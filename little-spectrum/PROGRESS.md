@@ -29,6 +29,8 @@
 
 - Account portability: guests attach an email in Settings (`updateUser`), sign in elsewhere with a magic link or code (`/signin`, `/auth/callback`), sign out when kept. Local config allows localhost redirects. Covered by `tests/e2e/account.spec.ts` using the local Mailpit inbox.
 
+- Realtime presence: game pages and Home subscribe to session changes over Supabase Realtime (publication added in `20261031000000_realtime.sql`, row level security decides who receives events), players show a green "here now" ring, and polling remains as the fallback at a slower cadence once the socket is live. The Hue Knew? spec asserts presence and that a clue arrives within 3.5 seconds.
+
 ## Checks performed
 
 - `pnpm test`: engine scoring, validation, turn status, week boundaries (10 tests).

@@ -137,7 +137,7 @@ Playwright needs `pnpm exec playwright install chromium` once.
 ## Known limitations
 
 - Guest accounts live in one browser until an email is attached in Settings. After that, a sign-in link restores the gardens on any device.
-- Updates arrive by polling every few seconds while the tab is visible, not by push. That is quick enough for live play and costs nothing.
+- Live updates use Supabase Realtime (free tier: 200 concurrent connections, 2 million messages a month), with polling as the fallback. There is no push notification when the tab is closed.
 - Request throttling is in memory per server instance, which is fine for a personal project but not a hard guarantee on serverless hosting.
 - Light appearance only. Dark mode was left out to keep the core experience polished.
 - Deleting a photo after a reveal leaves a "Photo removed" note in the memory rather than rewriting the result.

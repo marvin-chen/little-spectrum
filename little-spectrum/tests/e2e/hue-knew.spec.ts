@@ -43,12 +43,15 @@ test("two friends create a garden, join by invite, and play Hue Knew? with a pri
   expect(boHtml).toMatch(/target\\?":null/);
   expect(boHtml).not.toMatch(/target\\?":\s*\d/);
 
+  // Presence: Ada sees that Bo has the game open.
+  await expect(ada.page.getByRole("img", { name: /Bo, .*here now/ })).toBeVisible({ timeout: 15_000 });
+
   await ada.page.getByPlaceholder("Your clue").fill("Sunday pancakes");
   await ada.page.getByRole("button", { name: "Send clue" }).click();
   await expect(ada.page.getByText(/Waiting for Bo to guess/)).toBeVisible();
 
-  // Bo sees the clue after polling, still without the target.
-  await expect(bo.page.getByText("Sunday pancakes")).toBeVisible({ timeout: 20_000 });
+  // Bo sees the clue pushed over realtime, well inside the polling interval, still without the target.
+  await expect(bo.page.getByText("Sunday pancakes")).toBeVisible({ timeout: 3_500 });
   expect(await bo.page.content()).not.toMatch(/target\\?":\s*\d/);
   await shot(bo.page, "guesser");
   const slider = bo.page.getByRole("slider", { name: "Your guess" });

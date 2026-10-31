@@ -2,9 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ChevronLeft } from "lucide-react";
 import { GameMotif, GameStageArt } from "@/components/games/motifs/GameMotif";
-import { AutoRefresh } from "@/components/session/AutoRefresh";
 import { EarlyRevealButton } from "@/components/session/EarlyRevealButton";
-import { Avatar } from "@/components/ui/Avatar";
+import { LivePlayers } from "@/components/session/LivePlayers";
 import { cn } from "@/lib/cn";
 import { COLOR_CLASSES } from "@/lib/colors";
 import type { SessionView } from "@/lib/data/sessions";
@@ -23,7 +22,6 @@ export function SessionFrame({ gardenId, session, userId, children }: { gardenId
 
   return (
     <div className="-mt-[max(0.5rem,var(--safe-top))] md:mt-0">
-      <AutoRefresh enabled={active} />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80" style={{ background: `linear-gradient(180deg, color-mix(in srgb, var(--color-${game.color}-soft) 85%, white) 0%, rgba(245,241,234,0) 100%)` }} />
       <header className="sticky top-0 z-20 -mx-4 flex h-[60px] items-center gap-2 px-3 pt-[var(--safe-top)] md:-mx-8 md:px-6">
         <Link href={`/g/${gardenId}`} aria-label="Back to home" className="glass pressable flex size-10 items-center justify-center rounded-capsule text-ink">
@@ -39,19 +37,14 @@ export function SessionFrame({ gardenId, session, userId, children }: { gardenId
       <section className="relative mb-4 overflow-hidden rounded-group">
         <GameStageArt game={session.game} className={cn("pointer-events-none absolute -top-3 -right-6 h-28 w-auto", session.participants.length > 5 && "hidden")} />
         <div className="relative flex flex-col gap-3 px-1 pt-2 pb-1">
-          <ul className="flex items-center gap-1.5" aria-label="Players">
-            {session.participants.map((p) => {
-              const done = submitted.has(p.userId);
-              return (
-                <li key={p.userId} className="relative">
-                  <Avatar avatar={p.avatar} name={`${p.userId === userId ? `${p.name} (you)` : p.name}${done ? ", in" : active ? ", pending" : ""}`} size="sm" ring />
-                  {active ? (
-                    <span aria-hidden className={cn("absolute -right-0.5 -bottom-0.5 size-3 rounded-full ring-2 ring-canvas", done ? "bg-green" : "bg-ink/20")} />
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
+          <LivePlayers
+            sessionId={session.id}
+            active={active}
+            userId={userId}
+            userName={session.participants.find((p) => p.userId === userId)?.name ?? "You"}
+            participants={session.participants}
+            submitted={[...submitted]}
+          />
           <p className={cn("text-callout font-semibold", active ? (session.turn.needsYou ? colors.ink : "text-ink-2") : "text-green-ink")}>
             {session.turn.line}
             {session.earlyReveal ? <span className="font-normal text-ink-3"> · Revealed early</span> : null}
