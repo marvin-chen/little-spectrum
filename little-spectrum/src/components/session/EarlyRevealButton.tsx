@@ -50,7 +50,7 @@ export function EarlyRevealButton({ gardenId, sessionId, check, game }: Props) {
             <Button size="lg" full onClick={confirm} loading={pending} disabled={!check.ok}>
               Reveal available answers
             </Button>
-            <Button variant="ghost" full onClick={() => setOpen(false)}>
+            <Button variant="plain" full onClick={() => setOpen(false)}>
               Keep waiting
             </Button>
           </div>

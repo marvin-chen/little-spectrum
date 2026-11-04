@@ -162,7 +162,7 @@ export function MemoryFooter({ gardenId, sessionId, userId, participants, reacti
               {draft.length}/{MAX_NOTE}
             </span>
             <div className="flex gap-2">
-              <Button variant="ghost" onClick={cancel} disabled={saving}>
+              <Button variant="plain" onClick={cancel} disabled={saving}>
                 Cancel
               </Button>
               <Button type="submit" loading={saving} disabled={!myNote && draft.trim().length === 0}>

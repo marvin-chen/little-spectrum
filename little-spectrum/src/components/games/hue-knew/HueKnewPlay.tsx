@@ -209,7 +209,7 @@ function PlayAgain({ gardenId, sessionId, line, primary }: { gardenId: string; s
         </p>
       ) : null}
       <Button
-        variant={primary ? "primary" : "tinted"}
+        variant={primary ? "prominent" : "tinted"}
         accent="coral"
         size="lg"
         full

@@ -1,5 +1,11 @@
 # Progress
 
+## Shared UI foundation
+
+- Milestone 1: canonical button variants, named icon actions, associated field help/errors, shared feedback, and contributor UI contract. Regression coverage reproduces the previously missing field description. Verified with `pnpm check:full`: 103 unit tests, 23 database tests, production build, and 8 browser journeys passed. Screenshot-only spec is reserved for the final archive.
+- Next: selection and confirmation patterns, representative migrations, interactive documentation, and visual verification.
+- The planning PRD remains a local draft and is not part of these implementation commits.
+
 ## Documentation maintenance
 
 - Reconciled setup, repository layout, account portability, Realtime, appearance, and CI descriptions with the current source. Historical verification records remain labeled as historical. This documentation-only update passed `git diff --check`, type checking, lint, 98 unit tests, and 23 database tests. Full verification was attempted, but the production build hit a local Turbopack port-binding permission error even after an elevated retry; browser journeys were therefore not run.

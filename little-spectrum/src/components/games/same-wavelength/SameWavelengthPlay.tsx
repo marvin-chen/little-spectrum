@@ -175,7 +175,7 @@ function PlayAgain({ gardenId, sessionId, line }: { gardenId: string; sessionId:
         </p>
       ) : null}
       <Button
-        variant="primary"
+        variant="prominent"
         accent="blue"
         size="lg"
         full

@@ -1,6 +1,14 @@
 # Roadmap
 
-What is next for Little Spectrum, ordered by how much each item improves the product for the effort.
+## Current milestone: shared UI foundation
+
+Implement an internal component library before assigning independent features. Track implementation and checks in `PROGRESS.md`; contributor-facing contracts live in `UI.md`.
+
+1. Standardize primitive APIs, accessible fields, icon actions, and feedback; migrate legacy button variants.
+2. Extract reusable answer selection and confirmation patterns; migrate a game and settings flow.
+3. Expand the style guide with documented states and examples, browser tests on phone/desktop, and a reviewed screenshot archive.
+
+The feature backlog below remains available for later prioritization.
 Sizes are rough: S is an afternoon, M is a day or two, L is a week.
 
 ## Done since the first release

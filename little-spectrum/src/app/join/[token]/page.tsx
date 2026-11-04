@@ -43,7 +43,7 @@ export default async function JoinPage({ params }: { params: Promise<{ token: st
               so ask them for a fresh one.
             </p>
           </div>
-          <ButtonLink href="/" variant="secondary" full>
+          <ButtonLink href="/" variant="glass" full>
             Go home
           </ButtonLink>
         </div>
@@ -83,7 +83,7 @@ export default async function JoinPage({ params }: { params: Promise<{ token: st
             <p role="status" className="rounded-row bg-amber-soft px-4 py-3 text-callout text-amber-ink">
               This garden is full. The creator can make room for more friends, or you can plant your own.
             </p>
-            <ButtonLink href={user ? "/start" : "/welcome?next=%2Fstart"} variant="secondary" full>
+            <ButtonLink href={user ? "/start" : "/welcome?next=%2Fstart"} variant="glass" full>
               Start your own garden
             </ButtonLink>
           </div>

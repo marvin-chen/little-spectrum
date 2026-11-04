@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 import { COLOR_CLASSES, type ColorKey } from "@/lib/colors";
 
 // iOS style capsules: prominent (filled), glass (translucent), tinted (soft fill), plain (text), danger.
-export type ButtonVariant = "prominent" | "glass" | "tinted" | "plain" | "danger" | "primary" | "secondary" | "ghost";
+export type ButtonVariant = "prominent" | "glass" | "tinted" | "plain" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export type ButtonStyleProps = {
@@ -31,17 +31,16 @@ export function buttonClasses({ variant = "prominent", size = "md", accent, full
     md: round ? "size-11 text-callout" : "h-11 px-5 text-callout font-semibold gap-2",
     lg: round ? "size-[52px] text-body" : "h-[52px] px-6 text-body font-semibold gap-2",
   };
-  const resolved = variant === "primary" ? "prominent" : variant === "secondary" ? "glass" : variant === "ghost" ? "plain" : variant;
   let look = "";
-  if (resolved === "prominent") {
+  if (variant === "prominent") {
     look = cn("lit", accent ? PROMINENT[accent] : "bg-ink text-canvas");
-  } else if (resolved === "glass") {
+  } else if (variant === "glass") {
     look = "glass text-ink hover:bg-white/80";
-  } else if (resolved === "tinted") {
+  } else if (variant === "tinted") {
     look = accent ? `${COLOR_CLASSES[accent].soft} ${COLOR_CLASSES[accent].ink}` : "bg-fill-2 text-ink";
-  } else if (resolved === "plain") {
+  } else if (variant === "plain") {
     look = accent ? `bg-transparent ${COLOR_CLASSES[accent].ink} hover:bg-fill` : "bg-transparent text-tint hover:bg-fill";
-  } else if (resolved === "danger") {
+  } else if (variant === "danger") {
     look = "bg-danger-soft text-danger";
   }
   return cn(
@@ -53,7 +52,7 @@ export function buttonClasses({ variant = "prominent", size = "md", accent, full
   );
 }
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   ButtonStyleProps & { loading?: boolean; icon?: ReactNode };
 
 export function Button({ variant, size, accent, full, round, loading, icon, className, children, disabled, type = "button", ...rest }: ButtonProps) {
@@ -88,4 +87,15 @@ export function ButtonLink({ href, variant, size, accent, full, round, className
       {children}
     </Link>
   );
+}
+
+// Icon-only actions always have an accessible name and a 44px or larger target.
+export type IconButtonProps = Omit<ButtonProps, "children" | "icon" | "round" | "size" | "aria-label"> & {
+  label: string;
+  icon: ReactNode;
+  size?: "md" | "lg";
+};
+
+export function IconButton({ label, icon, size = "md", ...props }: IconButtonProps) {
+  return <Button {...props} size={size} round aria-label={label} icon={icon} />;
 }

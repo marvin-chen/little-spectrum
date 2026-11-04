@@ -98,7 +98,7 @@ export default function DemoSetupPage() {
       </section>
 
       <div className="mt-6">
-        <ButtonLink href="/demo" variant="secondary" full icon={<ArrowLeft className="size-4" aria-hidden />}>
+        <ButtonLink href="/demo" variant="glass" full icon={<ArrowLeft className="size-4" aria-hidden />}>
           Back to the demo garden
         </ButtonLink>
       </div>

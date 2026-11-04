@@ -54,11 +54,11 @@ export function InviteManager({
 
       {isCreator ? (
         <div className="mt-3 flex flex-wrap gap-2">
-          <Button variant="secondary" size="sm" icon={<RefreshCw className="size-4" aria-hidden />} onClick={() => setConfirm("rotate")}>
+          <Button variant="glass" size="sm" icon={<RefreshCw className="size-4" aria-hidden />} onClick={() => setConfirm("rotate")}>
             {inviteUrl ? "New link" : "Make a link"}
           </Button>
           {inviteUrl ? (
-            <Button variant="secondary" size="sm" icon={<Link2Off className="size-4" aria-hidden />} onClick={() => setConfirm("revoke")}>
+            <Button variant="glass" size="sm" icon={<Link2Off className="size-4" aria-hidden />} onClick={() => setConfirm("revoke")}>
               Pause invites
             </Button>
           ) : null}
@@ -81,10 +81,10 @@ export function InviteManager({
         }
         footer={
           <div className="flex flex-col gap-2">
-            <Button size="lg" full variant={confirm === "revoke" ? "danger" : "primary"} loading={pending} onClick={() => run(confirm === "revoke")}>
+            <Button size="lg" full variant={confirm === "revoke" ? "danger" : "prominent"} loading={pending} onClick={() => run(confirm === "revoke")}>
               {confirm === "revoke" ? "Pause invites" : "Make a new link"}
             </Button>
-            <Button variant="ghost" full onClick={() => setConfirm(null)}>
+            <Button variant="plain" full onClick={() => setConfirm(null)}>
               Cancel
             </Button>
           </div>
@@ -132,7 +132,7 @@ export function ExpandGarden({ gardenId }: { gardenId: string }) {
             >
               Make room
             </Button>
-            <Button variant="ghost" full onClick={() => setOpen(false)}>
+            <Button variant="plain" full onClick={() => setOpen(false)}>
               Not now
             </Button>
           </div>

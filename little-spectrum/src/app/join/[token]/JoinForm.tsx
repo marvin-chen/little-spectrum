@@ -13,7 +13,7 @@ export function JoinForm({ token, gardenName }: { token: string; gardenName: str
         <p role="status" className="rounded-row bg-amber-soft px-4 py-3 text-callout text-amber-ink">
           {gardenName} filled up just now. Ask the creator to make room, or plant a garden of your own.
         </p>
-        <ButtonLink href="/start" variant="secondary" full>
+        <ButtonLink href="/start" variant="glass" full>
           Start your own garden
         </ButtonLink>
       </div>

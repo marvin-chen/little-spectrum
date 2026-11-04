@@ -201,7 +201,7 @@ function DeleteOwnPhoto({ gardenId, sessionId, photoId, inline }: { gardenId: st
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const button = (
-    <Button variant={inline ? "ghost" : "danger"} size={inline ? "sm" : "md"} icon={<Trash2 className="size-4" aria-hidden />} onClick={() => setOpen(true)} className={inline ? "mt-3 -ml-3 text-danger" : undefined}>
+    <Button variant={inline ? "plain" : "danger"} size={inline ? "sm" : "md"} icon={<Trash2 className="size-4" aria-hidden />} onClick={() => setOpen(true)} className={inline ? "mt-3 -ml-3 text-danger" : undefined}>
       Delete my photo
     </Button>
   );
@@ -235,7 +235,7 @@ function DeleteOwnPhoto({ gardenId, sessionId, photoId, inline }: { gardenId: st
             >
               Delete photo
             </Button>
-            <Button variant="ghost" full onClick={() => setOpen(false)}>
+            <Button variant="plain" full onClick={() => setOpen(false)}>
               Keep it
             </Button>
           </div>
