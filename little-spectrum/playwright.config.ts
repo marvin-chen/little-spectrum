@@ -18,6 +18,6 @@ export default defineConfig({
   },
   projects: [
     { name: "mobile-chromium", use: { ...devices["iPhone 13"], browserName: "chromium" } },
-    { name: "desktop-chromium", use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 900 } }, testMatch: /smoke\.spec\.ts/ },
+    { name: "desktop-chromium", use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 900 } }, testMatch: /(?:smoke|ui)\.spec\.ts/ },
   ],
 });

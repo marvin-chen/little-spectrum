@@ -4,7 +4,7 @@
 
 - Milestone 1: canonical button variants, named icon actions, associated field help/errors, shared feedback, and contributor UI contract. Regression coverage reproduces the previously missing field description. Verified with `pnpm check:full`: 103 unit tests, 23 database tests, production build, and 8 browser journeys passed. Screenshot-only spec is reserved for the final archive.
 - Milestone 2: native-radio ChoiceGroup used by True Colors, ConfirmationSheet used by invite and capacity settings, shared settings feedback, and a 44px named sheet-close action. Added real-flow keyboard and confirmation coverage. `pnpm check:full` passed: 104 unit, 23 database, 9 browser journeys, and build. Radio inputs cover their full visible row after pointer testing caught the initial clipped target.
-- Next: interactive documentation and visual verification.
+- Milestone 3: interactive style-guide recipes with real controls, code examples, form validation, disabled choices, pending/error confirmation flows, and light/dark reduced-motion browser coverage on phone and desktop. Fixed the reproduced Shift+Tab escape from sheet controls. `pnpm check:full` passed: 104 unit tests, 23 database tests, production build, and 15 browser tests. `pnpm shots shared-ui-foundation` passed all 11 mobile journeys and archived 95 images; reviewed representative form, choice, game, invite-sheet, and confirmation captures. The no-mistakes executable was unavailable, so validation used repository checks and direct diff review.
 - The planning PRD remains a local draft and is not part of these implementation commits.
 
 ## Documentation maintenance

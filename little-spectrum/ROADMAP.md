@@ -6,7 +6,9 @@ Implement an internal component library before assigning independent features. T
 
 1. Completed: standardize primitive APIs, accessible fields, icon actions, and feedback; migrate legacy button variants.
 2. Completed: extract reusable answer selection and confirmation patterns; migrate a game and settings flow.
-3. Expand the style guide with documented states and examples, browser tests on phone/desktop, and a reviewed screenshot archive.
+3. Completed: expand the style guide with documented states and examples, browser tests on phone/desktop, and a reviewed screenshot archive.
+
+Next collaborator-readiness work: contributor setup and ownership guidance, a game extension checklist and fixtures, then a pilot feature contribution. The broader accessibility audit below remains separate from the shared-control coverage completed here.
 
 The feature backlog below remains available for later prioritization.
 Sizes are rough: S is an afternoon, M is a day or two, L is a week.

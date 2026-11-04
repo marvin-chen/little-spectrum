@@ -1,12 +1,13 @@
 "use client";
 
+import { ComponentExamples } from "./ComponentExamples";
 import { useState } from "react";
 import { Clock, Plus, Settings, Share, Sparkles, Users } from "lucide-react";
 import { GamesIcon, GardenIcon, HomeIcon, MemoriesIcon } from "@/components/icons/TabIcons";
 import { GameMotif, GameStageArt } from "@/components/games/motifs/GameMotif";
 import { Avatar, AvatarStack } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { Button, IconButton } from "@/components/ui/Button";
 import { Card, Group, Row, RowButton, RowLink, SectionLabel } from "@/components/ui/Card";
 import { CountUp } from "@/components/ui/CountUp";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -39,7 +40,8 @@ export function StyleguideClient() {
 
   return (
     <div className="flex flex-col gap-10">
-      <section>
+      <ComponentExamples />
+      <section id="foundations">
         <SectionLabel>Canvas and ink</SectionLabel>
         <Card className="p-4">
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -146,12 +148,8 @@ export function StyleguideClient() {
             <Button size="lg" variant="glass">
               Large
             </Button>
-            <Button round variant="glass" aria-label="Share">
-              <Share className="size-4" aria-hidden />
-            </Button>
-            <Button round aria-label="Start a game">
-              <Plus className="size-5" strokeWidth={2.5} aria-hidden />
-            </Button>
+            <IconButton variant="glass" label="Share" icon={<Share className="size-4" aria-hidden />} />
+            <IconButton label="Start a game" icon={<Plus className="size-5" strokeWidth={2.5} aria-hidden />} />
           </div>
           <div className="flex items-center gap-3">
             <ToolbarGroup>

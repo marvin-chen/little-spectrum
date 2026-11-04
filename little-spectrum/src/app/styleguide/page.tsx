@@ -10,7 +10,7 @@ export default function StyleguidePage() {
       <PageTitle
         eyebrow="Design system"
         title="Style guide"
-        subtitle="Tokens, materials, motifs, and shared components."
+        subtitle="Shared components, interactive examples, and contributor guidance."
       />
       <StyleguideClient />
     </AppShell>

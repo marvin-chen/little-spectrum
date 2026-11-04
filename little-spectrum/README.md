@@ -114,6 +114,10 @@ pnpm check:full   # plus production build, database and policy tests, browser jo
 `pnpm shots` archives screenshots of every page under `screenshots/<date>-<commit>/`.
 Fast checks run on every push and pull request. Full verification runs on pull requests, pushes to `main`, manual dispatches, and a weekly schedule. [TESTING.md](./TESTING.md) explains what each check protects and how to investigate a failure.
 
+## Shared UI for contributors
+
+Read [UI.md](./UI.md) for component contracts, import conventions, and acceptance requirements. Open `/styleguide` to try production controls, state examples, and copyable usage snippets.
+
 ## How it is put together
 
 - `src/app` holds the routes: onboarding (`/welcome`, `/start`, `/join/[token]`), the garden shell under `/g/[gardenId]` (home, games, play, garden, memories, settings), the photo upload route, and the demo.
