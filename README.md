@@ -6,6 +6,10 @@ Little Spectrum is a private, mobile-first website where long-distance friends p
 The application lives in [`little-spectrum/`](./little-spectrum/).
 The repository root also holds `.gitignore` and the CI workflows in `.github/workflows/`.
 
+## Contribute
+
+Start with [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, a first task, checks, and PR review. See [OWNERSHIP.md](./OWNERSHIP.md) for responsibility boundaries. Designers can use the [handoff guide](./little-spectrum/DESIGN.md) and [asset inventory](./little-spectrum/ASSETS.md).
+
 ## Start here
 
 ```bash

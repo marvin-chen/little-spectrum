@@ -77,6 +77,8 @@ little-spectrum/               the Next.js application (Vercel Root Directory)
 
 ## Working on it
 
+- Contributor workflow and responsibility boundaries are in `../CONTRIBUTING.md` and `../OWNERSHIP.md`. Use the repository issue/PR templates; keep one accountable owner and reviewer per project.
+
 - Shared UI contracts and acceptance requirements live in `UI.md`; `/styleguide` shows interactive examples. Import components by module from `@/components/ui/<Component>`. Keep data access and actions in features, and extend shared patterns before duplicating controls.
 
 - Run focused checks while changing code, `pnpm check` before every commit, and `pnpm check:full` before the final push when Docker is available. See `TESTING.md` for what each check protects.

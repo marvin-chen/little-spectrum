@@ -16,6 +16,10 @@ The product specification lives in [SPEC.md](./SPEC.md), the current state in [P
 - Memories with reactions and one note per participant.
 - A read-only demo mode when no backend is configured.
 
+## Contributing
+
+Use the repository [contributor guide](../CONTRIBUTING.md) for demo/backend setup, a first-contribution walkthrough, screenshots, and PR expectations. The [ownership map](../OWNERSHIP.md) explains who to coordinate with.
+
 ## Run it locally
 
 Requirements: Node 22 and pnpm (both pinned in `.tool-versions` for asdf), and Docker if you want a local Supabase.

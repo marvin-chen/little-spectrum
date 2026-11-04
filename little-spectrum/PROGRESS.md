@@ -2,6 +2,8 @@
 
 ## Contributor foundation
 
+- Added root contributor workflow and ownership map, scoped-project/bug issue templates, and PR template. Fixed the ignored environment template so new checkouts can follow setup without credentials. A clean temporary source snapshot installed all 400 packages from the local cache with the frozen lockfile, passed fast checks (104 unit tests), loaded the labelled demo without page errors, and passed all 6 documented demo-only browser checks with blank backend values. Local links, issue frontmatter, blank template credentials, and ignore behavior were checked. An independent contributor trial is still needed. Final `pnpm check:full` passed (104 unit, 23 database, 15 browser tests, build, lint, typecheck).
+
 - Designer handoff and asset inventory: documented source files, rendering contracts, separate preview assets, stable identities, design deliverables, and review expectations. Verified referenced paths and links; `pnpm check:full` passed (104 unit, 23 database, 15 browser tests, build, lint, typecheck).
 
 ## Shared UI foundation

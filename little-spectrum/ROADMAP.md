@@ -10,7 +10,9 @@ Implement an internal component library before assigning independent features. T
 
 Completed: designer handoff guide and current asset inventory (`DESIGN.md`, `ASSETS.md`).
 
-Next collaborator-readiness work: contributor setup and ownership guidance, a game extension checklist and fixtures, then a pilot feature contribution. The broader accessibility audit below remains separate from the shared-control coverage completed here.
+Contributor foundation: setup guide, ownership map, issue/PR templates, and a first-contribution walkthrough are implemented; clean-snapshot dependency installation, fast checks, demo loading, and six demo-only browser checks passed. An external contributor trial remains the usability acceptance step.
+
+Next collaborator-readiness work: a game extension checklist and fixtures, then a pilot feature contribution. The broader accessibility audit below remains separate from the shared-control coverage completed here.
 
 The feature backlog below remains available for later prioritization.
 Sizes are rough: S is an afternoon, M is a day or two, L is a week.
