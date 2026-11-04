@@ -116,6 +116,8 @@ Fast checks run on every push and pull request. Full verification runs on pull r
 
 ## Shared UI for contributors
 
+Design contributors: start with the [handoff guide](./DESIGN.md) and [asset inventory](./ASSETS.md).
+
 Read [UI.md](./UI.md) for component contracts, import conventions, and acceptance requirements. Open `/styleguide` to try production controls, state examples, and copyable usage snippets.
 
 ## How it is put together

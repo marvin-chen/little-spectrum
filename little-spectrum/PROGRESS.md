@@ -1,5 +1,9 @@
 # Progress
 
+## Contributor foundation
+
+- Designer handoff and asset inventory: documented source files, rendering contracts, separate preview assets, stable identities, design deliverables, and review expectations. Verified referenced paths and links; `pnpm check:full` passed (104 unit, 23 database, 15 browser tests, build, lint, typecheck).
+
 ## Shared UI foundation
 
 - Milestone 1: canonical button variants, named icon actions, associated field help/errors, shared feedback, and contributor UI contract. Regression coverage reproduces the previously missing field description. Verified with `pnpm check:full`: 103 unit tests, 23 database tests, production build, and 8 browser journeys passed. Screenshot-only spec is reserved for the final archive.

@@ -8,6 +8,8 @@ Implement an internal component library before assigning independent features. T
 2. Completed: extract reusable answer selection and confirmation patterns; migrate a game and settings flow.
 3. Completed: expand the style guide with documented states and examples, browser tests on phone/desktop, and a reviewed screenshot archive.
 
+Completed: designer handoff guide and current asset inventory (`DESIGN.md`, `ASSETS.md`).
+
 Next collaborator-readiness work: contributor setup and ownership guidance, a game extension checklist and fixtures, then a pilot feature contribution. The broader accessibility audit below remains separate from the shared-control coverage completed here.
 
 The feature backlog below remains available for later prioritization.
