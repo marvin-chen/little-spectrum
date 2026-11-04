@@ -19,6 +19,8 @@ Import components by module, for example `@/components/ui/Button`. This is the p
 | `Card`, `Group`, `Row`, `RowButton`, `RowLink` | Surfaces and grouped content. Choose the interactive element by behavior. |
 | `Sheet` | Modal content, title, optional description/footer. Keep dismissal available unless an action genuinely cannot be interrupted. |
 | `SegmentedControl` | Short mutually exclusive choices; labelled radio group with arrow-key navigation. |
+| `ChoiceGroup` | Vertical single-choice list. Native radios isolate groups and provide keyboard navigation. Supply unique string values, labels, selected value or null, onChange, optional accent and disabled states. |
+| `ConfirmationSheet` | Shared confirmation pattern. Requires title, description, confirmLabel, onConfirm, and onClose. Pending state disables dismissal and duplicate actions; errors stay inside the dialog. Callers own the operation and close only on success. |
 | `Slider` | Numeric range with visible labels and a confirmation action in the enclosing flow. |
 | `Avatar`, `Badge`, `EmptyState` | Identity, labelled status, and a clear next step when content is absent. |
 

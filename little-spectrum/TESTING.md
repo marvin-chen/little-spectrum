@@ -60,7 +60,7 @@ If you turn on branch protection for `main`, require these two checks: `Fast che
 
 | Behavior | Checks |
 |---|---|
-| Shared UI labels, descriptions, pending actions, and feedback semantics | `src/components/ui/primitives.test.ts`, `tests/e2e/ui.spec.ts` |
+| Shared UI labels, descriptions, pending actions, feedback, radio navigation, and settings confirmations | `src/components/ui/primitives.test.ts`, `tests/e2e/ui.spec.ts` |
 | Garden creation, invitations, joining, capacity, revoked links, existing members, isolation | `tests/db/capacity.test.ts`, `tests/db/permissions.test.ts`, `tests/e2e/hue-knew.spec.ts` |
 | Starting sessions, participant selection, non-participant access, committed answers, refresh, normal and early reveals, late submissions, duplicate completions | `tests/db/permissions.test.ts`, `tests/db/sessions.test.ts`, `tests/db/rewards.test.ts`, `tests/e2e/all-games.spec.ts` |
 | Secret targets and unrevealed answers at the database layer, using ordinary user credentials | `tests/db/permissions.test.ts`, `tests/db/sessions.test.ts` |

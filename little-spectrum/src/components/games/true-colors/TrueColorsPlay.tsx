@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useTransition, type KeyboardEvent } from "react";
-import { Check, Lock, RotateCcw, Sparkles, User, UserRoundSearch } from "lucide-react";
+import { useState, useTransition } from "react";
+import { Lock, RotateCcw, Sparkles, User, UserRoundSearch } from "lucide-react";
 import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionId]/actions";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { cn } from "@/lib/cn";
+import { ChoiceGroup } from "@/components/ui/ChoiceGroup";
+import { Feedback } from "@/components/ui/Feedback";
 import type { SessionView } from "@/lib/data/sessions";
 import { joinNames } from "@/lib/games/engine";
 import type { TrueColorsView } from "@/lib/games/trueColors";
@@ -115,7 +116,7 @@ function PicksPanel({
       <Card className="p-5">
         <section aria-labelledby="tc-answer-label">
           <SectionHeading id="tc-answer-label" icon={<User className="size-4" aria-hidden />} title="Your answer" line="What you would honestly pick." />
-          <OptionGroup labelledBy="tc-answer-label" options={game.options} value={answer} onChange={setAnswer} idPrefix="answer" />
+          <ChoiceGroup label="Your answer" options={game.options.map((label, i) => ({ value: String(i), label }))} value={answer === null ? null : String(answer)} onChange={(value) => setAnswer(Number(value))} disabled={pending} />
         </section>
 
         <div role="separator" className="my-6 flex items-center gap-3 text-caption font-semibold uppercase tracking-wide text-ink-3">
@@ -131,13 +132,13 @@ function PicksPanel({
             title={`Your prediction for ${friendName}`}
             line={`Not what you want for ${friendName}, what ${friendName} would actually choose.`}
           />
-          <OptionGroup labelledBy="tc-prediction-label" options={game.options} value={prediction} onChange={setPrediction} idPrefix="prediction" />
+          <ChoiceGroup label={`Your prediction for ${friendName}`} options={game.options.map((label, i) => ({ value: String(i), label }))} value={prediction === null ? null : String(prediction)} onChange={(value) => setPrediction(Number(value))} disabled={pending} />
         </section>
 
         {error ? (
-          <p role="alert" className="mt-4 rounded-row bg-danger-soft px-4 py-2 text-footnote text-danger">
+          <Feedback tone="error" className="mt-4">
             {error}
-          </p>
+          </Feedback>
         ) : null}
         <p className="mt-4 text-footnote text-ink-3">Both go in together. Locked picks cannot be edited.</p>
         <Button className="mt-3" size="lg" full accent="rose" onClick={lockIn} loading={pending} disabled={!ready} icon={<Lock className="size-4" aria-hidden />}>
@@ -160,57 +161,6 @@ function SectionHeading({ id, icon, title, line }: { id: string; icon: React.Rea
   );
 }
 
-function OptionGroup({
-  labelledBy,
-  options,
-  value,
-  onChange,
-  idPrefix,
-}: {
-  labelledBy: string;
-  options: readonly string[];
-  value: number | null;
-  onChange: (index: number) => void;
-  idPrefix: string;
-}) {
-  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    const step = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : 0;
-    if (step === 0) return;
-    event.preventDefault();
-    const next = (index + step + options.length) % options.length;
-    onChange(next);
-    document.getElementById(`${idPrefix}-${next}`)?.focus();
-  }
-
-  return (
-    <div role="radiogroup" aria-labelledby={labelledBy} className="flex flex-col gap-2">
-      {options.map((option, index) => {
-        const selected = value === index;
-        return (
-          <button
-            key={option}
-            id={`${idPrefix}-${index}`}
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            tabIndex={selected || (value === null && index === 0) ? 0 : -1}
-            onClick={() => onChange(index)}
-            onKeyDown={(event) => onKeyDown(event, index)}
-            className={cn(
-              "pressable flex min-h-11 w-full items-center gap-3 rounded-row px-4 py-2.5 text-left text-body outline-none",
-              "focus-visible:ring-2 focus-visible:ring-blue",
-              selected ? "bg-rose-soft text-rose-ink ring-2 ring-rose font-semibold" : "bg-fill text-ink hover:bg-fill-2",
-            )}
-          >
-            <span className="flex-1">{option}</span>
-            {selected ? <Check className="size-5 shrink-0" strokeWidth={2.5} aria-hidden /> : null}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 function PlayAgain({ gardenId, sessionId }: { gardenId: string; sessionId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -221,9 +171,9 @@ function PlayAgain({ gardenId, sessionId }: { gardenId: string; sessionId: strin
         Same people, fresh question.
       </p>
       {error ? (
-        <p role="alert" className="rounded-row bg-danger-soft px-4 py-2 text-footnote text-danger">
+        <Feedback tone="error">
           {error}
-        </p>
+        </Feedback>
       ) : null}
       <Button
         variant="tinted"

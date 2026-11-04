@@ -4,8 +4,8 @@
 
 Implement an internal component library before assigning independent features. Track implementation and checks in `PROGRESS.md`; contributor-facing contracts live in `UI.md`.
 
-1. Standardize primitive APIs, accessible fields, icon actions, and feedback; migrate legacy button variants.
-2. Extract reusable answer selection and confirmation patterns; migrate a game and settings flow.
+1. Completed: standardize primitive APIs, accessible fields, icon actions, and feedback; migrate legacy button variants.
+2. Completed: extract reusable answer selection and confirmation patterns; migrate a game and settings flow.
 3. Expand the style guide with documented states and examples, browser tests on phone/desktop, and a reviewed screenshot archive.
 
 The feature backlog below remains available for later prioritization.

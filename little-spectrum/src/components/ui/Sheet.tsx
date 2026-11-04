@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
+import { IconButton } from "./Button";
 import { cn } from "@/lib/cn";
 
 type SheetProps = {
@@ -81,14 +82,9 @@ export function Sheet({
               ) : null}
             </div>
             {dismissible ? (
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close"
-                className="pressable -mt-1 -mr-1 flex size-9 shrink-0 items-center justify-center rounded-full bg-fill text-ink-2 hover:bg-fill-2"
-              >
-                <X className="size-5" aria-hidden />
-              </button>
+              <IconButton label="Close" onClick={onClose} variant="plain"
+                className="-mt-1 -mr-1 bg-fill text-ink-2 hover:bg-fill-2"
+                icon={<X className="size-5" aria-hidden />} />
             ) : null}
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-4">{children}</div>

@@ -26,7 +26,13 @@ test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, 
   let url = await startGame(ada.page, gardenId, /True Colors/, 3);
   for (const p of [ada, bo, cy]) {
     await p.page.goto(url);
-    await p.page.getByRole("radiogroup", { name: /Your answer/i }).getByRole("radio").first().click();
+    const answers = p.page.getByRole("radiogroup", { name: /Your answer/i }).getByRole("radio");
+    await answers.first().focus();
+    await answers.first().press("Space");
+    await answers.first().press("ArrowDown");
+    await expect(answers.nth(1)).toBeChecked();
+    await answers.nth(1).press("ArrowUp");
+    await expect(answers.first()).toBeChecked();
     await p.page.getByRole("radiogroup", { name: /Your prediction/i }).getByRole("radio").first().click();
     if (p === ada) await shot(p.page, "true-colors-answer");
     await p.page.getByRole("button", { name: "Lock in both" }).click();

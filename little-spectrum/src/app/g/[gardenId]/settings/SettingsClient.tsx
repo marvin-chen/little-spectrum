@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { Link2Off, RefreshCw, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Sheet } from "@/components/ui/Sheet";
+import { ConfirmationSheet } from "@/components/ui/ConfirmationSheet";
 import { ShareButton } from "@/components/ui/ShareButton";
 import { expandGardenAction, rotateInviteAction } from "./actions";
 
@@ -64,13 +64,7 @@ export function InviteManager({
           ) : null}
         </div>
       ) : null}
-      {error ? (
-        <p role="alert" className="mt-3 rounded-row bg-danger-soft px-4 py-2 text-footnote text-danger">
-          {error}
-        </p>
-      ) : null}
-
-      <Sheet
+      <ConfirmationSheet
         open={confirm !== null}
         onClose={() => setConfirm(null)}
         title={confirm === "revoke" ? "Pause invites?" : "Make a new link?"}
@@ -79,19 +73,14 @@ export function InviteManager({
             ? "The current link stops working right away. Members stay. You can make a new link any time."
             : "The old link stops working and a fresh one takes its place. Members stay."
         }
-        footer={
-          <div className="flex flex-col gap-2">
-            <Button size="lg" full variant={confirm === "revoke" ? "danger" : "prominent"} loading={pending} onClick={() => run(confirm === "revoke")}>
-              {confirm === "revoke" ? "Pause invites" : "Make a new link"}
-            </Button>
-            <Button variant="plain" full onClick={() => setConfirm(null)}>
-              Cancel
-            </Button>
-          </div>
-        }
+        confirmLabel={confirm === "revoke" ? "Pause invites" : "Make a new link"}
+        destructive={confirm === "revoke"}
+        pending={pending}
+        error={error}
+        onConfirm={() => run(confirm === "revoke")}
       >
         <p className="text-callout text-ink-2">Anyone who already joined keeps their spot and their history.</p>
-      </Sheet>
+      </ConfirmationSheet>
     </Card>
   );
 }
@@ -105,41 +94,23 @@ export function ExpandGarden({ gardenId }: { gardenId: string }) {
       <Button className="mt-3" variant="tinted" accent="green" full icon={<UsersRound className="size-4" aria-hidden />} onClick={() => setOpen(true)}>
         Make room for more friends
       </Button>
-      <Sheet
+      <ConfirmationSheet
         open={open}
         onClose={() => setOpen(false)}
         title="Grow to eight people?"
         description="Your garden keeps everything: history, growth, and memories. It just gets room for up to eight friends."
-        footer={
-          <div className="flex flex-col gap-2">
-            {error ? (
-              <p role="alert" className="rounded-row bg-danger-soft px-4 py-2 text-footnote text-danger">
-                {error}
-              </p>
-            ) : null}
-            <Button
-              size="lg"
-              full
-              accent="green"
-              loading={pending}
-              onClick={() =>
-                startTransition(async () => {
-                  const result = await expandGardenAction(gardenId);
-                  if (result.error) setError(result.error);
-                  else setOpen(false);
-                })
-              }
-            >
-              Make room
-            </Button>
-            <Button variant="plain" full onClick={() => setOpen(false)}>
-              Not now
-            </Button>
-          </div>
-        }
+        confirmLabel="Make room"
+        cancelLabel="Not now"
+        pending={pending}
+        error={error}
+        onConfirm={() => startTransition(async () => {
+          const result = await expandGardenAction(gardenId);
+          if (result.error) setError(result.error);
+          else setOpen(false);
+        })}
       >
         <p className="text-callout text-ink-2">This cannot be shrunk back, but nobody has to join.</p>
-      </Sheet>
+      </ConfirmationSheet>
     </>
   );
 }

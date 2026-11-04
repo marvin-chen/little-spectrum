@@ -3,7 +3,8 @@
 ## Shared UI foundation
 
 - Milestone 1: canonical button variants, named icon actions, associated field help/errors, shared feedback, and contributor UI contract. Regression coverage reproduces the previously missing field description. Verified with `pnpm check:full`: 103 unit tests, 23 database tests, production build, and 8 browser journeys passed. Screenshot-only spec is reserved for the final archive.
-- Next: selection and confirmation patterns, representative migrations, interactive documentation, and visual verification.
+- Milestone 2: native-radio ChoiceGroup used by True Colors, ConfirmationSheet used by invite and capacity settings, shared settings feedback, and a 44px named sheet-close action. Added real-flow keyboard and confirmation coverage. `pnpm check:full` passed: 104 unit, 23 database, 9 browser journeys, and build. Radio inputs cover their full visible row after pointer testing caught the initial clipped target.
+- Next: interactive documentation and visual verification.
 - The planning PRD remains a local draft and is not part of these implementation commits.
 
 ## Documentation maintenance

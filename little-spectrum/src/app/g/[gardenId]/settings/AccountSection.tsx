@@ -4,6 +4,7 @@ import { useActionState, useState, useTransition } from "react";
 import { LogOut, MailCheck, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Group, Row, RowButton } from "@/components/ui/Card";
+import { Feedback } from "@/components/ui/Feedback";
 import { Field, TextInput } from "@/components/ui/Field";
 import { Sheet } from "@/components/ui/Sheet";
 import { attachEmailAction, signOutAction, type AccountState } from "./accountActions";
@@ -61,9 +62,9 @@ export function AccountSection({ gardenId, email, isAnonymous, justKept }: Props
               <TextInput name="email" type="email" autoComplete="email" inputMode="email" required placeholder="you@example.com" />
             </Field>
             {state.error ? (
-              <p role="alert" className="rounded-row bg-danger-soft px-4 py-3 text-callout text-danger">
+              <Feedback tone="error">
                 {state.error}
-              </p>
+              </Feedback>
             ) : null}
             <Button type="submit" size="lg" full loading={pending}>
               Send confirmation
