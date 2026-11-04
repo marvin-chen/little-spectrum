@@ -11,7 +11,7 @@ Sizes are rough: S is an afternoon, M is a day or two, L is a week.
 - Shared-element view transitions, automatic dark appearance, scroll-aware tab bar.
 - Garden themes as personalization: six themes, chrome tinting, time-of-day skies, creator theme picker.
 - Invite cards: creator-designed card (poster, postcard, ticket, headline, note, sticker, accent) shown on the join page and as the link preview image, with a screenshot archive command.
-- Quality checks: `check` and `check:full`, GitHub Actions on every push, weekly drift run.
+- Quality checks: `check` on every push and pull request; `check:full` on pull requests, pushes to `main`, manual dispatches, and a weekly drift run.
 
 ## Decisions pending
 

@@ -1,5 +1,9 @@
 # Progress
 
+## Documentation maintenance
+
+- Reconciled setup, repository layout, account portability, Realtime, appearance, and CI descriptions with the current source. Historical verification records remain labeled as historical. This documentation-only update passed `git diff --check`, type checking, lint, 98 unit tests, and 23 database tests. Full verification was attempted, but the production build hit a local Turbopack port-binding permission error even after an elevated retry; browser journeys were therefore not run.
+
 ## Completed
 
 - Stage 1: Next.js 16 scaffold (TypeScript, Tailwind v4, ESLint, pnpm, Node 22 via asdf), design tokens, shared UI, app shell, bundled content, twelve garden illustrations, `/styleguide`.
@@ -37,7 +41,9 @@
 
 - Invite cards: `gardens.invite_card` JSON, `src/lib/inviteCard.ts` parsing, `InviteCardView` in three layouts, builder sheet in Settings with live preview, join landing shows the card, `opengraph-image` route paints the link preview with plain boxes (satori has no SVG motif support yet), `generateMetadata` sets Open Graph and Twitter tags with a versioned image URL. Screenshot archive via `pnpm shots` into `screenshots/<date>-<commit>/`.
 
-## Checks performed
+## Historical checks performed
+
+These are records of earlier verification runs, not results from the current checkout. Counts reflect different implementation stages.
 
 - `pnpm test`: engine scoring, validation, turn status, week boundaries (10 tests).
 - `pnpm test:db` against local Supabase: RLS visibility, service-role-only functions, duplicate submissions, concurrent reveals, simultaneous joins into a two-person garden, ninth member rejected, revoked invites, exactly one weekly reward under simultaneous completions, multi-round sessions count once, stale reveal refused (12 tests).
@@ -50,23 +56,25 @@
 - Accessibility: skip link is the first tab stop, the tab bar links show a 3px focus ring under `:focus-visible`, with `prefers-reduced-motion` the start sheet opens with animations at 0.01 ms, focus lands inside the dialog, and Escape closes it.
 - Redesign verification: three end-to-end specs green after the restyle, screenshots compared before and after at 390px (home, games, garden, memories, each game, reveals, join, welcome, settings), desktop 1280 and tablet 820 home and games, an eight-person garden (home, start sheet, play, early reveal), demo pages under blank variables, retry state unchanged.
 - Quality system baseline: `pnpm check:full` passed locally (95 unit, 23 database, 6 browser journeys against the production build).
-- Final run (all green): `pnpm test` 61 tests, `pnpm test:db` 12 tests, `pnpm test:e2e` 3 specs, `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm build`.
+- Earlier implementation-stage run (all green): `pnpm test` 61 tests, `pnpm test:db` 12 tests, `pnpm test:e2e` 3 specs, `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm build`.
 
-## Configuration still needed
+## Setup requirements
+
+These describe setup for a new environment; they do not establish whether this checkout or a deployment is already configured.
 
 - `.env.local` with Supabase URL, publishable key, and secret key (see `.env.example`).
 - Local stack: `pnpm supabase start` (Docker), then `pnpm supabase db reset` to apply migrations. See AGENTS.md for the Docker credential note on this machine.
 
 ## Known limitations
 
-- Guest accounts live in one browser. No email login or recovery by design.
-- Polling instead of realtime. Updates land within about four seconds while the tab is visible.
+- Guest accounts live in one browser until an email is attached in Settings; email links or codes then allow sign-in on another device.
+- Realtime updates and presence use polling as a fallback. There are no notifications when the tab is closed.
 - In-memory throttling per server instance.
-- Light appearance only.
+- Appearance follows the device’s light or dark setting; there is no manual switch.
 - A memories spec step was observed to flake once when a note was saved while a reaction request was still in flight. The test now waits for the network to settle. Not reproduced since.
 
 ## Next steps
 
-- Deploy: create the Supabase project, apply the migration, set the variables on Vercel with Root Directory `little-spectrum`, and play a round from two phones.
-- Optional later: Supabase Realtime instead of polling, dark mode, removing members.
+- Deploy: create the Supabase project, apply all migrations in filename order, set the variables on Vercel with Root Directory `little-spectrum`, and play a round from two phones.
+- Follow `ROADMAP.md` for refinements and future capabilities, including member management and a manual appearance switch.
 

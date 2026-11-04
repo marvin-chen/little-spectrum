@@ -62,10 +62,10 @@ Optional: add `{{ .Token }}` to the magic link email template so people can type
 
 ### 3. Apply the migration and storage configuration
 
-The schema, row level security policies, atomic game functions, and the private `photos` bucket are all in `supabase/migrations/20261029000000_init.sql`.
+The schema, row level security policies, atomic game functions, and private `photos` bucket start in `supabase/migrations/20261029000000_init.sql`. Later migrations add Realtime, more themes, and invite cards. Apply all migrations in filename order.
 Either:
 
-- Open **SQL Editor** in the dashboard, paste the whole file, and run it, or
+- Open **SQL Editor** in the dashboard, run each file from `supabase/migrations/` in filename order, or
 - Use the CLI from this folder: `pnpm supabase login`, `pnpm supabase link --project-ref <your-project-ref>`, then `pnpm supabase db push`.
 
 Nothing else needs to be configured in Storage: the bucket is private and only the server touches it.
@@ -112,7 +112,7 @@ pnpm check:full   # plus production build, database and policy tests, browser jo
 
 `check:full` needs Docker, `pnpm supabase start`, `.env.local` pointing at it, and `pnpm exec playwright install chromium` once.
 `pnpm shots` archives screenshots of every page under `screenshots/<date>-<commit>/`.
-Both checks run in GitHub Actions on every push. [TESTING.md](./TESTING.md) explains what each check protects and how to investigate a failure.
+Fast checks run on every push and pull request. Full verification runs on pull requests, pushes to `main`, manual dispatches, and a weekly schedule. [TESTING.md](./TESTING.md) explains what each check protects and how to investigate a failure.
 
 ## How it is put together
 
@@ -136,6 +136,6 @@ Both checks run in GitHub Actions on every push. [TESTING.md](./TESTING.md) expl
 - Guest accounts live in one browser until an email is attached in Settings. After that, a sign-in link restores the gardens on any device.
 - Live updates use Supabase Realtime (free tier: 200 concurrent connections, 2 million messages a month), with polling as the fallback. There is no push notification when the tab is closed.
 - Request throttling is in memory per server instance, which is fine for a personal project but not a hard guarantee on serverless hosting.
-- Light appearance only. Dark mode was left out to keep the core experience polished.
+- Appearance follows the device’s light or dark setting. A manual appearance switch is not implemented.
 - Deleting a photo after a reveal leaves a "Photo removed" note in the memory rather than rewriting the result.
 - Gardens cannot shrink back from eight to two, and members cannot be removed. Pausing or rotating the invite link stops new people from joining.

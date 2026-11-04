@@ -4,7 +4,7 @@ Little Spectrum is a private, mobile-first website where long-distance friends p
 "A little color. A little closer."
 
 The application lives in [`little-spectrum/`](./little-spectrum/).
-This root folder only holds this README and the `.gitignore`.
+The repository root also holds `.gitignore` and the CI workflows in `.github/workflows/`.
 
 ## Start here
 
@@ -19,7 +19,7 @@ Node 22 and pnpm are pinned in `little-spectrum/.tool-versions` (asdf).
 
 - Demo mode: with no Supabase keys the site runs a read-only sample garden at `/demo` that also explains how to enable real multiplayer.
 - Real multiplayer locally: `pnpm supabase start` (needs Docker), copy the printed URL and keys into `.env.local`, restart `pnpm dev`.
-- Real friends on the internet: follow the setup guide in [`little-spectrum/README.md`](./little-spectrum/README.md). It covers creating a free Supabase project, enabling anonymous sign-ins, applying the migration, environment variables, deploying to Vercel Hobby with Root Directory `little-spectrum`, and the free plan limits.
+- Real friends on the internet: follow the setup guide in [`little-spectrum/README.md`](./little-spectrum/README.md). It covers creating a free Supabase project, enabling anonymous sign-ins, applying all migrations, environment variables, deploying to Vercel Hobby with Root Directory `little-spectrum`, and the free plan limits.
 
 ## Checks
 

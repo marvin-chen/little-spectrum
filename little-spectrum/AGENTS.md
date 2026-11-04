@@ -17,14 +17,14 @@ Read it first, then `SPEC.md` (product specification, the source of truth for be
 
 Little Spectrum is a private, mobile-first website where long-distance friends play six short asynchronous games, share photos, and grow an illustrated garden together.
 It is a small personal, noncommercial project that must run on free tiers only: Next.js on Vercel Hobby, Supabase Free for Postgres, anonymous auth, and private photo storage.
-There are no paid APIs, no email or SMS, no cron jobs, and no always-on server.
+There are no paid APIs, no SMS, no scheduled jobs for gameplay, and no always-on server. Optional email links or codes let guests keep their accounts and sign in on another device.
 
 ## Repository layout
 
-The git root is one level up and doubles as the author's home directory.
-The root `.gitignore` is a whitelist: only `README.md`, `.gitignore`, and `little-spectrum/` are tracked.
-The root `AGENTS.md` is the author's personal global instructions file (symlinked from `~/.claude/CLAUDE.md`) and is intentionally untracked.
-Never run `git add -A` from the root. Stage `little-spectrum`, `README.md`, and `.gitignore` explicitly.
+The Git root is the project checkout, one level above this application directory.
+It contains the root README, `.gitignore`, `.github/workflows/`, and `little-spectrum/`.
+The root `.gitignore` ignores `.DS_Store`; application ignore rules live in `little-spectrum/.gitignore`.
+Stage intended files explicitly and inspect the diff before committing.
 
 ```
 little-spectrum/               the Next.js application (Vercel Root Directory)
@@ -38,6 +38,7 @@ little-spectrum/               the Next.js application (Vercel Root Directory)
   src/app/                     App Router routes
     page.tsx                   landing, redirects signed-in users to their last garden
     welcome/ start/ join/      onboarding: profile, create garden, accept invitation
+    signin/ auth/callback/    email link or code sign-in and callback
     g/[gardenId]/              garden shell: home, games, play/[sessionId], garden, memories, settings
     api/photos/                photo upload route (multipart) and delete action
     demo/                      read-only demo mode, used when Supabase env vars are missing
@@ -55,7 +56,7 @@ little-spectrum/               the Next.js application (Vercel Root Directory)
     shell/                     AppShell with bottom tab bar on mobile and sidebar on desktop
     garden/                    GardenScene and the twelve illustrated items
     games/<game>/              play screen (client) and reveal component (server safe) per game
-    session/                   SessionFrame, AutoRefresh polling, early reveal sheet, session rows
+    session/                   SessionFrame, Realtime/presence with polling fallback, early reveal sheet, session rows
     memories/                  memory cards with reactions and notes
   src/content/                 bundled prompts, questions, categories, ranking sets, photo prompts
   tests/db/                    vitest integration tests against a local Supabase
@@ -64,14 +65,14 @@ little-spectrum/               the Next.js application (Vercel Root Directory)
 
 ## Architecture in one minute
 
-- Identity: Supabase anonymous auth. A profile (display name, avatar string "icon:color") is required before anything else.
+- Identity: Supabase anonymous auth with optional email account portability. A profile (display name, avatar string "icon:color") is required before anything else.
 - Gardens have a capacity of 2 or 8 and store the creator's timezone. Membership and game participation are separate.
 - Every game is a session with locked participants, a prompt snapshot, an optional secret, submissions per round, and a result written at reveal.
 - The engine interface in `src/lib/games/engine.ts` defines pickPrompt, validateSubmission, isRoundComplete, earlyRevealCheck, computeReveal, view (per viewer, never leaks secrets), optional hydrateView (signed URLs), and turnStatus (home copy).
 - Reads use the service role client with explicit membership and participation checks in `src/lib/data`. Views are shaped per viewer before reaching the browser.
 - Writes go through SECURITY DEFINER Postgres functions that only the service role can execute: join with a capacity lock, submit with a session lock, reveal with growth and the weekly reward awarded exactly once.
 - Row level security read policies exist as defense in depth and are tested in `tests/db`.
-- Updates arrive through polling (`AutoRefresh`) every few seconds while the tab is visible. No realtime subscriptions.
+- Updates use Supabase Realtime through `useLiveChannel`, with presence on game pages. Polling is the fallback, slows when connected, and pauses in background tabs.
 - Growth: one point per completed session, three in a Monday to Sunday week unlock one deterministic garden item, at most one per week, never removed.
 
 ## Working on it
@@ -94,7 +95,7 @@ Keep this list short and concrete. Add a line whenever a mistake or a non-obviou
 
 - Never add Claude or any agent as a commit author or co-author. Commits carry only the human author.
 - Node is managed by asdf. Run commands from this directory so `.tool-versions` resolves Node 22, or export `ASDF_NODEJS_VERSION=22.23.4`.
-- The git repository root is the home directory, one level up. Only `little-spectrum/`, `README.md`, and `.gitignore` are tracked there. Stage files explicitly, never with `git add -A` from the root.
+- The Git root is the project checkout, one level above the application directory. Run `git rev-parse --show-toplevel` if unsure, and stage intended files explicitly.
 - Local Supabase runs through Docker on colima. The user's Docker credential helpers are not on PATH, so start it with an isolated config: `DOCKER_CONFIG=<empty dir with {} config.json> DOCKER_HOST=unix://$HOME/.colima/default/docker.sock pnpm supabase start -x studio,imgproxy,logflare,vector,edge-runtime,postgres-meta,supavisor`.
 - Supabase grants EXECUTE on new functions to `anon` and `authenticated` through default privileges. Revoking from `public` is not enough. Revoke from `public, anon, authenticated` explicitly and keep the integration test that proves a signed-in user cannot call privileged functions.
 - Full-page Playwright screenshots draw fixed elements (tab bar, sheets) mid-page. Judge layout from viewport screenshots.
