@@ -1,5 +1,13 @@
 # Progress
 
+## Game contributor foundation (in progress)
+
+1. Complete: extracted typed engine contract (compatible helper re-exports) and participant-safe session projection; documented responsibilities and admission criteria in GAME_CONTRACT.md. Production migration remains last. `pnpm check` passed: typecheck, lint, 107 unit tests.
+2. Add deterministic fixture builders and lifecycle/privacy contract tests, including two/eight players and partial reveals.
+3. Last: migrate the six existing games and production session projection onto the shared foundation, preserving their rules and catalog.
+
+Each checkpoint gets checks and a separate commit. No new games or catalog expansion in this milestone.
+
 ## Contributor foundation
 
 - Added root contributor workflow and ownership map, scoped-project/bug issue templates, and PR template. Fixed the ignored environment template so new checkouts can follow setup without credentials. A clean temporary source snapshot installed all 400 packages from the local cache with the frozen lockfile, passed fast checks (104 unit tests), loaded the labelled demo without page errors, and passed all 6 documented demo-only browser checks with blank backend values. Local links, issue frontmatter, blank template credentials, and ignore behavior were checked. An independent contributor trial is still needed. Final `pnpm check:full` passed (104 unit, 23 database, 15 browser tests, build, lint, typecheck).
@@ -11,7 +19,7 @@
 - Milestone 1: canonical button variants, named icon actions, associated field help/errors, shared feedback, and contributor UI contract. Regression coverage reproduces the previously missing field description. Verified with `pnpm check:full`: 103 unit tests, 23 database tests, production build, and 8 browser journeys passed. Screenshot-only spec is reserved for the final archive.
 - Milestone 2: native-radio ChoiceGroup used by True Colors, ConfirmationSheet used by invite and capacity settings, shared settings feedback, and a 44px named sheet-close action. Added real-flow keyboard and confirmation coverage. `pnpm check:full` passed: 104 unit, 23 database, 9 browser journeys, and build. Radio inputs cover their full visible row after pointer testing caught the initial clipped target.
 - Milestone 3: interactive style-guide recipes with real controls, code examples, form validation, disabled choices, pending/error confirmation flows, and light/dark reduced-motion browser coverage on phone and desktop. Fixed the reproduced Shift+Tab escape from sheet controls. `pnpm check:full` passed: 104 unit tests, 23 database tests, production build, and 15 browser tests. `pnpm shots shared-ui-foundation` passed all 11 mobile journeys and archived 95 images; reviewed representative form, choice, game, invite-sheet, and confirmation captures. The no-mistakes executable was unavailable, so validation used repository checks and direct diff review.
-- The planning PRD remains a local draft and is not part of these implementation commits.
+- The planning PRD was removed at the owner’s request and is not part of implementation commits.
 
 ## Documentation maintenance
 

@@ -60,6 +60,7 @@ If you turn on branch protection for `main`, require these two checks: `Fast che
 
 | Behavior | Checks |
 |---|---|
+| Shared game projection rejects outsiders before hydration and excludes raw session data | `src/lib/games/sessionView.test.ts` |
 | Shared UI labels, descriptions, pending actions, feedback, radio navigation, settings confirmations, focus containment/return, dialog errors, light/dark reduced-motion examples on phone and desktop | `src/components/ui/primitives.test.ts`, `tests/e2e/ui.spec.ts` |
 | Garden creation, invitations, joining, capacity, revoked links, existing members, isolation | `tests/db/capacity.test.ts`, `tests/db/permissions.test.ts`, `tests/e2e/hue-knew.spec.ts` |
 | Starting sessions, participant selection, non-participant access, committed answers, refresh, normal and early reveals, late submissions, duplicate completions | `tests/db/permissions.test.ts`, `tests/db/sessions.test.ts`, `tests/db/rewards.test.ts`, `tests/e2e/all-games.spec.ts` |

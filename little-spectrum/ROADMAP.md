@@ -12,7 +12,7 @@ Completed: designer handoff guide and current asset inventory (`DESIGN.md`, `ASS
 
 Contributor foundation: setup guide, ownership map, issue/PR templates, and a first-contribution walkthrough are implemented; clean-snapshot dependency installation, fast checks, demo loading, and six demo-only browser checks passed. An external contributor trial remains the usability acceptance step.
 
-Next collaborator-readiness work: a game extension checklist and fixtures, then a pilot feature contribution. The broader accessibility audit below remains separate from the shared-control coverage completed here.
+Current collaborator-readiness work: [game contract](GAME_CONTRACT.md), deterministic fixtures and privacy/lifecycle tests, then (last) migrate the six existing games to reuse the foundation. Keep the six-game catalog focused; new mechanics need a separate admission decision. Next: a pilot feature contribution. The broader accessibility audit below remains separate from the shared-control coverage completed here.
 
 The feature backlog below remains available for later prioritization.
 Sizes are rough: S is an afternoon, M is a day or two, L is a week.
