@@ -8,7 +8,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import type { SessionView } from "@/lib/data/sessions";
+import type { SessionView } from "@/lib/games/sessionView";
 import { joinNames } from "@/lib/games/engine";
 import { MAX_ATTEMPTS, MAX_WORD_LENGTH, type SameWavelengthView } from "@/lib/games/sameWavelength";
 import { SameWavelengthReveal, SameWavelengthRoundTiles } from "./SameWavelengthReveal";

@@ -6,7 +6,7 @@ import { EarlyRevealButton } from "@/components/session/EarlyRevealButton";
 import { LivePlayers } from "@/components/session/LivePlayers";
 import { cn } from "@/lib/cn";
 import { COLOR_CLASSES } from "@/lib/colors";
-import type { SessionView } from "@/lib/data/sessions";
+import type { SessionView } from "@/lib/games/sessionView";
 import { GAMES } from "@/lib/games";
 
 // Shared chrome for every game: glass header, a tinted stage with the players and status, then the game.

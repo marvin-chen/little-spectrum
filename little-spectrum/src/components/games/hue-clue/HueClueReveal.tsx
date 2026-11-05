@@ -3,7 +3,7 @@ import { CountUp } from "@/components/ui/CountUp";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
-import type { SessionView } from "@/lib/data/sessions";
+import type { SessionView } from "@/lib/games/sessionView";
 import type { HueClueResult } from "@/lib/games/hueClue";
 import { PALETTE } from "@/lib/games/hueCluePalette";
 import { ColorGrid } from "./ColorGrid";

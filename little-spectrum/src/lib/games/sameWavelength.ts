@@ -89,7 +89,7 @@ function currentAnswers(state: SessionState): Array<{ userId: string; word: stri
   return answers;
 }
 
-export const sameWavelength: GameEngine = {
+export const sameWavelength: GameEngine<SameWavelengthView> = {
   key: "same-wavelength",
 
   pickPrompt(recentPromptIds, _participants, random) {

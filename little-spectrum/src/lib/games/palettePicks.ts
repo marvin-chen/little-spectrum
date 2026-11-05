@@ -72,7 +72,7 @@ function rankingsOf(state: SessionState): Array<{ userId: string; order: number[
     .map((s) => ({ userId: s.userId, order: [...((s.payload as { order: number[] }).order)] }));
 }
 
-export const palettePicks: GameEngine = {
+export const palettePicks: GameEngine<PalettePicksView> = {
   key: "palette-picks",
 
   pickPrompt(recentPromptIds, _participants, random) {

@@ -149,3 +149,5 @@ Read [UI.md](./UI.md) for component contracts, import conventions, and acceptanc
 - Appearance follows the device’s light or dark setting. A manual appearance switch is not implemented.
 - Deleting a photo after a reveal leaves a "Photo removed" note in the memory rather than rewriting the result.
 - Gardens cannot shrink back from eight to two, and members cannot be removed. Pausing or rotating the invite link stops new people from joining.
+
+Game contributions: [GAME_CONTRACT.md](GAME_CONTRACT.md) covers ownership, integration, privacy, fixtures, and acceptance. Preview synthetic examples at `/styleguide/games`.

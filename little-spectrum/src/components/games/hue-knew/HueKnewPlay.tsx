@@ -7,7 +7,7 @@ import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionI
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Slider } from "@/components/ui/Slider";
-import type { SessionView } from "@/lib/data/sessions";
+import type { SessionView } from "@/lib/games/sessionView";
 import { joinNames } from "@/lib/games/engine";
 import { MAX_CLUE_LENGTH, type HueKnewView } from "@/lib/games/hueKnew";
 import { HueKnewReveal } from "./HueKnewReveal";

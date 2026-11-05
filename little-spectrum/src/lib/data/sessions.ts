@@ -3,7 +3,6 @@ import type { ParticipantRow, PhotoRow, ProfileRow, SessionRow, SubmissionRow } 
 import { GAMES, type GameKey, isGameKey } from "@/lib/games";
 import {
   pendingParticipants,
-  type EarlyRevealCheck,
   type Participant,
   type SessionState,
   type TurnStatus,
@@ -12,25 +11,8 @@ import { getEngine, isGameAvailable } from "@/lib/games/registry";
 import { createServiceClient } from "@/lib/supabase/server";
 import { UUID_RE } from "./gardens";
 
-export type SessionParticipant = { userId: string; name: string; avatar: string };
-
-export type SessionView = {
-  id: string;
-  gardenId: string;
-  game: GameKey;
-  status: "active" | "revealed";
-  round: number;
-  createdBy: string;
-  clueGiverId: string | null;
-  createdAt: string;
-  revealedAt: string | null;
-  earlyReveal: boolean;
-  participants: SessionParticipant[];
-  isCreator: boolean;
-  turn: TurnStatus;
-  earlyReveal_: EarlyRevealCheck & { pendingNames: string[] };
-  view: unknown;
-};
+import { projectSession, type SessionParticipant, type SessionView } from "@/lib/games/sessionView";
+export type { SessionParticipant, SessionView } from "@/lib/games/sessionView";
 
 export type SessionCard = {
   id: string;
@@ -146,30 +128,7 @@ function cardFor(state: SessionState, userId: string): SessionCard {
 }
 
 export async function viewFor(state: SessionState, userId: string): Promise<SessionView> {
-  const engine = getEngine(state.game);
-  const check = engine.earlyRevealCheck(state);
-  const baseView = engine.view(state, userId);
-  const view = engine.hydrateView ? await engine.hydrateView(state, userId, baseView) : baseView;
-  return {
-    id: state.id,
-    gardenId: state.gardenId,
-    game: state.game,
-    status: state.status,
-    round: state.round,
-    createdBy: state.createdBy,
-    clueGiverId: state.clueGiverId,
-    createdAt: state.createdAt,
-    revealedAt: state.revealedAt,
-    earlyReveal: state.earlyReveal,
-    participants: state.participants.map(({ userId, name, avatar }) => ({ userId, name, avatar })),
-    isCreator: state.createdBy === userId,
-    turn: engine.turnStatus(state, userId),
-    earlyReveal_: {
-      ...check,
-      pendingNames: check.pending.map((id) => state.participants.find((p) => p.userId === id)?.name ?? "Someone"),
-    },
-    view,
-  };
+  return projectSession(getEngine(state.game), state, userId);
 }
 
 // Reveals the current round when every required submission is in. Safe to call repeatedly.

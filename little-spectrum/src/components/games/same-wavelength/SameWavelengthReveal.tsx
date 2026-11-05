@@ -3,7 +3,7 @@ import { Sparkles } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
-import type { SessionParticipant, SessionView } from "@/lib/data/sessions";
+import type { SessionParticipant, SessionView } from "@/lib/games/sessionView";
 import { joinNames } from "@/lib/games/engine";
 import type { SameWavelengthResult, SameWavelengthRound } from "@/lib/games/sameWavelength";
 

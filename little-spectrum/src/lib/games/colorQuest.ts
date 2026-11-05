@@ -54,7 +54,7 @@ function myPhotoRef(state: SessionState, userId: string): { photoId: string; cap
   return { photoId: submission.payload.photoId, caption: (submission.payload.caption as string | null) ?? null };
 }
 
-export const colorQuest: GameEngine = {
+export const colorQuest: GameEngine<ColorQuestView> = {
   key: "color-quest",
 
   pickPrompt(recentPromptIds, _participants, random) {
@@ -128,7 +128,7 @@ export const colorQuest: GameEngine = {
   },
 
   async hydrateView(state, userId, view) {
-    const v = view as ColorQuestView;
+    const v = view;
     const wanted = new Set<string>();
     const paths = new Map<string, string>();
     const consider = (p: PhotoView | null) => {

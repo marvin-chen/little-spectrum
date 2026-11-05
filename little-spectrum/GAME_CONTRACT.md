@@ -42,7 +42,7 @@ Import `GameEngine<View>` and server state types from `src/lib/games/contract.ts
 6. Add a browser journey through actual submission and reveal. Check privacy with a second participant and outsider, refresh, narrow/wide screens, light/dark, and reduced motion. Follow [TESTING.md](TESTING.md); a fixture test does not replace database or browser tests.
 7. Update roadmap, progress, asset inventory if needed, and screenshot archive for visible changes. Run `pnpm check` per commit and `pnpm check:full` before final push.
 
-Current milestone order: shared contract, fixture toolkit, then migration of all six current games. Existing visual behavior and rules remain the reference during migration.
+All six current engines use the typed contract, and production sessions use the shared projection. Existing rules remain unchanged.
 
 ## Fixture walkthrough
 
@@ -53,3 +53,5 @@ Current milestone order: shared contract, fixture toolkit, then migration of all
 Raw fixture state includes synthetic secrets and is for server code and tests only. Call `previewFixture(engine, state, viewerId)` before passing props to a preview. It checks participation, calls the real viewer projection, and intentionally skips URL signing. Photo URLs stay null; deleted-photo examples remove the reference after reveal. No credentials, real people, external images, or network calls are needed. Do not wire preview controls to production actions.
 
 For a new game, supply its own valid inputs and exceptional examples while reusing these builders. The table-driven tests in `fixtures/fixtures.test.ts` demonstrate lifecycle checks. Add precise privacy assertions for your payload; passing the shared matrix alone does not prove that a new view cannot leak answers.
+
+Visit `/styleguide/games` for read-only fixture inspection without signing in. Choose a game, lifecycle state, player count, and first/last viewer. Completed examples render the shared `GameReveal` component also used by Memories; active examples expose only viewer-safe data. This page intentionally has no submit, upload, early-reveal action, or play-again controls. Use actual browser journeys to verify those interactions.

@@ -7,14 +7,14 @@ import { palettePicks } from "./palettePicks";
 import { sameWavelength } from "./sameWavelength";
 import { trueColors } from "./trueColors";
 
-const engines: Record<GameKey, GameEngine> = {
+const engines = {
   "hue-knew": hueKnew,
   "true-colors": trueColors,
   "hue-clue": hueClue,
   "same-wavelength": sameWavelength,
   "palette-picks": palettePicks,
   "color-quest": colorQuest,
-};
+} satisfies Record<GameKey, GameEngine>;
 
 export function getEngine(game: GameKey): GameEngine {
   return engines[game];

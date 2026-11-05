@@ -63,7 +63,7 @@ function isOption(value: unknown): value is number {
   return Number.isInteger(value) && (value as number) >= 0 && (value as number) <= 3;
 }
 
-export const trueColors: GameEngine = {
+export const trueColors: GameEngine<TrueColorsView> = {
   key: "true-colors",
 
   pickPrompt(recentPromptIds, participants, random) {

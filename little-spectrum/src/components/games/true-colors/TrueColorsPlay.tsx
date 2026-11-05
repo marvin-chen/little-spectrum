@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ChoiceGroup } from "@/components/ui/ChoiceGroup";
 import { Feedback } from "@/components/ui/Feedback";
-import type { SessionView } from "@/lib/data/sessions";
+import type { SessionView } from "@/lib/games/sessionView";
 import { joinNames } from "@/lib/games/engine";
 import type { TrueColorsView } from "@/lib/games/trueColors";
 import { TrueColorsReveal } from "./TrueColorsReveal";

@@ -12,7 +12,7 @@ import { Card } from "@/components/ui/Card";
 import { Sheet } from "@/components/ui/Sheet";
 import { cn } from "@/lib/cn";
 import { COLOR_CLASSES } from "@/lib/colors";
-import type { SessionView } from "@/lib/data/sessions";
+import type { SessionView } from "@/lib/games/sessionView";
 import { joinNames } from "@/lib/games/engine";
 import type { ColorQuestView } from "@/lib/games/colorQuest";
 import { MAX_CAPTION } from "@/lib/photos/limits";

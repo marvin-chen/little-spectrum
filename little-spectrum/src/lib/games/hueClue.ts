@@ -73,7 +73,7 @@ export function suggestNextClueGiver(state: SessionState): string {
   return ordered[(index + 1) % ordered.length]?.userId ?? ordered[0].userId;
 }
 
-export const hueClue: GameEngine = {
+export const hueClue: GameEngine<HueClueView> = {
   key: "hue-clue",
 
   pickPrompt(_recent, _participants, random) {

@@ -1,8 +1,16 @@
 # Roadmap
 
-## Current milestone: shared UI foundation
+## Current milestone: game contributor foundation
 
-Implement an internal component library before assigning independent features. Track implementation and checks in `PROGRESS.md`; contributor-facing contracts live in `UI.md`.
+1. Completed: shared typed engine contract, participant-safe projection, responsibility boundaries, and game admission checklist.
+2. Completed: deterministic lifecycle fixtures with privacy checks for two, three, and eight participants.
+3. Completed last: migrate the six current engines and session projection; share reveal rendering between Memories and read-only fixture previews.
+
+See [GAME_CONTRACT.md](GAME_CONTRACT.md) and `/styleguide/games`. Final checks and screenshot evidence are tracked in `PROGRESS.md`. Next is a bounded pilot contribution, with an external contributor setup trial still pending.
+
+## Completed foundation: shared UI
+
+The internal component library is ready for feature contributions. Implementation and checks are tracked in `PROGRESS.md`; contributor-facing contracts live in `UI.md`.
 
 1. Completed: standardize primitive APIs, accessible fields, icon actions, and feedback; migrate legacy button variants.
 2. Completed: extract reusable answer selection and confirmation patterns; migrate a game and settings flow.
@@ -12,7 +20,7 @@ Completed: designer handoff guide and current asset inventory (`DESIGN.md`, `ASS
 
 Contributor foundation: setup guide, ownership map, issue/PR templates, and a first-contribution walkthrough are implemented; clean-snapshot dependency installation, fast checks, demo loading, and six demo-only browser checks passed. An external contributor trial remains the usability acceptance step.
 
-Current collaborator-readiness work: [game contract](GAME_CONTRACT.md), deterministic fixtures and privacy/lifecycle tests, then (last) migrate the six existing games to reuse the foundation. Keep the six-game catalog focused; new mechanics need a separate admission decision. Next: a pilot feature contribution. The broader accessibility audit below remains separate from the shared-control coverage completed here.
+Keep the six-game catalog focused; new mechanics need a separate admission decision. The broader accessibility audit below remains separate from the shared-control coverage completed here.
 
 The feature backlog below remains available for later prioritization.
 Sizes are rough: S is an afternoon, M is a day or two, L is a week.

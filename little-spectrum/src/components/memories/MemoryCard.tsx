@@ -1,13 +1,7 @@
+import { GameReveal } from "@/components/games/GameReveal";
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
-import { ColorQuestReveal } from "@/components/games/color-quest/ColorQuestReveal";
 import { GameIcon } from "@/components/games/GameIcon";
-import { HueClueReveal } from "@/components/games/hue-clue/HueClueReveal";
-import { HueKnewReveal } from "@/components/games/hue-knew/HueKnewReveal";
-import { PalettePicksReveal } from "@/components/games/palette-picks/PalettePicksReveal";
-import { SameWavelengthReveal } from "@/components/games/same-wavelength/SameWavelengthReveal";
-import { TrueColorsReveal } from "@/components/games/true-colors/TrueColorsReveal";
 import { AvatarStack } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
@@ -63,34 +57,6 @@ function contextFor(session: SessionView): string | null {
   }
 }
 
-function revealFor(session: SessionView, userId: string): ReactNode {
-  switch (session.game) {
-    case "hue-knew": {
-      const v = session.view as HueKnewView;
-      return v.result ? <HueKnewReveal session={session} result={v.result} left={v.left} right={v.right} userId={userId} compact /> : null;
-    }
-    case "true-colors": {
-      const v = session.view as TrueColorsView;
-      return v.result ? (
-        <TrueColorsReveal session={session} prompt={{ text: v.question, options: v.options }} result={v.result} userId={userId} compact />
-      ) : null;
-    }
-    case "hue-clue": {
-      const v = session.view as HueClueView;
-      return v.result ? <HueClueReveal session={session} result={v.result} userId={userId} compact /> : null;
-    }
-    case "same-wavelength": {
-      const v = session.view as SameWavelengthView;
-      return v.result ? <SameWavelengthReveal session={session} result={v.result} userId={userId} compact /> : null;
-    }
-    case "palette-picks": {
-      const v = session.view as PalettePicksView;
-      return v.result ? <PalettePicksReveal session={session} result={v.result} items={v.items} userId={userId} compact /> : null;
-    }
-    case "color-quest":
-      return <ColorQuestReveal session={session} game={session.view as ColorQuestView} userId={userId} compact />;
-  }
-}
 
 export function MemoryCard({ gardenId, memory, userId }: { gardenId: string; memory: Memory; userId: string }) {
   const { session } = memory;
@@ -120,7 +86,7 @@ export function MemoryCard({ gardenId, memory, userId }: { gardenId: string; mem
         <AvatarStack people={session.participants.map((p) => ({ id: p.userId, name: p.name, avatar: p.avatar }))} size="xs" max={4} />
         <ChevronRight className="size-5 shrink-0 text-ink-3" aria-hidden />
       </Link>
-      {revealFor(session, userId)}
+      <GameReveal session={session} userId={userId} compact />
       <Card className="p-4">
         <MemoryFooter
           gardenId={gardenId}

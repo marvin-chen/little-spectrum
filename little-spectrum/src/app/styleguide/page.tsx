@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AppShell } from "@/components/shell/AppShell";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { StyleguideClient } from "./StyleguideClient";
@@ -12,6 +13,7 @@ export default function StyleguidePage() {
         title="Style guide"
         subtitle="Shared components, interactive examples, and contributor guidance."
       />
+      <Link href="/styleguide/games" className="text-footnote underline">Explore game fixtures</Link>
       <StyleguideClient />
     </AppShell>
   );

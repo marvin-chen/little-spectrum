@@ -6,7 +6,7 @@ import { Lock, RotateCcw, Sparkles } from "lucide-react";
 import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionId]/actions";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import type { SessionView } from "@/lib/data/sessions";
+import type { SessionView } from "@/lib/games/sessionView";
 import { joinNames } from "@/lib/games/engine";
 import { MAX_CLUE_CHARS, MAX_CLUE_WORDS, type Cell, type HueClueView } from "@/lib/games/hueClue";
 import { PALETTE } from "@/lib/games/hueCluePalette";

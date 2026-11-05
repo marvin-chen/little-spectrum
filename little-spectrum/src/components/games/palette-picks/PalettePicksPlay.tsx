@@ -6,7 +6,7 @@ import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionI
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
-import type { SessionView } from "@/lib/data/sessions";
+import type { SessionView } from "@/lib/games/sessionView";
 import { joinNames } from "@/lib/games/engine";
 import type { PalettePicksView } from "@/lib/games/palettePicks";
 import { PalettePicksReveal } from "./PalettePicksReveal";

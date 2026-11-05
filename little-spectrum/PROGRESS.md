@@ -1,12 +1,14 @@
 # Progress
 
-## Game contributor foundation (in progress)
+## Game contributor foundation
 
 1. Complete: extracted typed engine contract (compatible helper re-exports) and participant-safe session projection; documented responsibilities and admission criteria in GAME_CONTRACT.md. Production migration remains last. `pnpm check` passed: typecheck, lint, 107 unit tests.
 2. Complete: deterministic builders and examples for all six games at two/three/eight players, initial/waiting/revealed/early states, plus privacy, duplicate guards, round advancement and deleted-photo tests. Preview projection skips live URL signing. `pnpm check` passed: typecheck, lint, 139 unit tests.
-3. Last: migrate the six existing games and production session projection onto the shared foundation, preserving their rules and catalog.
+3. Implemented last: all six engines now declare their view type against the shared contract; production session projection reuses the participant-safe helper. Shared view types no longer originate in the server data layer. Memories and `/styleguide/games` reuse the same reveal dispatcher. The read-only preview supports four lifecycle snapshots, two/three/eight participants and first/last viewer, with light/dark phone/desktop coverage and no writes. Rules and the six-game catalog are unchanged. `pnpm check:full` passed: typecheck, lint, build, 139 unit tests, 23 database tests, and 19 browser tests (the screenshot-only test runs in the archive command). `pnpm shots game-contract-fixtures` passed all 13 mobile journeys and archived 119 images; reviewed the new light/dark previews, long participant names, and photo placeholders.
 
-Each checkpoint gets checks and a separate commit. No new games or catalog expansion in this milestone.
+Validation note: the first full run passed build, 139 unit and 23 database tests, plus all new fixture browser checks, but an account journey reported `ERR_NETWORK_IO_SUSPENDED` and a clue submission stalled. On a fresh run with idle sleep prevented, both affected journeys passed without code/test changes; the complete run passed. The archive run also passed these journeys. No assertions were weakened.
+
+Each checkpoint has checks and a separate commit. No new games or catalog expansion in this milestone.
 
 ## Contributor foundation
 
