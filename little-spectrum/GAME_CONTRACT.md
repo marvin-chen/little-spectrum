@@ -22,7 +22,7 @@ Use the repository project issue template. One person owns rules, screens, fixtu
 Import `GameEngine<View>` and server state types from `src/lib/games/contract.ts`. Existing helper imports remain available from `engine.ts`. Declare an explicit view type; the same type flows through `view` and optional `hydrateView`.
 
 - `pickPrompt`: use the supplied random function and recent IDs. Return a prompt snapshot, optional secret, and optional prediction assignments. No network or current clock in rule logic.
-- `validateSubmission`: accept unknown input and return a normalized payload or a friendly error. Enforce game-specific roles, prerequisites, ranges, and duplicate answer rules. The platform separately checks authentication, participation, session status, and stale rounds.
+- `validateSubmission`: accept unknown input and return a normalized payload or a friendly error. Enforce game-specific roles, prerequisites, ranges, and any game-specific duplicate answer rules. The platform separately checks authentication, participation, session status, and stale rounds.
 - `isRoundComplete`: decide whether all required answers are present for the current round.
 - `earlyRevealCheck`: describe eligibility and missing participant IDs. The platform authorizes the creator and commits the reveal.
 - `computeReveal`: compute a result without writes. `final: false` advances the round; it must not award growth. Preserve earlier rounds only when the rules require them.
@@ -43,3 +43,13 @@ Import `GameEngine<View>` and server state types from `src/lib/games/contract.ts
 7. Update roadmap, progress, asset inventory if needed, and screenshot archive for visible changes. Run `pnpm check` per commit and `pnpm check:full` before final push.
 
 Current milestone order: shared contract, fixture toolkit, then migration of all six current games. Existing visual behavior and rules remain the reference during migration.
+
+## Fixture walkthrough
+
+`src/lib/games/fixtures/builders.ts` is the reusable toolkit. Pass your engine into `createFixture(engine, 3)`, then use `submitFixture(engine, state, participantId, input)` to build answers through its real validator. `revealFixture(engine, state)` refuses incomplete rounds; pass `true` only for an eligible early reveal. These helpers return independent state snapshots, model duplicate writes and round advancement, and never touch a backend or award growth.
+
+`examples.ts` supplies the six core games with `initial`, `waiting`, `revealed`, and `early` examples. A waiting snapshot is captured after submission and before automatic completion processing; for two players that can already be a complete round. Use three or eight players for an early reveal with someone missing.
+
+Raw fixture state includes synthetic secrets and is for server code and tests only. Call `previewFixture(engine, state, viewerId)` before passing props to a preview. It checks participation, calls the real viewer projection, and intentionally skips URL signing. Photo URLs stay null; deleted-photo examples remove the reference after reveal. No credentials, real people, external images, or network calls are needed. Do not wire preview controls to production actions.
+
+For a new game, supply its own valid inputs and exceptional examples while reusing these builders. The table-driven tests in `fixtures/fixtures.test.ts` demonstrate lifecycle checks. Add precise privacy assertions for your payload; passing the shared matrix alone does not prove that a new view cannot leak answers.

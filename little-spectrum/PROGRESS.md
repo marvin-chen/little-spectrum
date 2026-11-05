@@ -3,7 +3,7 @@
 ## Game contributor foundation (in progress)
 
 1. Complete: extracted typed engine contract (compatible helper re-exports) and participant-safe session projection; documented responsibilities and admission criteria in GAME_CONTRACT.md. Production migration remains last. `pnpm check` passed: typecheck, lint, 107 unit tests.
-2. Add deterministic fixture builders and lifecycle/privacy contract tests, including two/eight players and partial reveals.
+2. Complete: deterministic builders and examples for all six games at two/three/eight players, initial/waiting/revealed/early states, plus privacy, duplicate guards, round advancement and deleted-photo tests. Preview projection skips live URL signing. `pnpm check` passed: typecheck, lint, 139 unit tests.
 3. Last: migrate the six existing games and production session projection onto the shared foundation, preserving their rules and catalog.
 
 Each checkpoint gets checks and a separate commit. No new games or catalog expansion in this milestone.
