@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Archives a labeled set of screenshots of every page and game so the design can be compared over time.
-// Usage: pnpm shots [label]   (needs a running server on E2E_BASE_URL or http://localhost:3000)
+// Usage: pnpm shots [label] [Playwright test paths/options]   (needs a running server on E2E_BASE_URL or http://localhost:3000)
 import { execSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -30,7 +30,7 @@ if (existsSync(dir)) {
 }
 mkdirSync(dir, { recursive: true });
 
-const result = spawnSync("pnpm", ["exec", "playwright", "test", "--project=mobile-chromium"], {
+const result = spawnSync("pnpm", ["exec", "playwright", "test", "--project=mobile-chromium", ...process.argv.slice(3)], {
   stdio: "inherit",
   env: { ...process.env, E2E_SHOTS: dir, E2E_BASE_URL: base },
 });

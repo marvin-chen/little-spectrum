@@ -73,3 +73,26 @@ test("resizing preserves keyboard input, focus and instruction access", async ({
     await shot(page, `layout-keyboard-dark-${width}`);
   }
 });
+
+test("Color Quest photo deletion reflows with enlarged desktop fallback text", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  for (const scenario of ["revealed", "waiting"]) {
+    await page.goto(`/styleguide/games?game=color-quest&scenario=${scenario}&players=8&viewer=last`);
+    // Arial matches the wider desktop fallback metrics that exposed this on Linux CI.
+    await page.addStyleTag({ content: "html { font-size: 200%; } body { font-family: Arial, sans-serif; }" });
+    const remove = page.getByRole("button", { name: "Delete my photo", exact: true });
+    await remove.scrollIntoViewIfNeeded();
+    await expect(remove).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    for (const label of scenario === "revealed" ? ["Delete my photo", "Share another photo"] : ["Delete my photo"]) {
+      const button = page.getByRole("button", { name: label, exact: true });
+      expect(await button.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+    }
+    await remove.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("dialog", { name: "Delete your photo?" })).toBeVisible();
+    await page.getByRole("button", { name: "Keep it", exact: true }).click();
+    await expect(remove).toBeFocused();
+    await shot(page, `color-quest-enlarged-delete-${scenario}`);
+  }
+});

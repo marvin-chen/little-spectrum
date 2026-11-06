@@ -1,5 +1,12 @@
 # Progress
 
+## CI follow-up: Color Quest enlarged text
+
+- Investigated failed full-verification run `42284379913`: the Color Quest desktop fixture exceeded the viewport at 200% text. Reproduced locally with Arial at 390px: “Delete my photo” extended the document to 433px. Default macOS font metrics had missed this in the earlier passing local runs.
+- Allowed the delete control and its wrapper to shrink, and made delete/replay labels wrap with automatic height. Kept the horizontal-overflow assertions intact. Added a deterministic desktop-fallback-font regression for waiting/revealed states, button content fit, keyboard opening, cancellation, and returned focus; it failed before the fix.
+- `pnpm check:full` passed: typecheck, lint, build, 158 unit tests, 23 database tests, and 49 browser tests. The focused screenshot journey passed and archived four reviewed images in `screenshots/color-quest-text-reflow/`. Screenshot tooling now accepts test paths/options after the label so bounded UI fixes can capture only the changed journey.
+- Excluded generated Playwright reports/results from source linting, matching their existing Git ignores; reports remain preserved. The full six-game accessibility audit remains pending.
+
 ## Shared desktop game layout — complete
 
 Implementation checkpoint (`02b90c8`):

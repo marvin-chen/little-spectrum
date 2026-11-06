@@ -199,13 +199,13 @@ function DeleteOwnPhoto({ gardenId, sessionId, photoId, inline }: { gardenId: st
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   const button = (
-    <Button variant={inline ? "plain" : "danger"} size={inline ? "sm" : "md"} icon={<Trash2 className="size-4" aria-hidden />} onClick={() => setOpen(true)} className={inline ? "mt-3 -ml-3 text-danger" : undefined}>
+    <Button variant={inline ? "plain" : "danger"} size={inline ? "sm" : "md"} icon={<Trash2 className="size-4" aria-hidden />} onClick={() => setOpen(true)} className={cn("h-auto! min-h-11 max-w-full whitespace-normal! py-3", inline && "mt-3 -ml-3 text-danger")}>
       Delete my photo
     </Button>
   );
   return (
     <>
-      {inline ? button : <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-footnote text-ink-2">You can remove your photo at any time. The round keeps a note that it was removed.</p><span className="shrink-0">{button}</span></Card>}
+      {inline ? button : <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-footnote text-ink-2">You can remove your photo at any time. The round keeps a note that it was removed.</p><span className="min-w-0 max-w-full">{button}</span></Card>}
       <Sheet
         open={open}
         onClose={() => setOpen(false)}
@@ -263,6 +263,7 @@ function PlayAgain({ gardenId, sessionId }: { gardenId: string; sessionId: strin
         accent="green"
         size="lg"
         full
+        className="h-auto! whitespace-normal! py-3"
         loading={pending}
         icon={<RotateCcw className="size-4" aria-hidden />}
         onClick={() =>

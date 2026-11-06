@@ -60,6 +60,7 @@ If you turn on branch protection for `main`, require these two checks: `Fast che
 
 | Behavior | Checks |
 |---|---|
+| Color Quest actions at 200% text with desktop fallback fonts: no page/button overflow, keyboard delete dialog, cancellation and focus return in waiting/revealed states | `tests/e2e/game-layout.spec.ts` |
 | Shared game layout: phone/tablet/desktop, two/eight players, roles, active/waiting/reveal, larger text reflow, keyboard focus across resize, reduced motion, production sidebar width, no preview backend traffic | `tests/e2e/game-layout.spec.ts`, `tests/e2e/hue-knew.spec.ts` |
 | Actual game screens with local actions: answering/waiting for either viewer, held pending, error/retry retaining input, photo upload/deletion, replay reset, and no network writes on phone/desktop | `src/lib/games/fixtures/localView.test.ts`, `src/lib/games/fixtures/fixtures.test.ts`, `tests/e2e/game-fixtures.spec.ts` |
 | Fixture navigation, all six real reveal components, viewer switching, partial results, light/dark reduced-motion layouts on phone/desktop, no writes | `tests/e2e/game-fixtures.spec.ts` |
@@ -95,7 +96,7 @@ If a check cannot run somewhere (for example no Docker on a laptop), say so in t
 
 `pnpm shots` runs the browser journeys with captures enabled and stores every page and game in `screenshots/<date>-<commit>/` at 390px CSS width, with a README listing the files. The shared-layout matrix also archives labelled 820px tablet, 1280px desktop and 200% text examples, and authenticated 1440px desktop/820px tablet captures.
 Each set is about 7 MB and is committed so the design can be compared across versions.
-Pass a label to name the set, for example `pnpm shots v0.3-dark`.
+Pass a label to name the set, for example `pnpm shots v0.3-dark`. For a bounded UI fix, pass test paths/options after the label to capture only the affected journey, for example `pnpm shots color-quest-text-reflow tests/e2e/game-layout.spec.ts --grep "photo deletion reflows"`.
 
 ## Habits
 
