@@ -3,10 +3,10 @@
 ## Current milestone: game contributor foundation
 
 1. Completed: shared typed engine contract, participant-safe projection, responsibility boundaries, and game admission checklist.
-2. Deterministic lifecycle fixtures with privacy checks for two, three, and eight participants are complete. Priority 2 completion adds actual play screens with local actions, viewer-specific answering/waiting snapshots, pending/error/retry examples, local photo operations, and replay reset; verification is tracked in `PROGRESS.md`.
+2. Completed Priority 2: actual play screens with local actions, viewer-specific answering/waiting snapshots for two, three, and eight participants, pending/error/retry examples, local photo operations, and replay reset. Verification and screenshot evidence are tracked in `PROGRESS.md`.
 3. Completed last: migrate the six current engines and session projection; share reveal rendering between Memories and fixture previews. Interactive previews now also share the production play dispatcher and action interface.
 
-See [GAME_CONTRACT.md](GAME_CONTRACT.md) and `/styleguide/games`. Final checks and screenshot evidence are tracked in `PROGRESS.md`. Next is a bounded pilot contribution, with an external contributor setup trial still pending.
+See [GAME_CONTRACT.md](GAME_CONTRACT.md) and `/styleguide/games`. Remaining collaborator-readiness priorities are the shared desktop game layout, targeted six-game accessibility audit, backend reliability/recovery review, and contributor integration rehearsal. The layout should precede the audit so it can be tested together. An external contributor setup trial remains pending.
 
 ## Completed foundation: shared UI
 

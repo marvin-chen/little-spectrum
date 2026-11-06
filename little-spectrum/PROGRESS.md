@@ -1,10 +1,12 @@
 # Progress
 
-## Priority 2: interactive game previews (in progress)
+## Priority 2: interactive game previews — complete
 
 - Extracted a required action provider and shared play dispatcher for all six screens. The production provider retains server actions and real photo uploads; preview actions use local state and browser-only image URLs.
 - Added viewer-specific answering/waiting snapshots, direct error examples, held pending actions, one-shot simulated failures, retry with retained input, local photo upload/deletion, and replay reset. Only the current viewer-safe snapshot reaches the browser.
-- Added local-state unit coverage and real-control browser tests for all six games. `pnpm check:full` passed: typecheck, lint, production build, 158 unit tests, 23 database tests, and 33 browser tests (screenshot-only journey reserved for archive). Initial verification caught a held-transition/release-control issue and ambiguous test selectors; corrected before the passing run. Screenshot capture and review pending.
+- Added local-state unit coverage and real-control browser tests for all six games. `pnpm check:full` passed: typecheck, lint, production build, 158 unit tests, 23 database tests, and 33 browser tests (screenshot-only journey reserved for archive). Initial verification caught a held-transition/release-control issue and ambiguous test selectors; corrected before the passing run.
+- `pnpm shots interactive-game-previews` passed all 20 mobile journeys and archived 155 images from the verified implementation. Reviewed real pending controls, retained radio selections/error copy, local photo preview/dialog release controls, and light/dark completed examples. Final `pnpm check` passed again (158 unit tests, lint, typecheck). Implementation and visual evidence are separate commits on `main`.
+- Priority 2 now meets the original interactive-preview requirement. Shared desktop layout, targeted game accessibility audit, backend reliability boundaries, and an external contributor integration rehearsal remain open.
 
 ## Game contributor foundation
 
