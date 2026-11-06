@@ -16,6 +16,10 @@ Verification and visual evidence checkpoint:
 - Fixed the reproduced Chromium capture issue: full-page capture resets scroll, so viewport images are now captured first. Fixture captures explicitly frame the interaction or focused input. Rebuilt the archive after that correction and reran full verification. No game rules or production action boundaries changed.
 - Layout contract and game-specific responsibilities are documented in UI.md and GAME_CONTRACT.md; ROADMAP.md marks the layout complete. The broader six-game accessibility audit is next; backend reliability/recovery review and the independent contributor rehearsal remain pending.
 
+## Screenshot policy clarification
+
+- At the user’s request, AGENTS.md now explicitly requires screenshot archives only for rendered UI changes. Documentation, backend logic, and test/tooling changes do not require new captures unless the UI also changes. Existing archives stay preserved; no screenshots were captured for this documentation-only clarification.
+
 ## Priority 2: interactive game previews — complete
 
 - Extracted a required action provider and shared play dispatcher for all six screens. The production provider retains server actions and real photo uploads; preview actions use local state and browser-only image URLs.
