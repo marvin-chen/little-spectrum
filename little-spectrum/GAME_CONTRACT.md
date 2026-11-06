@@ -13,7 +13,7 @@ Use the repository project issue template. One person owns rules, screens, fixtu
 | Area | Game contributor owns | Shared platform owns |
 |---|---|---|
 | Rules | Prompt selection, input validation, completion, early-reveal eligibility, scoring, viewer-safe output, turn copy | Session loading, participant authorization, atomic writes and reveal, stale/duplicate protection, growth |
-| Presentation | Play screen and compact/full reveal, using shared UI | Session frame, presence, navigation, common controls |
+| Presentation | Play screen and compact/full reveal, using shared UI | Session frame and responsive layout, presence, navigation, common controls |
 | Media | Meaning and layout of photos | Validation, private storage, signing, deletion |
 | Evidence | Deterministic examples, rule/privacy tests, browser journey, reviewed screenshots | Test runners, CI, shared fixture helpers |
 

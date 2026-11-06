@@ -40,7 +40,7 @@ const total = files.reduce((n, f) => n + statSync(path.join(dir, f)).size, 0);
 const lines = [
   `# Screenshots ${label}`,
   "",
-  `Captured ${new Date().toISOString()} from commit ${sha} at 390px CSS width (1x). Full-page captures draw the fixed tab bar mid-page, use the -viewport files for exact framing.`,
+  `Captured ${new Date().toISOString()} from commit ${sha} at 390px CSS width (1x) unless labelled otherwise. layout-* captures include 820px tablet, 1280px desktop, and 200% text; production desktop captures use 1440px. Full-page captures draw the fixed tab bar mid-page, use the -viewport files for exact framing.`,
   "",
   ...files.map((f) => `- ![${f}](./${f})`),
   "",

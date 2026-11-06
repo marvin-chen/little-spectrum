@@ -52,6 +52,7 @@ export async function shot(page: Page, name: string) {
   // Let entrance animations settle so archived shots are comparable between versions.
   await page.waitForTimeout(900);
   const scale = process.env.E2E_SHOTS_SCALE === "device" ? "device" : "css";
-  await page.screenshot({ path: `${dir}/${name}.png`, fullPage: true, scale });
+  // Full-page capture resets scroll position in Chromium. Preserve the visible framing first.
   await page.screenshot({ path: `${dir}/${name}-viewport.png`, scale });
+  await page.screenshot({ path: `${dir}/${name}.png`, fullPage: true, scale });
 }

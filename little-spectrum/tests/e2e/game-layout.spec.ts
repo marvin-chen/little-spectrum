@@ -37,14 +37,17 @@ for (const game of GAME_KEYS) {
         const players = page.getByRole("list", { name: "Players", exact: true });
         await expect(players).toContainText((scenario === "revealed" || scenario === "early") ? "Round finished" : scenario === "waiting" ? "Submitted" : "Pending");
         if (scenario === "answering" || scenario === "revealed") {
-          await page.getByTestId("game-session-layout").scrollIntoViewIfNeeded();
+          await page.getByTestId("game-session-layout").evaluate((element) => element.scrollIntoView({ block: "start", behavior: "instant" }));
           await shot(page, `layout-${game}-${width}-${scenario}`);
         }
       }
       // Larger text must reflow into a single column even in a desktop viewport.
       await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
       await checkLayout(page, false, 8);
-      if (width === 1280) await shot(page, `layout-${game}-200-percent-text`);
+      if (width === 1280) {
+        await page.getByTestId("game-session-layout").evaluate((element) => element.scrollIntoView({ block: "start", behavior: "instant" }));
+        await shot(page, `layout-${game}-200-percent-text`);
+      }
       await page.evaluate(() => { document.documentElement.style.fontSize = ""; });
     }
     expect(external).toEqual([]);
@@ -66,6 +69,7 @@ test("resizing preserves keyboard input, focus and instruction access", async ({
     await page.keyboard.press("Shift+Tab");
     await expect(clue).toBeFocused();
     await checkLayout(page, width >= 1280, 8);
+    await clue.evaluate((element) => element.scrollIntoView({ block: "center", behavior: "instant" }));
     await shot(page, `layout-keyboard-dark-${width}`);
   }
 });

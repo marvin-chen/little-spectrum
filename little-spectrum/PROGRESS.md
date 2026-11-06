@@ -1,11 +1,20 @@
 # Progress
 
-## Shared desktop game layout — implementation checkpoint
+## Shared desktop game layout — complete
+
+Implementation checkpoint (`02b90c8`):
 
 - Added `GameSessionLayout` around the common `GamePlay` dispatcher, migrating all six games together. Interaction and turn copy come first; catalogue instructions and named player statuses follow on phones/tablets and sit alongside on wide content areas. Container sizing accounts for the app sidebar and larger text.
 - `SessionFrame` retains navigation and early reveal. Production enables live player updates; previews reuse the same presentation without subscriptions or polling. Game controls, rules, validation, and local action isolation remain unchanged. Contributor adoption is documented in UI.md and GAME_CONTRACT.md.
 - Focused browser matrix passed: seven tests covering all six games at 390/820/1280px, two/eight participants, clue-giver/guesser roles, initial/answering/waiting/reveal, 200% text reflow, reduced motion, keyboard focus and input retained through resize, and no preview backend traffic. The first pass prompted a later tablet breakpoint; container reflow assertions now wait for the browser to settle. `pnpm check` passed (158 unit tests, typecheck, lint). Full verification and screenshot review remain for the next checkpoint.
 - Targeted six-game accessibility audit, backend reliability review, and independent contributor integration rehearsal remain pending.
+
+Verification and visual evidence checkpoint:
+
+- Final `pnpm check:full` passed: typecheck, lint, production build, 158 unit tests, 23 database tests, and 47 browser tests. The screenshot-only journey ran separately in the archive. Used free port 3200 because an existing service occupied 3100; the passing run started its own production server.
+- `pnpm shots shared-desktop-game-layout` passed all 27 capture journeys and archived 249 images (29.5 MB). Reviewed all six desktop interactions plus phone flow, tablet dark appearance, two/eight players, long names, completed results, 200% text, visible keyboard focus, and held photo uploads. The archive includes real authenticated desktop/tablet screens and isolated previews of the same shared structure.
+- Fixed the reproduced Chromium capture issue: full-page capture resets scroll, so viewport images are now captured first. Fixture captures explicitly frame the interaction or focused input. Rebuilt the archive after that correction and reran full verification. No game rules or production action boundaries changed.
+- Layout contract and game-specific responsibilities are documented in UI.md and GAME_CONTRACT.md; ROADMAP.md marks the layout complete. The broader six-game accessibility audit is next; backend reliability/recovery review and the independent contributor rehearsal remain pending.
 
 ## Priority 2: interactive game previews — complete
 
@@ -13,7 +22,7 @@
 - Added viewer-specific answering/waiting snapshots, direct error examples, held pending actions, one-shot simulated failures, retry with retained input, local photo upload/deletion, and replay reset. Only the current viewer-safe snapshot reaches the browser.
 - Added local-state unit coverage and real-control browser tests for all six games. `pnpm check:full` passed: typecheck, lint, production build, 158 unit tests, 23 database tests, and 33 browser tests (screenshot-only journey reserved for archive). Initial verification caught a held-transition/release-control issue and ambiguous test selectors; corrected before the passing run.
 - `pnpm shots interactive-game-previews` passed all 20 mobile journeys and archived 155 images from the verified implementation. Reviewed real pending controls, retained radio selections/error copy, local photo preview/dialog release controls, and light/dark completed examples. Final `pnpm check` passed again (158 unit tests, lint, typecheck). Implementation and visual evidence are separate commits on `main`.
-- Priority 2 now meets the original interactive-preview requirement. Shared desktop layout, targeted game accessibility audit, backend reliability boundaries, and an external contributor integration rehearsal remain open.
+- Priority 2 meets the original interactive-preview requirement. At that checkpoint, shared desktop layout, targeted game accessibility audit, backend reliability boundaries, and an external contributor integration rehearsal remained open. The shared layout is now complete above.
 
 ## Game contributor foundation
 

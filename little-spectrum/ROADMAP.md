@@ -4,9 +4,10 @@
 
 1. Completed: shared typed engine contract, participant-safe projection, responsibility boundaries, and game admission checklist.
 2. Completed Priority 2: actual play screens with local actions, viewer-specific answering/waiting snapshots for two, three, and eight participants, pending/error/retry examples, local photo operations, and replay reset. Verification and screenshot evidence are tracked in `PROGRESS.md`.
-3. Completed last: migrate the six current engines and session projection; share reveal rendering between Memories and fixture previews. Interactive previews now also share the production play dispatcher and action interface.
+3. Completed: migrate the six current engines and session projection; share reveal rendering between Memories and fixture previews. Interactive previews also share the production play dispatcher and action interface.
+4. Completed: shared game layout for interaction, instructions and named player status across all six games. Production and previews share the same responsive structure; phone/tablet single-column flow switches to two columns when the content area permits. Adoption and boundaries are documented in UI.md.
 
-See [GAME_CONTRACT.md](GAME_CONTRACT.md) and `/styleguide/games`. Remaining collaborator-readiness priorities are the shared desktop game layout, targeted six-game accessibility audit, backend reliability/recovery review, and contributor integration rehearsal. The layout should precede the audit so it can be tested together. An external contributor setup trial remains pending.
+See [GAME_CONTRACT.md](GAME_CONTRACT.md) and `/styleguide/games`. Remaining collaborator-readiness priorities are the targeted six-game accessibility audit (next), backend reliability/recovery review, and contributor integration rehearsal. The layout now provides the finished shared structure for that audit. An external contributor setup trial remains pending.
 
 ## Completed foundation: shared UI
 
@@ -46,7 +47,7 @@ Polish that makes what already exists feel more finished.
 1. Reveal moments (M). One restrained celebration for a full-group match or a perfect guess, a light haptic on supported phones, and a shareable reveal card rendered server side for group chats.
 2. Garden life (M). Cloud drift, a butterfly that lands when tapped, milestone scenery such as a pond at the tenth keepsake, seasonal touches by month.
 3. Photos (M). Lightbox with pinch zoom, dominant-color placeholders computed at upload, gallery layouts that respect portrait and landscape.
-4. Desktop composition (S). Two columns inside games on wide screens, with the interaction on the left and players and status on the right.
+4. Completed: desktop game composition, including shared instructions and player status. See the contributor foundation above.
 5. Empty states with motif illustrations (S), and a Sunday-night weekly recap card on Home (S).
 6. Accessibility audit (S). VoiceOver pass over every game, larger text settings, high contrast mode.
 7. Manual appearance switch (S). Light, dark, or follow the system, remembered per device.
