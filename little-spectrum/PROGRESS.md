@@ -1,5 +1,11 @@
 # Progress
 
+## Priority 2: interactive game previews (in progress)
+
+- Extracted a required action provider and shared play dispatcher for all six screens. The production provider retains server actions and real photo uploads; preview actions use local state and browser-only image URLs.
+- Added viewer-specific answering/waiting snapshots, direct error examples, held pending actions, one-shot simulated failures, retry with retained input, local photo upload/deletion, and replay reset. Only the current viewer-safe snapshot reaches the browser.
+- Added local-state unit coverage and real-control browser tests for all six games. `pnpm check:full` passed: typecheck, lint, production build, 158 unit tests, 23 database tests, and 33 browser tests (screenshot-only journey reserved for archive). Initial verification caught a held-transition/release-control issue and ambiguous test selectors; corrected before the passing run. Screenshot capture and review pending.
+
 ## Game contributor foundation
 
 1. Complete: extracted typed engine contract (compatible helper re-exports) and participant-safe session projection; documented responsibilities and admission criteria in GAME_CONTRACT.md. Production migration remains last. `pnpm check` passed: typecheck, lint, 107 unit tests.

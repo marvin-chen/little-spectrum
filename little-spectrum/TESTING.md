@@ -60,6 +60,7 @@ If you turn on branch protection for `main`, require these two checks: `Fast che
 
 | Behavior | Checks |
 |---|---|
+| Actual game screens with local actions: answering/waiting for either viewer, held pending, error/retry retaining input, photo upload/deletion, replay reset, and no network writes on phone/desktop | `src/lib/games/fixtures/localView.test.ts`, `src/lib/games/fixtures/fixtures.test.ts`, `tests/e2e/game-fixtures.spec.ts` |
 | Fixture navigation, all six real reveal components, viewer switching, partial results, light/dark reduced-motion layouts on phone/desktop, no writes | `tests/e2e/game-fixtures.spec.ts` |
 | All six games: deterministic two/three/eight-player fixtures, validated submissions, normal/early reveal, duplicate protection, active privacy, round advancement, removed photos, no signing | `src/lib/games/fixtures/fixtures.test.ts` |
 | Shared game projection rejects outsiders before hydration and excludes raw session data | `src/lib/games/sessionView.test.ts` |

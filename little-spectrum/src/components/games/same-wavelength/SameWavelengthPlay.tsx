@@ -3,7 +3,7 @@
 import { inputClass } from "@/components/ui/Field";
 import { useState, useTransition } from "react";
 import { Lock, RotateCcw, Sparkles } from "lucide-react";
-import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionId]/actions";
+import { useGameActions } from "@/components/games/GameActions";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -73,8 +73,9 @@ export function SameWavelengthPlay({ gardenId, session, game, userId }: Props) {
 }
 
 function AnswerPanel({ gardenId, sessionId, game }: { gardenId: string; sessionId: string; game: SameWavelengthView }) {
+  const { submitAction, initialError } = useGameActions();
   const [word, setWord] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
 
   function lockIn() {
@@ -161,7 +162,8 @@ function WaitingPanel({
 }
 
 function PlayAgain({ gardenId, sessionId, line }: { gardenId: string; sessionId: string; line: string }) {
-  const [error, setError] = useState<string | null>(null);
+  const { playAgainAction, initialError } = useGameActions();
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   return (
     <Card className="flex flex-col gap-3 p-5">

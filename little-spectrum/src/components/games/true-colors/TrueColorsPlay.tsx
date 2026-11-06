@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Lock, RotateCcw, Sparkles, User, UserRoundSearch } from "lucide-react";
-import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionId]/actions";
+import { useGameActions } from "@/components/games/GameActions";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ChoiceGroup } from "@/components/ui/ChoiceGroup";
@@ -94,9 +94,10 @@ function PicksPanel({
   game: TrueColorsView;
   friendName: string;
 }) {
+  const { submitAction, initialError } = useGameActions();
   const [answer, setAnswer] = useState<number | null>(null);
   const [prediction, setPrediction] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   const ready = answer !== null && prediction !== null;
 
@@ -162,7 +163,8 @@ function SectionHeading({ id, icon, title, line }: { id: string; icon: React.Rea
 }
 
 function PlayAgain({ gardenId, sessionId }: { gardenId: string; sessionId: string }) {
-  const [error, setError] = useState<string | null>(null);
+  const { playAgainAction, initialError } = useGameActions();
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   return (
     <Card className="flex flex-col gap-3 p-5">

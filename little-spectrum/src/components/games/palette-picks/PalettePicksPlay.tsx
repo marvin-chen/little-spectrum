@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition, type PointerEvent as ReactPointerEvent } from "react";
 import { ChevronDown, ChevronUp, GripVertical, Lock, RotateCcw, Sparkles } from "lucide-react";
-import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionId]/actions";
+import { useGameActions } from "@/components/games/GameActions";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
@@ -80,10 +80,11 @@ function moveIndex(list: number[], from: number, to: number): number[] {
 }
 
 function RankPanel({ gardenId, session, game }: { gardenId: string; session: SessionView; game: PalettePicksView }) {
+  const { submitAction, initialError } = useGameActions();
   const [order, setOrder] = useState<number[]>(() => game.items.map((_, index) => index));
   const [dragging, setDragging] = useState<number | null>(null);
   const [announcement, setAnnouncement] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   const listRef = useRef<HTMLOListElement>(null);
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
@@ -215,7 +216,8 @@ function RankPanel({ gardenId, session, game }: { gardenId: string; session: Ses
 }
 
 function PlayAgain({ gardenId, sessionId }: { gardenId: string; sessionId: string }) {
-  const [error, setError] = useState<string | null>(null);
+  const { playAgainAction, initialError } = useGameActions();
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   return (
     <Card className="flex flex-col gap-3 p-5">

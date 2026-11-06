@@ -3,7 +3,7 @@
 import { inputClass } from "@/components/ui/Field";
 import { useState, useTransition } from "react";
 import { Lock, RotateCcw, Sparkles } from "lucide-react";
-import { playAgainAction, submitAction } from "@/app/g/[gardenId]/play/[sessionId]/actions";
+import { useGameActions } from "@/components/games/GameActions";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Slider } from "@/components/ui/Slider";
@@ -57,8 +57,9 @@ export function HueKnewPlay({ gardenId, session, game, userId }: Props) {
 }
 
 function ClueGiverPanel({ gardenId, session, game }: { gardenId: string; session: SessionView; game: HueKnewView }) {
+  const { submitAction, initialError } = useGameActions();
   const [clue, setClue] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   const nameOf = (id: string) => session.participants.find((p) => p.userId === id)?.name ?? "Someone";
 
@@ -142,8 +143,9 @@ function ClueGiverPanel({ gardenId, session, game }: { gardenId: string; session
 }
 
 function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; session: SessionView; game: HueKnewView; userId: string }) {
+  const { submitAction, initialError } = useGameActions();
   const [guess, setGuess] = useState(50);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   const nameOf = (id: string) => session.participants.find((p) => p.userId === id)?.name ?? "Someone";
   const clueGiverName = nameOf(game.clueGiverId);
@@ -195,7 +197,8 @@ function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; s
 }
 
 function PlayAgain({ gardenId, sessionId, line, primary }: { gardenId: string; sessionId: string; line: string; primary: boolean }) {
-  const [error, setError] = useState<string | null>(null);
+  const { playAgainAction, initialError } = useGameActions();
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   return (
     <Card className="flex flex-col gap-3 p-5">

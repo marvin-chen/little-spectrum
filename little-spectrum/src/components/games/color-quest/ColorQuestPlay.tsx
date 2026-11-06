@@ -1,11 +1,9 @@
 "use client";
 
 import { inputClass } from "@/components/ui/Field";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Camera, Images, RotateCcw, Trash2, Upload } from "lucide-react";
-import { playAgainAction } from "@/app/g/[gardenId]/play/[sessionId]/actions";
-import { deletePhotoAction } from "@/app/api/photos/actions";
+import { useGameActions } from "@/components/games/GameActions";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -72,10 +70,10 @@ export function ColorQuestPlay({ gardenId, session, game, userId }: Props) {
 }
 
 function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
-  const router = useRouter();
+  const { uploadPhoto, finishPending, initialError } = useGameActions();
   const [file, setFile] = useState<{ blob: Blob; previewUrl: string; name: string } | null>(null);
   const [caption, setCaption] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [busy, setBusy] = useState<"preparing" | "uploading" | null>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const libraryRef = useRef<HTMLInputElement>(null);
@@ -111,14 +109,12 @@ function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
       form.set("sessionId", sessionId);
       form.set("caption", caption);
       form.set("file", file.blob, "photo.jpg");
-      const response = await fetch("/api/photos", { method: "POST", body: form });
-      const body = (await response.json().catch(() => ({}))) as { error?: string };
-      if (!response.ok) {
-        setError(body.error ?? "Upload failed. Please try again.");
+      const result = await uploadPhoto(form);
+      if (result.error) {
+        setError(result.error);
         return;
       }
       setFile(null);
-      router.refresh();
     } catch {
       setError("You seem to be offline. Try again when you are back.");
     } finally {
@@ -168,6 +164,7 @@ function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
             <Button size="lg" full accent="green" onClick={share} loading={busy === "uploading"} icon={<Upload className="size-4" aria-hidden />}>
               Share photo
             </Button>
+            {finishPending ? <Button onClick={finishPending}>Finish pending action</Button> : null}
           </div>
         }
       >
@@ -197,8 +194,9 @@ function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
 }
 
 function DeleteOwnPhoto({ gardenId, sessionId, photoId, inline }: { gardenId: string; sessionId: string; photoId: string; inline?: boolean }) {
+  const { deletePhotoAction, finishPending, initialError } = useGameActions();
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   const button = (
     <Button variant={inline ? "plain" : "danger"} size={inline ? "sm" : "md"} icon={<Trash2 className="size-4" aria-hidden />} onClick={() => setOpen(true)} className={inline ? "mt-3 -ml-3 text-danger" : undefined}>
@@ -235,6 +233,7 @@ function DeleteOwnPhoto({ gardenId, sessionId, photoId, inline }: { gardenId: st
             >
               Delete photo
             </Button>
+            {finishPending ? <Button onClick={finishPending}>Finish pending action</Button> : null}
             <Button variant="plain" full onClick={() => setOpen(false)}>
               Keep it
             </Button>
@@ -248,7 +247,8 @@ function DeleteOwnPhoto({ gardenId, sessionId, photoId, inline }: { gardenId: st
 }
 
 function PlayAgain({ gardenId, sessionId }: { gardenId: string; sessionId: string }) {
-  const [error, setError] = useState<string | null>(null);
+  const { playAgainAction, initialError } = useGameActions();
+  const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   return (
     <Card className="flex flex-col gap-3 p-5">

@@ -5,6 +5,24 @@ import { createFixture, FIXTURE_TIME, revealFixture, submitFixture } from "./bui
 
 export const FIXTURE_SCENARIOS = ["initial", "waiting", "revealed", "early"] as const;
 export type FixtureScenario = typeof FIXTURE_SCENARIOS[number];
+export const PREVIEW_SCENARIOS = ["initial", "answering", "waiting", "error", "pending", "early", "revealed"] as const;
+export type PreviewScenario = typeof PREVIEW_SCENARIOS[number];
+
+export function playerExample(game: GameKey, scenario: PreviewScenario, players: 2 | 3 | 8, viewerIndex: number): SessionState {
+  if (scenario === "revealed" || scenario === "early") return gameExample(game, scenario, players);
+  const engine = getEngine(game);
+  let state = gameExample(game, "initial", players);
+  const viewer = state.participants[viewerIndex];
+  if (!viewer) throw new Error("Unknown fixture viewer.");
+  if (scenario === "initial") return state;
+  if (state.clueGiverId && (state.clueGiverId !== viewer.userId || scenario === "waiting")) {
+    state = submitFixture(engine, state, state.clueGiverId, { clue: "Warm summer evening" });
+  }
+  if (scenario === "waiting" && viewer.userId !== state.clueGiverId) {
+    state = submitFixture(engine, state, viewer.userId, exampleInput(game, viewerIndex));
+  }
+  return state;
+}
 
 export function exampleInput(game: GameKey, index: number): unknown {
   switch (game) {
