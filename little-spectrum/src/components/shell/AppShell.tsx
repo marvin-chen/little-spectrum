@@ -33,7 +33,7 @@ export function AppShell({ base, children, sidebarExtra, action, wide }: AppShel
         id="main"
         tabIndex={-1}
         className={
-          wide
+          wide || inGame
             ? "relative mx-auto w-full min-w-0 max-w-5xl px-4 pt-[max(0.5rem,var(--safe-top))] pb-[var(--tabbar-space)] md:px-8 md:pb-12"
             : "relative mx-auto w-full min-w-0 max-w-[var(--content-max)] px-4 pt-[max(0.5rem,var(--safe-top))] pb-[var(--tabbar-space)] md:px-8 md:pb-12"
         }

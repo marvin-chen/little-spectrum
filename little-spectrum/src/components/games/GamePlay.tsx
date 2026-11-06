@@ -1,4 +1,5 @@
 "use client";
+import { GameSessionLayout } from "@/components/session/GameSessionLayout";
 import { ColorQuestPlay } from "@/components/games/color-quest/ColorQuestPlay";
 import { HueCluePlay } from "@/components/games/hue-clue/HueCluePlay";
 import { HueKnewPlay } from "@/components/games/hue-knew/HueKnewPlay";
@@ -13,8 +14,8 @@ import type { SameWavelengthView } from "@/lib/games/sameWavelength";
 import type { TrueColorsView } from "@/lib/games/trueColors";
 import type { SessionView } from "@/lib/games/sessionView";
 
-export function GamePlay({session,userId}:{session:SessionView;userId:string}) {
- const gardenId=session.gardenId;
+export function GamePlay({ session, userId, live = false }: { session: SessionView; userId: string; live?: boolean }) {
+  const gardenId = session.gardenId;
   let body: React.ReactNode = null;
   switch (session.game) {
     case "hue-knew":
@@ -37,5 +38,5 @@ export function GamePlay({session,userId}:{session:SessionView;userId:string}) {
       break;
   }
 
- return body;
+  return <GameSessionLayout session={session} userId={userId} live={live}>{body}</GameSessionLayout>;
 }

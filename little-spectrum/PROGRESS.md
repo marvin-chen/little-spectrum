@@ -1,5 +1,12 @@
 # Progress
 
+## Shared desktop game layout — implementation checkpoint
+
+- Added `GameSessionLayout` around the common `GamePlay` dispatcher, migrating all six games together. Interaction and turn copy come first; catalogue instructions and named player statuses follow on phones/tablets and sit alongside on wide content areas. Container sizing accounts for the app sidebar and larger text.
+- `SessionFrame` retains navigation and early reveal. Production enables live player updates; previews reuse the same presentation without subscriptions or polling. Game controls, rules, validation, and local action isolation remain unchanged. Contributor adoption is documented in UI.md and GAME_CONTRACT.md.
+- Focused browser matrix passed: seven tests covering all six games at 390/820/1280px, two/eight participants, clue-giver/guesser roles, initial/answering/waiting/reveal, 200% text reflow, reduced motion, keyboard focus and input retained through resize, and no preview backend traffic. The first pass prompted a later tablet breakpoint; container reflow assertions now wait for the browser to settle. `pnpm check` passed (158 unit tests, typecheck, lint). Full verification and screenshot review remain for the next checkpoint.
+- Targeted six-game accessibility audit, backend reliability review, and independent contributor integration rehearsal remain pending.
+
 ## Priority 2: interactive game previews — complete
 
 - Extracted a required action provider and shared play dispatcher for all six screens. The production provider retains server actions and real photo uploads; preview actions use local state and browser-only image URLs.

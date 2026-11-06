@@ -34,6 +34,18 @@ test("two friends create a garden, join by invite, and play Hue Knew? with a pri
   const target = Number(targetText!.match(/(\d+)/)![1]);
   expect(target).toBeGreaterThanOrEqual(0);
   expect(target).toBeLessThanOrEqual(100);
+  // Production uses the same layout, accounting for the application sidebar.
+  await ada.page.setViewportSize({ width: 1440, height: 900 });
+  const interaction = (await ada.page.getByRole("region", { name: "Game interaction" }).boundingBox())!;
+  const guide = (await ada.page.getByRole("complementary", { name: "Round guide" }).boundingBox())!;
+  expect(guide.x).toBeGreaterThanOrEqual(interaction.x + interaction.width);
+  await shot(ada.page, "layout-production-desktop");
+  await ada.page.setViewportSize({ width: 820, height: 900 });
+  const tabletInteraction = (await ada.page.getByRole("region", { name: "Game interaction" }).boundingBox())!;
+  const tabletGuide = (await ada.page.getByRole("complementary", { name: "Round guide" }).boundingBox())!;
+  expect(tabletGuide.y).toBeGreaterThanOrEqual(tabletInteraction.y + tabletInteraction.height);
+  await shot(ada.page, "layout-production-tablet");
+  await ada.page.setViewportSize({ width: 390, height: 844 });
   await shot(ada.page, "clue-giver");
 
   await bo.page.goto(sessionUrl);
@@ -44,7 +56,7 @@ test("two friends create a garden, join by invite, and play Hue Knew? with a pri
   expect(boHtml).not.toMatch(/target\\?":\s*\d/);
 
   // Presence: Ada sees that Bo has the game open.
-  await expect(ada.page.getByRole("img", { name: /Bo, .*here now/ })).toBeVisible({ timeout: 15_000 });
+  await expect(ada.page.getByRole("list", { name: "Players", exact: true }).getByRole("listitem").filter({ hasText: "Bo" }).getByText("Pending · Here now", { exact: true })).toBeVisible({ timeout: 15_000 });
 
   await ada.page.getByPlaceholder("Your clue").fill("Sunday pancakes");
   await ada.page.getByRole("button", { name: "Send clue" }).click();

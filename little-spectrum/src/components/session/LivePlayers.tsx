@@ -15,7 +15,7 @@ type Props = {
   submitted: string[];
 };
 
-// Avatar row with submission state and a live "here now" ring, plus instant refresh when the session changes.
+// Live participant status and presence, plus instant refresh when the session changes.
 export function LivePlayers({ sessionId, active, userId, userName, participants, submitted }: Props) {
   const { online } = useLiveChannel({
     channel: `session:${sessionId}`,
@@ -24,23 +24,27 @@ export function LivePlayers({ sessionId, active, userId, userName, participants,
     presence: { userId, name: userName },
     fallbackMs: active ? 4000 : 30000,
   });
+  return <SessionPlayers {...{ active, userId, participants, submitted, online }} />;
+}
+
+// Pure presentation is also used by previews, with no subscription or polling.
+export function SessionPlayers({ active, userId, participants, submitted, online = new Set<string>() }: Pick<Props, "active" | "userId" | "participants" | "submitted"> & { online?: Set<string> }) {
   const done = new Set(submitted);
   return (
-    <ul className="flex items-center gap-2" aria-label="Players">
+    <ul className="flex flex-col gap-3" aria-label="Players">
       {participants.map((p) => {
         const here = online.has(p.userId) && p.userId !== userId;
-        const isDone = done.has(p.userId);
-        const label = [p.userId === userId ? `${p.name} (you)` : p.name, isDone ? "in" : active ? "pending" : null, here ? "here now" : null].filter(Boolean).join(", ");
+        const state = !active ? "Round finished" : done.has(p.userId) ? "Submitted" : "Pending";
         return (
-          <li key={p.userId} className="relative">
-            <Avatar avatar={p.avatar} name={label} size="sm" ring className={cn("transition-shadow", here && "ring-2 ring-green shadow-[0_0_0_4px_rgba(79,179,122,0.25)]")} />
-            {active ? <span aria-hidden className={cn("absolute -right-0.5 -bottom-0.5 size-3 rounded-full ring-2 ring-canvas", isDone ? "bg-green" : "bg-ink/20")} /> : null}
+          <li key={p.userId} className="flex min-w-0 items-center gap-3">
+            <Avatar avatar={p.avatar} name={p.name} size="sm" ring />
+            <div className="min-w-0 flex-1">
+              <p className="text-callout font-semibold">{p.name}{p.userId === userId ? " (you)" : ""}</p>
+              <p className={cn("text-footnote", state === "Submitted" ? "text-green-ink" : "text-ink-2")}>{state}{here ? " · Here now" : ""}</p>
+            </div>
           </li>
         );
       })}
-      {[...online].filter((id) => id !== userId && participants.some((p) => p.userId === id)).length > 0 ? (
-        <li className="ml-1 text-caption font-semibold text-green-ink">here now</li>
-      ) : null}
     </ul>
   );
 }

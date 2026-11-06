@@ -22,7 +22,7 @@ export default async function GameFixturesPage({ searchParams }: {
   const session = await previewFixture(getEngine(game), state, userId);
   const href = (values: Record<string, string>) => `?${new URLSearchParams({ game, scenario, players: String(players), viewer: viewerIndex ? "last" : "first", ...values })}`;
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-6 px-5 py-8">
+    <main className="mx-auto flex max-w-5xl flex-col gap-6 px-5 py-8">
       <Link href="/styleguide" className="text-footnote underline">Back to style guide</Link>
       <PageTitle eyebrow="Contributor tools" title="Game fixtures" subtitle="Play with synthetic examples. All actions stay in this preview." />
       <nav aria-label="Fixture game" className="flex flex-wrap gap-3">

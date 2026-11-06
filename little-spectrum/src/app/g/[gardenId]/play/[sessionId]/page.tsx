@@ -26,8 +26,8 @@ export default async function PlayPage({ params }: { params: Promise<{ gardenId:
 
 
   return (
-    <SessionFrame gardenId={gardenId} session={view} userId={user.id}>
-      <ProductionGameActions><GamePlay session={view} userId={user.id} /></ProductionGameActions>
+    <SessionFrame gardenId={gardenId} session={view}>
+      <ProductionGameActions><GamePlay session={view} userId={user.id} live /></ProductionGameActions>
     </SessionFrame>
   );
 }

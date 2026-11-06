@@ -40,3 +40,11 @@ Keep `className` for layout and composition. A repeated visual override should b
 ## Adding or changing a component
 
 First check whether an existing component or composition solves the need. State the use case, props, variants, interaction states, and server/client boundary. Add a style-guide example and tests, migrate at least one real consumer, and document the change here. Coordinate shared contract changes with the maintainer; migrate existing consumers in the same change rather than leaving competing conventions.
+
+## Shared game layout
+
+`GamePlay` wraps all six screens in `GameSessionLayout` (`src/components/session/`). It places the turn line and interaction first, followed by a round guide with `GAMES[key].howTo` and named participant statuses. At 56rem of **available content width**, the guide sits beside the interaction; below that it follows the interaction. Container sizing accounts for the application sidebar and larger text. Columns can shrink and text wraps; neither column is sticky or independently scrollable. The DOM and keyboard order remain interaction, instructions, players at every width. No motion or automatic focus changes are added.
+
+`SessionFrame` owns production route navigation and early reveal. `GamePlay` owns game dispatch and the shared layout. Production opts into `live`; the preview uses the same player presentation without Realtime, polling, or backend access. Only the participant-safe session view supplies status. Completed participants are labelled “Round finished,” without implying that missing early-reveal players submitted.
+
+Game contributors supply their interaction/reveal component and catalogue `howTo` copy; no per-game column grids or duplicate player panels are needed. Keep prompts, role-specific hints, validation, pending/errors, uploads, reveal content, and replay inside the game screen. Generic instructions supplement those contextual hints. Use `GameActionsProvider` for actions. Exercise `/styleguide/games` on phones, tablets and desktop with two/eight players, both roles, long text, larger text, pending/errors and reveal. The complete six-game accessibility audit remains a separate milestone.
