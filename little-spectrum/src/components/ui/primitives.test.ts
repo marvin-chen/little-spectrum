@@ -22,7 +22,7 @@ describe("shared control semantics", () => {
   });
   it("preserves iOS glass classes across Button, Badge, and SegmentedControl variants", () => {
     expect(render(h(Button, { variant: "glass" }, "Glass"))).toContain("glass");
-    expect(render(h(Badge, { tone: "glass" }, "Glass"))).toContain("glass");
+    expect(render(h(Badge, { tone: "glass", children: "Glass" }))).toContain("glass");
     const seg = render(
       h(SegmentedControl, {
         label: "Size",

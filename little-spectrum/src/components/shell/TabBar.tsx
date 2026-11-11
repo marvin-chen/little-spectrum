@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { motion } from "motion/react";
 import { GamesIcon, GardenIcon, HomeIcon, MemoriesIcon } from "@/components/icons/TabIcons";
-import { useSlidingIndicator } from "@/components/ui/useSlidingIndicator";
 import { cn } from "@/lib/cn";
 
 export type TabAction = { href: string; label: string; icon: ReactNode };
@@ -57,7 +57,6 @@ export function TabBar({ base, action, hidden }: { base: string; action?: TabAct
   const pathname = usePathname();
   const tabs = tabsFor(base);
   const active = activeTabKey(pathname, base);
-  const { containerRef, rect } = useSlidingIndicator<HTMLUListElement>(active);
   const compact = useCompactOnScroll();
 
   if (hidden) return null;
@@ -67,39 +66,38 @@ export function TabBar({ base, action, hidden }: { base: string; action?: TabAct
       aria-label="Primary"
       data-compact={compact || undefined}
       className={cn(
-        "fixed inset-x-0 bottom-0 z-30 flex justify-center gap-2.5 px-4 pb-[max(0.875rem,var(--safe-bottom))] transition-[padding] duration-300 ease-[var(--ease-out-soft)] md:hidden",
-        compact && "pb-[max(0.5rem,var(--safe-bottom))]",
+        "fixed inset-x-0 bottom-0 z-30 flex justify-center gap-2.5 px-4 pb-[max(0.875rem,var(--safe-bottom))] transition-transform duration-250 ease-[var(--ease-out-soft)] md:hidden",
+        compact && "translate-y-1",
       )}
     >
       <ul
-        ref={containerRef}
         className={cn(
-          "glass relative flex w-full max-w-sm items-stretch rounded-capsule p-1.5 transition-[height,max-width] duration-300 ease-[var(--ease-out-soft)]",
+          "glass relative flex w-full max-w-sm items-stretch rounded-capsule p-1.5 transition-transform duration-250 ease-[var(--ease-out-soft)]",
           compact ? "h-11 max-w-[15rem]" : "h-[var(--tabbar-height)]",
         )}
       >
-        <span
-          aria-hidden
-          className={cn(
-            "absolute top-1.5 bottom-1.5 rounded-capsule bg-ink/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]",
-            rect.ready && "transition-[transform,width] duration-[420ms] ease-[var(--ease-spring)]",
-          )}
-          style={{ transform: `translateX(${rect.left}px)`, width: rect.width, opacity: rect.width ? 1 : 0 }}
-        />
         {tabs.map(({ key, href, label, Icon }) => {
           const isActive = key === active;
           return (
             <li key={key} className="relative z-10 flex-1" data-key={key}>
+              {isActive ? (
+                <motion.span
+                  layoutId="mobile-tab-pill"
+                  aria-hidden
+                  transition={{ type: "spring", stiffness: 500, damping: 38, mass: 0.8 }}
+                  className="pointer-events-none absolute inset-0 rounded-capsule bg-ink/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
+                />
+              ) : null}
               <Link
                 href={href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "pressable flex h-full flex-col items-center justify-center gap-0.5 rounded-capsule text-[11px] font-semibold transition-colors",
+                  "pressable relative z-10 flex h-full flex-col items-center justify-center gap-0.5 rounded-capsule text-[11px] font-semibold transition-colors",
                   isActive ? "text-ink" : "text-ink-2",
                 )}
               >
-                <Icon active={isActive} className={cn("transition-[font-size] duration-300", compact ? "text-[20px]" : "text-[22px]")} />
-                <span className={cn("overflow-hidden transition-[max-height,opacity] duration-200", compact ? "max-h-0 opacity-0" : "max-h-4 opacity-100")}>{label}</span>
+                <Icon active={isActive} className={cn("transition-transform duration-200 ease-[var(--ease-out-soft)] text-[22px]", compact && "scale-90")} />
+                {!compact ? <span className="leading-none">{label}</span> : <span className="sr-only">{label}</span>}
               </Link>
             </li>
           );
@@ -110,7 +108,7 @@ export function TabBar({ base, action, hidden }: { base: string; action?: TabAct
           href={action.href}
           aria-label={action.label}
           className={cn(
-            "pressable lit flex shrink-0 items-center justify-center rounded-capsule bg-tint text-white shadow-float transition-[width,height] duration-300 ease-[var(--ease-out-soft)]",
+            "pressable lit flex shrink-0 items-center justify-center rounded-capsule bg-tint text-white shadow-float transition-transform duration-250 ease-[var(--ease-out-soft)]",
             compact ? "size-11" : "size-[var(--tabbar-height)]",
           )}
         >
@@ -125,23 +123,25 @@ export function SideNav({ base }: { base: string }) {
   const pathname = usePathname();
   const tabs = tabsFor(base);
   const active = activeTabKey(pathname, base);
-  const { containerRef, rect } = useSlidingIndicator<HTMLUListElement>(active);
   return (
     <nav aria-label="Primary" className="hidden md:block">
-      <ul ref={containerRef} className="relative flex flex-col gap-1">
-        <span
-          aria-hidden
-          className={cn("absolute left-0 h-11 w-full rounded-row bg-ink/[0.07]", rect.ready && "transition-transform duration-[380ms] ease-[var(--ease-spring)]")}
-          style={{ transform: `translateY(${rect.top ?? 0}px)`, opacity: rect.width ? 1 : 0 }}
-        />
+      <ul className="relative flex flex-col gap-1">
         {tabs.map(({ key, href, label, Icon }) => {
           const isActive = key === active;
           return (
             <li key={key} data-key={key} className="relative z-10">
+              {isActive ? (
+                <motion.span
+                  layoutId="desktop-nav-pill"
+                  aria-hidden
+                  transition={{ type: "spring", stiffness: 500, damping: 38, mass: 0.8 }}
+                  className="pointer-events-none absolute inset-0 rounded-row bg-ink/[0.07]"
+                />
+              ) : null}
               <Link
                 href={href}
                 aria-current={isActive ? "page" : undefined}
-                className={cn("pressable flex h-11 items-center gap-3 rounded-row px-3 text-callout font-semibold", isActive ? "text-ink" : "text-ink-2 hover:bg-fill")}
+                className={cn("pressable relative z-10 flex h-11 items-center gap-3 rounded-row px-3 text-callout font-semibold", isActive ? "text-ink" : "text-ink-2 hover:bg-fill")}
               >
                 <Icon active={isActive} className="text-[20px]" />
                 <span>{label}</span>

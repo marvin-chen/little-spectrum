@@ -190,11 +190,31 @@
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
     font-feature-settings: "kern", "liga", "calt", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: none;
     min-height: 100dvh;
   }
 
-  button {
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  summary,
+  [role="button"],
+  [role="radio"],
+  [role="checkbox"] {
     touch-action: manipulation;
   }
 
@@ -242,14 +262,14 @@
 
   .pressable {
     transition:
-      transform 180ms var(--ease-out-soft),
-      background-color 180ms var(--ease-out-soft),
-      box-shadow 180ms var(--ease-out-soft),
-      opacity 180ms var(--ease-out-soft),
-      color 180ms var(--ease-out-soft);
+      transform 150ms var(--ease-out-soft),
+      background-color 150ms var(--ease-out-soft),
+      box-shadow 150ms var(--ease-out-soft),
+      opacity 150ms var(--ease-out-soft),
+      color 150ms var(--ease-out-soft);
   }
   .pressable:active:not(:disabled) {
-    transform: scale(0.965);
+    transform: scale(0.97);
   }
 
   .hide-scrollbar {
@@ -259,27 +279,27 @@
     display: none;
   }
 
-  /* Entrance choreography. Children get --i for a stagger. */
+  /* Entrance choreography: <300ms UI speed budget with iOS ease-out-soft curve. */
   .anim-sheet {
-    animation: sheet-up 420ms var(--ease-spring) both;
+    animation: sheet-up 300ms var(--ease-out-soft) both;
   }
   .anim-fade {
-    animation: fade-in 240ms ease-out both;
+    animation: fade-in 200ms var(--ease-out-soft) both;
   }
   .anim-pop {
-    animation: pop-in 320ms var(--ease-spring) both;
+    animation: pop-in 220ms var(--ease-out-soft) both;
   }
   .anim-rise {
-    animation: rise-in 420ms var(--ease-out-soft) both;
-    animation-delay: calc(var(--i, 0) * 60ms);
+    animation: rise-in 260ms var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 40ms);
   }
   .anim-grow {
     transform-origin: 50% 100%;
-    animation: grow-in 600ms var(--ease-spring) both;
-    animation-delay: calc(var(--i, 0) * 90ms);
+    animation: grow-in 380ms var(--ease-spring) both;
+    animation-delay: calc(var(--i, 0) * 60ms);
   }
   .anim-count {
-    animation: fade-in 500ms ease-out both;
+    animation: fade-in 260ms var(--ease-out-soft) both;
   }
   .sway {
     transform-origin: 50% 100%;
@@ -290,7 +310,7 @@
 
 @keyframes sheet-up {
   from {
-    transform: translateY(32px) scale(0.98);
+    transform: translateY(24px) scale(0.985);
     opacity: 0;
   }
   to {
@@ -308,7 +328,7 @@
 }
 @keyframes pop-in {
   from {
-    transform: scale(0.9);
+    transform: scale(0.95);
     opacity: 0;
   }
   to {
@@ -318,7 +338,7 @@
 }
 @keyframes rise-in {
   from {
-    transform: translateY(10px);
+    transform: translateY(6px);
     opacity: 0;
   }
   to {
@@ -328,7 +348,7 @@
 }
 @keyframes grow-in {
   from {
-    transform: scale(0.6);
+    transform: scale(0.85);
     opacity: 0;
   }
   to {
