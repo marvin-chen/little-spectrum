@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { cva } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { COLOR_CLASSES, type ColorKey } from "@/lib/colors";
@@ -25,31 +26,62 @@ const PROMINENT: Record<ColorKey, string> = {
   green: "bg-green-deep text-white",
 };
 
+const buttonBaseVariants = cva(
+  "pressable inline-flex shrink-0 items-center justify-center rounded-capsule select-none whitespace-nowrap disabled:opacity-45 disabled:cursor-not-allowed",
+  {
+    variants: {
+      variant: {
+        prominent: "lit",
+        glass: "glass text-ink hover:bg-white/80",
+        tinted: "",
+        plain: "bg-transparent hover:bg-fill",
+        danger: "bg-danger-soft text-danger",
+      },
+      size: {
+        sm: "h-9 px-3.5 text-footnote font-semibold gap-1.5",
+        md: "h-11 px-5 text-callout font-semibold gap-2",
+        lg: "h-[52px] px-6 text-body font-semibold gap-2",
+      },
+      round: {
+        true: "",
+        false: "",
+      },
+      full: {
+        true: "w-full",
+        false: "",
+      },
+    },
+    compoundVariants: [
+      { size: "sm", round: true, className: "size-9 p-0 font-normal gap-0" },
+      { size: "md", round: true, className: "size-11 p-0 font-normal gap-0" },
+      { size: "lg", round: true, className: "size-[52px] p-0 font-normal gap-0" },
+    ],
+    defaultVariants: {
+      variant: "prominent",
+      size: "md",
+      round: false,
+      full: false,
+    },
+  },
+);
+
 export function buttonClasses({ variant = "prominent", size = "md", accent, full, round }: ButtonStyleProps): string {
-  const sizes: Record<ButtonSize, string> = {
-    sm: round ? "size-9 text-footnote" : "h-9 px-3.5 text-footnote font-semibold gap-1.5",
-    md: round ? "size-11 text-callout" : "h-11 px-5 text-callout font-semibold gap-2",
-    lg: round ? "size-[52px] text-body" : "h-[52px] px-6 text-body font-semibold gap-2",
-  };
-  let look = "";
-  if (variant === "prominent") {
-    look = cn("lit", accent ? PROMINENT[accent] : "bg-ink text-canvas");
-  } else if (variant === "glass") {
-    look = "glass text-ink hover:bg-white/80";
-  } else if (variant === "tinted") {
-    look = accent ? `${COLOR_CLASSES[accent].soft} ${COLOR_CLASSES[accent].ink}` : "bg-fill-2 text-ink";
-  } else if (variant === "plain") {
-    look = accent ? `bg-transparent ${COLOR_CLASSES[accent].ink} hover:bg-fill` : "bg-transparent text-tint hover:bg-fill";
-  } else if (variant === "danger") {
-    look = "bg-danger-soft text-danger";
-  }
-  return cn(
-    "pressable inline-flex shrink-0 items-center justify-center rounded-capsule select-none whitespace-nowrap",
-    "disabled:opacity-45 disabled:cursor-not-allowed",
-    sizes[size],
-    look,
-    full && "w-full",
-  );
+  const accentLook =
+    variant === "prominent"
+      ? accent
+        ? PROMINENT[accent]
+        : "bg-ink text-canvas"
+      : variant === "tinted"
+        ? accent
+          ? `${COLOR_CLASSES[accent].soft} ${COLOR_CLASSES[accent].ink}`
+          : "bg-fill-2 text-ink"
+        : variant === "plain"
+          ? accent
+            ? COLOR_CLASSES[accent].ink
+            : "text-tint"
+          : undefined;
+
+  return cn(buttonBaseVariants({ variant, size, round: Boolean(round), full: Boolean(full) }), accentLook);
 }
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
