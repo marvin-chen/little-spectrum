@@ -65,3 +65,5 @@ Photo selection uses the real browser preparation flow; the resulting image rema
 ## Play layout adoption
 
 Register the screen in `GamePlay` to inherit `GameSessionLayout` in production and previews. Supply concise `GAMES[key].howTo` instructions; keep the game screen responsible for its prompt, role-specific help, controls, pending/error state, and reveal/replay. Do not wrap the screen in another desktop grid or repeat the participant list. See [UI.md](UI.md#shared-game-layout) for width, reading order, and live/preview boundaries. Browser acceptance lives in `tests/e2e/game-layout.spec.ts`; add the new game to the shared catalog to join that matrix.
+
+Scope preview submission checks to the status named **Preview action status**. Games and interaction libraries may add separate live regions; preserve their accessibility announcements rather than assuming the page contains only one status.

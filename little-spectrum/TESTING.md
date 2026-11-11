@@ -62,6 +62,7 @@ If you turn on branch protection for `main`, require these two checks: `Fast che
 |---|---|
 | Color Quest actions at 200% text with desktop fallback fonts: no page/button overflow, keyboard delete dialog, cancellation and focus return in waiting/revealed states | `tests/e2e/game-layout.spec.ts` |
 | Shared game layout: phone/tablet/desktop, two/eight players, roles, active/waiting/reveal, larger text reflow, keyboard focus across resize, reduced motion, production sidebar width, no preview backend traffic | `tests/e2e/game-layout.spec.ts`, `tests/e2e/hue-knew.spec.ts` |
+| Palette Picks preview status coexists with drag live regions; stable server-rendered drag instructions, accessible keyboard pickup/move/drop, focus retention and hydration checks on phone/desktop | `tests/e2e/game-fixtures.spec.ts` |
 | Actual game screens with local actions: answering/waiting for either viewer, held pending, error/retry retaining input, photo upload/deletion, replay reset, and no network writes on phone/desktop | `src/lib/games/fixtures/localView.test.ts`, `src/lib/games/fixtures/fixtures.test.ts`, `tests/e2e/game-fixtures.spec.ts` |
 | Fixture navigation, all six real reveal components, viewer switching, partial results, light/dark reduced-motion layouts on phone/desktop, no writes | `tests/e2e/game-fixtures.spec.ts` |
 | All six games: deterministic two/three/eight-player fixtures, validated submissions, normal/early reveal, duplicate protection, active privacy, round advancement, removed photos, no signing | `src/lib/games/fixtures/fixtures.test.ts` |

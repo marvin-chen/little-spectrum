@@ -22,6 +22,7 @@ for (const game of ["hue-knew", "hue-clue", "true-colors", "same-wavelength", "p
     const writes: string[] = [];
     page.on("request", (request) => { if (!["GET", "HEAD"].includes(request.method())) writes.push(request.url()); });
     await page.goto(`/styleguide/games?game=${game}&scenario=answering&players=8&viewer=last`);
+    if (game === "palette-picks") await expect.poll(() => page.getByRole("status").count()).toBeGreaterThan(1);
     await page.getByLabel("Fail next action", { exact: true }).check();
     await page.getByLabel("Hold next action pending", { exact: true }).check();
     const play = page.getByRole("region", { name: "Play preview" });
@@ -58,7 +59,7 @@ for (const game of ["hue-knew", "hue-clue", "true-colors", "same-wavelength", "p
     if (game === "same-wavelength") await expect(play.getByRole("textbox")).toHaveValue("Moon");
     if (game === "color-quest") await expect(page.getByPlaceholder("A few words about it")).toHaveValue("Local only");
     await action.click();
-    await expect(page.getByRole("status")).toContainText("Your preview submission is in");
+    await expect(page.getByRole("status", { name: "Preview action status", exact: true })).toContainText("Your preview submission is in");
     await page.getByText("Viewer-safe fixture data", { exact: true }).click();
     const data = JSON.parse((await page.getByTestId("fixture-data").textContent())!);
     expect(data.turn.needsYou).toBe(false);
@@ -119,3 +120,32 @@ for (const appearance of ["light", "dark"] as const) {
     expect(writes).toEqual([]);
   });
 }
+
+
+test("Palette Picks keeps server-rendered drag instructions and keyboard sorting accessible", async ({ page }) => {
+  const hydrationErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" && /hydrat|didn.t match/i.test(message.text())) hydrationErrors.push(message.text());
+  });
+  // A fresh browser load after another render exposes server-global ID counters.
+  for (let visit = 0; visit < 2; visit++) {
+    await page.goto("/styleguide/games?game=palette-picks&scenario=answering&players=8&viewer=last");
+    const ranking = page.getByRole("list", { name: "Your ranking", exact: true });
+    const handle = ranking.getByRole("button", { name: "Reorder Flight", exact: true });
+    await handle.focus();
+    const descriptionId = await handle.getAttribute("aria-describedby");
+    expect(descriptionId).toBeTruthy();
+    expect(await page.evaluate((id) => Boolean(document.getElementById(id!)), descriptionId)).toBe(true);
+    await page.keyboard.press("Space");
+    await expect(handle).toHaveAttribute("aria-pressed", "true");
+    const dragStatus = page.getByRole("status", { name: "", exact: true });
+    await expect(dragStatus).toContainText("over droppable area 0");
+    await page.keyboard.press("ArrowDown");
+    await expect(dragStatus).toContainText("over droppable area 1");
+    await page.keyboard.press("Space");
+    await expect(ranking.getByRole("listitem").nth(1)).toContainText("Flight");
+    await expect(handle).toBeFocused();
+    await expect(page.getByRole("status", { name: "Preview action status", exact: true })).toContainText("Your ranking is needed");
+  }
+  expect(hydrationErrors).toEqual([]);
+});

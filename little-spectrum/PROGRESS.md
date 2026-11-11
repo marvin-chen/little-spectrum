@@ -1,5 +1,13 @@
 # Progress
 
+## November 11 CI follow-up and recent commit review
+
+- Investigated failed run `42968418110` at `43dc04d`. Palette Picks preview tests failed on phone and desktop because `f47c472` introduced dnd-kit’s screen-reader status region; the page-wide `getByRole("status")` selector became ambiguous. Reproduced both failures locally before the fix.
+- Named the preview status “Preview action status” and scoped the existing submission assertion to that name. Kept dnd-kit announcements and the original pending/failure/retry/privacy assertions intact; coverage explicitly checks that multiple status regions coexist.
+- Also reproduced a server/client drag-instruction ID mismatch. Passed React `useId()` to DndContext and gave the keyboard-focusable grip an accessible name instead of hiding it. Added phone/desktop checks for linked instructions across fresh page loads, keyboard pickup/move/drop, announcements, focus retention, and hydration errors.
+- Reviewed five new commits since `550e93e`: `4962732` replaces native sharing with clipboard copy; `8c76c6a` introduces clsx/CVA styling and UI dependencies; `f98cb9b` adds NumberFlow counters, motion-based segmented indicators, and swipeable sheets; `f47c472` replaces custom ranking drag code with dnd-kit; `43dc04d` adjusts typography, press/entrance timing, and animated/compact navigation. Game engines, scoring, and database migrations were unchanged.
+- `pnpm check:full` passed: typecheck, lint, production build, 161 unit tests, 23 database tests, and 51 browser tests. No visible UI changed in this follow-up, so no new screenshot archive was captured. The broader six-game accessibility audit remains pending.
+
 ## CI follow-up: Color Quest enlarged text
 
 - Investigated failed full-verification run `42284379913`: the Color Quest desktop fixture exceeded the viewport at 200% text. Reproduced locally with Arial at 390px: “Delete my photo” extended the document to 433px. Default macOS font metrics had missed this in the earlier passing local runs.

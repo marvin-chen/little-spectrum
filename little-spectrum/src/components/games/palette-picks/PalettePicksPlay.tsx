@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useId, useRef, useState, useTransition } from "react";
 import {
   closestCenter,
   DndContext,
@@ -96,6 +96,7 @@ function RankPanel({ gardenId, session, game }: { gardenId: string; session: Ses
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
+  const dragContextId = useId();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -139,7 +140,7 @@ function RankPanel({ gardenId, session, game }: { gardenId: string; session: Ses
       <Card className="p-5">
         <PromptHeading title={game.title} prompt={game.prompt} />
         <p className="mt-2 text-callout text-ink-2">First place goes on top. Drag the grip or tap the arrows to shuffle things around.</p>
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <DndContext id={dragContextId} sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={order.map(String)} strategy={verticalListSortingStrategy}>
             <ol className="mt-5 flex select-none flex-col gap-2" aria-label="Your ranking">
               {order.map((item, position) => (
@@ -237,7 +238,7 @@ function SortableRankRow({
         ref={setActivatorNodeRef}
         {...attributes}
         {...listeners}
-        aria-hidden
+        aria-label={`Reorder ${name}`}
         style={{ touchAction: "none" }}
         className={cn(
           "flex size-11 shrink-0 items-center justify-center rounded-full text-ink-3",

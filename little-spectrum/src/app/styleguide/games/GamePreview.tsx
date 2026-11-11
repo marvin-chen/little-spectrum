@@ -74,7 +74,7 @@ export function GamePreview({ initial, userId, mode, restartHref }: {
         <label className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={failNext} disabled={pending} onChange={(e) => setFailNext(e.target.checked)} />Fail next action</label>
         <label className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={hold} disabled={pending} onChange={(e) => setHold(e.target.checked)} />Hold next action pending</label>
         {pending && hold ? <Button onClick={() => { setHold(false); release.current?.(); }}>Finish pending action</Button> : null}
-        <p role="status" className="text-footnote">{session.turn.line}</p>
+        <p role="status" aria-label="Preview action status" className="text-footnote">{session.turn.line}</p>
       </Card>
       <section aria-label={session.status === "revealed" ? "Reveal preview" : "Play preview"}>
         <GameActionsProvider actions={actions}><GamePlay session={session} userId={userId} /></GameActionsProvider>
