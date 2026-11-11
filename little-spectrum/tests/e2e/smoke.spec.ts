@@ -49,7 +49,7 @@ test("main navigation, catalog, garden, memories, and settings work without erro
   if (isMobile) {
     // The bottom tab bar never covers the primary action on Home.
     await page.goto(`/g/${gardenId}`);
-    const share = page.getByRole("button", { name: /Share invite link/ });
+    const share = page.getByRole("button", { name: /Copy invite link/ });
     await share.scrollIntoViewIfNeeded();
     await expect(share).toBeVisible();
     await share.click({ trial: true });

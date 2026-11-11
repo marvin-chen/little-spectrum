@@ -11,14 +11,12 @@ import { expandGardenAction, rotateInviteAction } from "./actions";
 export function InviteManager({
   gardenId,
   inviteUrl,
-  gardenName,
   isCreator,
   full,
   spotsLeft,
 }: {
   gardenId: string;
   inviteUrl: string | null;
-  gardenName: string;
   isCreator: boolean;
   full: boolean;
   spotsLeft: number;
@@ -46,7 +44,7 @@ export function InviteManager({
             Anyone with this link can join. {spotsLeft} {spotsLeft === 1 ? "spot" : "spots"} left.
           </p>
           <p className="mt-2 mb-3 break-all rounded-row bg-fill px-3 py-2 text-footnote text-ink-2 select-all">{inviteUrl}</p>
-          <ShareButton url={inviteUrl} title={`Join ${gardenName} on Little Spectrum`} text="Come play little games and grow a garden with me." full />
+          <ShareButton url={inviteUrl} full />
         </>
       ) : (
         <p className="text-callout text-ink-2">Invites are paused. {isCreator ? "Make a new link when you are ready." : "The creator can make a new link."}</p>

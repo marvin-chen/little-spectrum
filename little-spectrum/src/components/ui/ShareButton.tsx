@@ -1,37 +1,25 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
-import { Check, Copy, Share } from "lucide-react";
+import { useState } from "react";
+import { Check, Copy } from "lucide-react";
 import { Button, type ButtonStyleProps } from "./Button";
 
 type Props = ButtonStyleProps & {
   url: string;
-  title: string;
+  title?: string;
   text?: string;
   label?: string;
   className?: string;
 };
 
-export function ShareButton({ url, title, text, label = "Share invite link", className, ...style }: Props) {
+export function ShareButton({ url, label = "Copy invite link", className, ...style }: Props) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
-  const canShare = useSyncExternalStore(
-    () => () => {},
-    () => typeof navigator.share === "function",
-    () => false,
-  );
 
-  async function share() {
+  async function copy() {
     const nav = typeof navigator === "undefined" ? undefined : navigator;
-    if (nav?.share) {
-      try {
-        await nav.share({ title, text, url });
-        return;
-      } catch (error) {
-        if ((error as { name?: string }).name === "AbortError") return;
-      }
-    }
     try {
-      await nav?.clipboard.writeText(url);
+      if (!nav?.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await nav.clipboard.writeText(url);
       setState("copied");
     } catch {
       setState("failed");
@@ -39,18 +27,11 @@ export function ShareButton({ url, title, text, label = "Share invite link", cla
     setTimeout(() => setState("idle"), 2200);
   }
 
-  const icon =
-    state === "copied" ? (
-      <Check className="size-4" aria-hidden />
-    ) : canShare ? (
-      <Share className="size-4" aria-hidden />
-    ) : (
-      <Copy className="size-4" aria-hidden />
-    );
+  const icon = state === "copied" ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />;
 
   return (
     <>
-      <Button onClick={share} icon={icon} className={className} {...style}>
+      <Button onClick={copy} icon={icon} className={className} {...style}>
         {state === "copied" ? "Link copied" : state === "failed" ? "Copy failed, long-press link" : label}
       </Button>
       <span className="sr-only" aria-live="polite">

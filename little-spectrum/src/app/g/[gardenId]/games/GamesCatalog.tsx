@@ -40,7 +40,8 @@ export function GamesCatalog({ gardenId, currentUserId, members, availability, i
         <div className="anim-rise rounded-group bg-surface p-5 shadow-card ring-1 ring-line">
           <p className="text-headline font-semibold">Invite a friend to unlock games</p>
           <p className="mt-1 mb-3 text-footnote text-ink-2">Every game needs at least two people.</p>
-          <ShareButton url={inviteUrl} title="Join my garden on Little Spectrum" variant="tinted" accent="green" full />
+          <p className="mb-3 break-all rounded-row bg-fill px-3 py-2 text-footnote text-ink-2 select-all">{inviteUrl}</p>
+          <ShareButton url={inviteUrl} variant="tinted" accent="green" full />
         </div>
       ) : null}
 

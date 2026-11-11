@@ -97,8 +97,9 @@ export default async function HomePage({ params, searchParams }: { params: Promi
       {solo && inviteUrl ? (
         <section className="anim-rise mb-7 rounded-group bg-surface p-5 shadow-card ring-1 ring-line">
           <p className="text-title-3 font-bold">Invite a friend to start playing</p>
-          <p className="mt-1 mb-4 text-callout text-ink-2">Every game needs two people. Your friend joins in ten seconds, no account needed.</p>
-          <ShareButton url={inviteUrl} title={`Join ${garden.name} on Little Spectrum`} text="Come play little games and grow a garden with me." size="lg" full />
+          <p className="mt-1 mb-3 text-callout text-ink-2">Every game needs two people. Your friend joins in ten seconds, no account needed.</p>
+          <p className="mb-3 break-all rounded-row bg-fill px-3 py-2 text-footnote text-ink-2 select-all">{inviteUrl}</p>
+          <ShareButton url={inviteUrl} size="lg" full />
         </section>
       ) : null}
 

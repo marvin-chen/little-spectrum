@@ -5,8 +5,13 @@ import { Button, IconButton } from "./Button";
 import { Field, TextInput } from "./Field";
 import { ChoiceGroup } from "./ChoiceGroup";
 import { Feedback } from "./Feedback";
+import { ShareButton } from "./ShareButton";
 
 describe("shared control semantics", () => {
+  it("renders a copy invite link button", () => {
+    const html = render(h(ShareButton, { url: "https://example.com/join/abc" }));
+    expect(html).toContain("Copy invite link");
+  });
   it("prevents accidental form submission and duplicate pending actions", () => {
     expect(render(h(Button, {}, "Save"))).toContain('type="button"');
     const pending = render(h(Button, { loading: true, type: "submit" }, "Saving"));

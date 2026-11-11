@@ -34,7 +34,6 @@ export default async function SettingsPage({ params, searchParams }: { params: P
         <InviteManager
           gardenId={gardenId}
           inviteUrl={inviteUrl}
-          gardenName={garden.name}
           isCreator={isCreator}
           full={full}
           spotsLeft={garden.capacity - garden.members.length}
