@@ -2,15 +2,40 @@ import { createElement as h } from "react";
 import { renderToStaticMarkup as render } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Button, IconButton } from "./Button";
+import { Badge } from "./Badge";
+import { CountUp } from "./CountUp";
 import { Field, TextInput } from "./Field";
 import { ChoiceGroup } from "./ChoiceGroup";
 import { Feedback } from "./Feedback";
+import { SegmentedControl } from "./SegmentedControl";
 import { ShareButton } from "./ShareButton";
 
 describe("shared control semantics", () => {
   it("renders a copy invite link button", () => {
     const html = render(h(ShareButton, { url: "https://example.com/join/abc" }));
     expect(html).toContain("Copy invite link");
+  });
+  it("renders CountUp with NumberFlow and accessible value", () => {
+    const html = render(h(CountUp, { value: 83 }));
+    expect(html).toContain('aria-label="83"');
+    expect(html).toContain("number-flow-react");
+  });
+  it("preserves iOS glass classes across Button, Badge, and SegmentedControl variants", () => {
+    expect(render(h(Button, { variant: "glass" }, "Glass"))).toContain("glass");
+    expect(render(h(Badge, { tone: "glass" }, "Glass"))).toContain("glass");
+    const seg = render(
+      h(SegmentedControl, {
+        label: "Size",
+        value: "two",
+        onChange: () => {},
+        options: [
+          { value: "two", label: "Two" },
+          { value: "group", label: "Group" },
+        ],
+      }),
+    );
+    expect(seg).toContain("glass");
+    expect(seg).toContain('role="radiogroup"');
   });
   it("prevents accidental form submission and duplicate pending actions", () => {
     expect(render(h(Button, {}, "Save"))).toContain('type="button"');

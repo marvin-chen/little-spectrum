@@ -1,8 +1,8 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useRef } from "react";
+import { motion } from "motion/react";
 import { cn } from "@/lib/cn";
-import { useSlidingIndicator } from "./useSlidingIndicator";
 
 export type SegmentOption<T extends string> = { value: T; label: string; description?: string };
 
@@ -17,7 +17,7 @@ type Props<T extends string> = {
 
 export function SegmentedControl<T extends string>({ label, options, value, onChange, className, size = "md" }: Props<T>) {
   const id = useId();
-  const { containerRef, rect } = useSlidingIndicator<HTMLDivElement>(value);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const index = options.findIndex((o) => o.value === value);
@@ -40,11 +40,6 @@ export function SegmentedControl<T extends string>({ label, options, value, onCh
       onKeyDown={onKeyDown}
       className={cn("relative flex w-full rounded-[14px] bg-fill p-1", size === "lg" ? "h-12" : "h-10", className)}
     >
-      <span
-        aria-hidden
-        className={cn("absolute top-1 bottom-1 rounded-[11px] bg-surface shadow-card", rect.ready && "transition-[transform,width] duration-[360ms] ease-[var(--ease-spring)]")}
-        style={{ transform: `translateX(${rect.left}px)`, width: rect.width, opacity: rect.width ? 1 : 0 }}
-      />
       {options.map((option) => {
         const selected = option.value === value;
         return (
@@ -57,9 +52,20 @@ export function SegmentedControl<T extends string>({ label, options, value, onCh
             aria-checked={selected}
             tabIndex={selected ? 0 : -1}
             onClick={() => onChange(option.value)}
-            className={cn("pressable relative z-10 flex flex-1 items-center justify-center rounded-[11px] px-2 text-callout font-semibold transition-colors", selected ? "text-ink" : "text-ink-2 hover:text-ink")}
+            className={cn(
+              "pressable relative z-10 flex flex-1 items-center justify-center rounded-[11px] px-2 text-callout font-semibold transition-colors",
+              selected ? "text-ink" : "text-ink-2 hover:text-ink",
+            )}
           >
-            {option.label}
+            {selected ? (
+              <motion.span
+                layoutId={`${id}-pill`}
+                aria-hidden
+                transition={{ type: "spring", stiffness: 520, damping: 38, mass: 0.8 }}
+                className="glass absolute inset-0 -z-10 rounded-[11px] bg-surface shadow-card"
+              />
+            ) : null}
+            <span className="relative z-10">{option.label}</span>
           </button>
         );
       })}

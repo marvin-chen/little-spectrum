@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { IconButton } from "./Button";
 import { cn } from "@/lib/cn";
@@ -29,6 +29,8 @@ export function Sheet({
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
+  const dragStartY = useRef<number | null>(null);
+  const [dragY, setDragY] = useState(0);
 
   useEffect(() => {
     const dialog = ref.current;
@@ -43,6 +45,26 @@ export function Sheet({
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  function startSwipe(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!dismissible) return;
+    dragStartY.current = event.clientY;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function moveSwipe(event: ReactPointerEvent<HTMLDivElement>) {
+    if (dragStartY.current === null) return;
+    const delta = event.clientY - dragStartY.current;
+    setDragY(delta > 0 ? delta : delta * 0.15);
+  }
+
+  function endSwipe() {
+    if (dragStartY.current === null) return;
+    const shouldClose = dragY > 88;
+    dragStartY.current = null;
+    setDragY(0);
+    if (shouldClose && dismissible) onClose();
+  }
 
   return (
     <dialog
@@ -75,22 +97,35 @@ export function Sheet({
       }}
       onClose={() => {
         document.body.style.overflow = "";
+        setDragY(0);
         if (open) onClose();
       }}
       onClick={(event) => {
         if (dismissible && event.target === event.currentTarget) onClose();
       }}
+      style={dragY !== 0 ? { transform: `translateY(${dragY}px)` } : undefined}
       className={cn(
         "fixed inset-x-2 top-auto bottom-2 m-0 w-auto max-w-none max-h-[92dvh] overflow-hidden",
         "glass-strong rounded-sheet text-ink outline-none",
         "sm:inset-auto sm:top-1/2 sm:left-1/2 sm:w-[min(30rem,calc(100%-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2",
+        dragY === 0 && "transition-transform duration-300 ease-[var(--ease-spring)]",
         "open:anim-sheet",
       )}
     >
       {open ? (
         <div className={cn("flex max-h-[92dvh] flex-col", tone)}>
-          <div className="mx-auto mt-2.5 h-[5px] w-9 rounded-full bg-ink/15 sm:hidden" aria-hidden />
-          <div className="flex items-start gap-3 px-5 pt-3 pb-2 sm:pt-5">
+          <div
+            onPointerDown={startSwipe}
+            onPointerMove={moveSwipe}
+            onPointerUp={endSwipe}
+            onPointerCancel={endSwipe}
+            style={{ touchAction: "none" }}
+            className=" cursor-grab pt-2.5 pb-1 active:cursor-grabbing sm:hidden"
+            aria-hidden
+          >
+            <div className="mx-auto h-[5px] w-9 rounded-full bg-ink/15" />
+          </div>
+          <div className="flex items-start gap-3 px-5 pt-2 pb-2 sm:pt-5">
             <div className="min-w-0 flex-1">
               <h2 id={titleId} className="font-display text-title-2 font-bold">
                 {title}
