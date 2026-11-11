@@ -1,6 +1,23 @@
 "use client";
 
-import { useRef, useState, useTransition, type PointerEvent as ReactPointerEvent } from "react";
+import { useRef, useState, useTransition } from "react";
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { ChevronDown, ChevronUp, GripVertical, Lock, RotateCcw, Sparkles } from "lucide-react";
 import { useGameActions } from "@/components/games/GameActions";
 import { Button } from "@/components/ui/Button";
@@ -72,28 +89,23 @@ function PositionNumber({ position }: { position: number }) {
   );
 }
 
-function moveIndex(list: number[], from: number, to: number): number[] {
-  const next = [...list];
-  const [item] = next.splice(from, 1);
-  next.splice(to, 0, item);
-  return next;
-}
-
 function RankPanel({ gardenId, session, game }: { gardenId: string; session: SessionView; game: PalettePicksView }) {
   const { submitAction, initialError } = useGameActions();
   const [order, setOrder] = useState<number[]>(() => game.items.map((_, index) => index));
-  const [dragging, setDragging] = useState<number | null>(null);
   const [announcement, setAnnouncement] = useState("");
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
-  const listRef = useRef<HTMLOListElement>(null);
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   function move(item: number, delta: -1 | 1) {
     const from = order.indexOf(item);
     const to = from + delta;
     if (to < 0 || to >= order.length) return;
-    setOrder(moveIndex(order, from, to));
+    setOrder(arrayMove(order, from, to));
     setAnnouncement(`${game.items[item]} is now ${ORDINALS[to]}.`);
     // The pressed arrow disables at the ends, so hand focus to its sibling.
     if (to === 0 || to === order.length - 1) {
@@ -102,29 +114,16 @@ function RankPanel({ gardenId, session, game }: { gardenId: string; session: Ses
     }
   }
 
-  function startDrag(event: ReactPointerEvent<HTMLElement>, item: number) {
-    if (pending) return;
-    event.preventDefault();
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setDragging(item);
-  }
-
-  function drag(event: ReactPointerEvent<HTMLElement>) {
-    if (dragging === null || !listRef.current) return;
-    const from = order.indexOf(dragging);
-    const rows = Array.from(listRef.current.children) as HTMLElement[];
-    const others = rows.filter((_, index) => index !== from);
-    const to = others.filter((row) => {
-      const rect = row.getBoundingClientRect();
-      return rect.top + rect.height / 2 < event.clientY;
-    }).length;
-    if (to !== from) setOrder(moveIndex(order, from, to));
-  }
-
-  function endDrag() {
-    if (dragging === null) return;
-    setAnnouncement(`${game.items[dragging]} is now ${ORDINALS[order.indexOf(dragging)]}.`);
-    setDragging(null);
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const activeItem = Number(active.id);
+    const overItem = Number(over.id);
+    const from = order.indexOf(activeItem);
+    const to = order.indexOf(overItem);
+    if (from === -1 || to === -1) return;
+    setOrder(arrayMove(order, from, to));
+    setAnnouncement(`${game.items[activeItem]} is now ${ORDINALS[to]}.`);
   }
 
   function confirm() {
@@ -140,64 +139,24 @@ function RankPanel({ gardenId, session, game }: { gardenId: string; session: Ses
       <Card className="p-5">
         <PromptHeading title={game.title} prompt={game.prompt} />
         <p className="mt-2 text-callout text-ink-2">First place goes on top. Drag the grip or tap the arrows to shuffle things around.</p>
-        <ol ref={listRef} className="mt-5 flex select-none flex-col gap-2" aria-label="Your ranking">
-          {order.map((item, position) => {
-            const name = game.items[item];
-            const isDragging = dragging === item;
-            return (
-              <li
-                key={item}
-                className={cn(
-                  "flex items-center gap-2 rounded-row py-1.5 pr-1 pl-3 transition-[background-color,box-shadow] duration-150",
-                  isDragging ? "bg-amber-soft shadow-float ring-2 ring-amber" : "bg-fill",
-                )}
-              >
-                <PositionNumber position={position} />
-                <span className="min-w-0 flex-1 text-body font-medium">{name}</span>
-                <button
-                  type="button"
-                  ref={(el) => {
-                    if (el) buttonRefs.current.set(`${item}:up`, el);
-                    else buttonRefs.current.delete(`${item}:up`);
-                  }}
-                  aria-label={`Move ${name} up`}
-                  disabled={position === 0 || pending}
-                  onClick={() => move(item, -1)}
-                  className="pressable flex size-11 shrink-0 items-center justify-center rounded-full text-ink-2 hover:bg-fill-2 disabled:opacity-30 disabled:hover:bg-transparent"
-                >
-                  <ChevronUp className="size-5" aria-hidden />
-                </button>
-                <button
-                  type="button"
-                  ref={(el) => {
-                    if (el) buttonRefs.current.set(`${item}:down`, el);
-                    else buttonRefs.current.delete(`${item}:down`);
-                  }}
-                  aria-label={`Move ${name} down`}
-                  disabled={position === order.length - 1 || pending}
-                  onClick={() => move(item, 1)}
-                  className="pressable flex size-11 shrink-0 items-center justify-center rounded-full text-ink-2 hover:bg-fill-2 disabled:opacity-30 disabled:hover:bg-transparent"
-                >
-                  <ChevronDown className="size-5" aria-hidden />
-                </button>
-                <span
-                  aria-hidden
-                  onPointerDown={(event) => startDrag(event, item)}
-                  onPointerMove={drag}
-                  onPointerUp={endDrag}
-                  onPointerCancel={endDrag}
-                  style={{ touchAction: "none" }}
-                  className={cn(
-                    "flex size-11 shrink-0 items-center justify-center rounded-full text-ink-3",
-                    isDragging ? "cursor-grabbing text-amber-ink" : "cursor-grab",
-                  )}
-                >
-                  <GripVertical className="size-5" />
-                </span>
-              </li>
-            );
-          })}
-        </ol>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={order.map(String)} strategy={verticalListSortingStrategy}>
+            <ol className="mt-5 flex select-none flex-col gap-2" aria-label="Your ranking">
+              {order.map((item, position) => (
+                <SortableRankRow
+                  key={item}
+                  item={item}
+                  position={position}
+                  total={order.length}
+                  name={game.items[item]}
+                  pending={pending}
+                  onMove={move}
+                  buttonRefs={buttonRefs}
+                />
+              ))}
+            </ol>
+          </SortableContext>
+        </DndContext>
         <p aria-live="polite" className="sr-only">
           {announcement}
         </p>
@@ -212,6 +171,82 @@ function RankPanel({ gardenId, session, game }: { gardenId: string; session: Ses
         </Button>
       </Card>
     </div>
+  );
+}
+
+function SortableRankRow({
+  item,
+  position,
+  total,
+  name,
+  pending,
+  onMove,
+  buttonRefs,
+}: {
+  item: number;
+  position: number;
+  total: number;
+  name: string;
+  pending: boolean;
+  onMove: (item: number, delta: -1 | 1) => void;
+  buttonRefs: React.RefObject<Map<string, HTMLButtonElement>>;
+}) {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
+    id: String(item),
+    disabled: pending,
+  });
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn(
+        "relative flex items-center gap-2 rounded-row py-1.5 pr-1 pl-3 transition-[background-color,box-shadow] duration-150",
+        isDragging ? "glass z-10 bg-amber-soft/90 shadow-float ring-2 ring-amber" : "bg-fill",
+      )}
+    >
+      <PositionNumber position={position} />
+      <span className="min-w-0 flex-1 text-body font-medium">{name}</span>
+      <button
+        type="button"
+        ref={(el) => {
+          if (el) buttonRefs.current.set(`${item}:up`, el);
+          else buttonRefs.current.delete(`${item}:up`);
+        }}
+        aria-label={`Move ${name} up`}
+        disabled={position === 0 || pending}
+        onClick={() => onMove(item, -1)}
+        className="pressable flex size-11 shrink-0 items-center justify-center rounded-full text-ink-2 hover:bg-fill-2 disabled:opacity-30 disabled:hover:bg-transparent"
+      >
+        <ChevronUp className="size-5" aria-hidden />
+      </button>
+      <button
+        type="button"
+        ref={(el) => {
+          if (el) buttonRefs.current.set(`${item}:down`, el);
+          else buttonRefs.current.delete(`${item}:down`);
+        }}
+        aria-label={`Move ${name} down`}
+        disabled={position === total - 1 || pending}
+        onClick={() => onMove(item, 1)}
+        className="pressable flex size-11 shrink-0 items-center justify-center rounded-full text-ink-2 hover:bg-fill-2 disabled:opacity-30 disabled:hover:bg-transparent"
+      >
+        <ChevronDown className="size-5" aria-hidden />
+      </button>
+      <span
+        ref={setActivatorNodeRef}
+        {...attributes}
+        {...listeners}
+        aria-hidden
+        style={{ touchAction: "none" }}
+        className={cn(
+          "flex size-11 shrink-0 items-center justify-center rounded-full text-ink-3",
+          isDragging ? "cursor-grabbing text-amber-ink" : "cursor-grab",
+        )}
+      >
+        <GripVertical className="size-5" />
+      </span>
+    </li>
   );
 }
 
