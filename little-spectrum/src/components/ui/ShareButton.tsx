@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { toast } from "sonner";
 import { Button, type ButtonStyleProps } from "./Button";
 
 type Props = ButtonStyleProps & {
@@ -21,8 +22,14 @@ export function ShareButton({ url, label = "Copy invite link", className, ...sty
       if (!nav?.clipboard?.writeText) throw new Error("Clipboard unavailable");
       await nav.clipboard.writeText(url);
       setState("copied");
+      toast.success("Invite link copied", {
+        description: "Paste it anywhere to invite a friend.",
+      });
     } catch {
       setState("failed");
+      toast.error("Copy failed", {
+        description: "Select the link above to copy it manually.",
+      });
     }
     setTimeout(() => setState("idle"), 2200);
   }

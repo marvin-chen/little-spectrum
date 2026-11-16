@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Field, TextInput } from "@/components/ui/Field";
 import { AVATAR_ICON_COMPONENTS, Avatar } from "@/components/ui/Avatar";
@@ -16,7 +17,13 @@ export function ProfileForm({ next, initialName, initialAvatar, submitLabel }: P
   const [icon, setIcon] = useState<AvatarIcon>(initial.icon);
   const [color, setColor] = useState<ColorKey>(initial.color);
   const [name, setName] = useState(initialName);
-  const [state, action, pending] = useActionState<ProfileFormState, FormData>(saveProfile, {});
+  const [state, action, pending] = useActionState<ProfileFormState, FormData>(
+    async (prev, formData) => {
+      if (submitLabel === "Save changes") toast.success("Profile updated");
+      return saveProfile(prev, formData);
+    },
+    {},
+  );
   const avatar = serializeAvatar({ icon, color });
 
   return (

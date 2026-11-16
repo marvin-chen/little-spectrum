@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Download, Paintbrush } from "lucide-react";
+import { toast } from "sonner";
 import { InviteCardView, type InviteCardData } from "@/components/invite/InviteCardView";
 import { GameMotif } from "@/components/games/motifs/GameMotif";
 import { Button, ButtonLink } from "@/components/ui/Button";
@@ -20,7 +21,17 @@ type Props = { gardenId: string; data: InviteCardData; isCreator: boolean; previ
 export function InviteCardEditor({ gardenId, data, isCreator, previewImageUrl }: Props) {
   const [open, setOpen] = useState(false);
   const [card, setCard] = useState<InviteCard>(data.card);
-  const [state, action, pending] = useActionState<InviteCardState, FormData>(saveInviteCardAction.bind(null, gardenId), {});
+  const [state, action, pending] = useActionState<InviteCardState, FormData>(
+    async (prev, formData) => {
+      const next = await saveInviteCardAction(gardenId, prev, formData);
+      if (next.saved) {
+        setOpen(false);
+        toast.success("Invite card saved");
+      }
+      return next;
+    },
+    {},
+  );
   const preview: InviteCardData = { ...data, card };
   const update = (patch: Partial<InviteCard>) => setCard((prev) => ({ ...prev, ...patch }));
 
@@ -60,7 +71,7 @@ export function InviteCardEditor({ gardenId, data, isCreator, previewImageUrl }:
                 {state.error}
               </p>
             ) : null}
-            <Button type="submit" size="lg" full loading={pending} onClick={() => setTimeout(() => setOpen(false), 0)}>
+            <Button type="submit" size="lg" full loading={pending}>
               Save card
             </Button>
           </form>

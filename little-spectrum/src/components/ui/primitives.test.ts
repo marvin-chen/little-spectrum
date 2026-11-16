@@ -9,8 +9,13 @@ import { ChoiceGroup } from "./ChoiceGroup";
 import { Feedback } from "./Feedback";
 import { SegmentedControl } from "./SegmentedControl";
 import { ShareButton } from "./ShareButton";
+import { Toaster } from "./Toaster";
 
 describe("shared control semantics", () => {
+  it("renders the iOS glass Toaster container", () => {
+    const html = render(h(Toaster));
+    expect(html).toContain("Notifications");
+  });
   it("renders a copy invite link button", () => {
     const html = render(h(ShareButton, { url: "https://example.com/join/abc" }));
     expect(html).toContain("Copy invite link");

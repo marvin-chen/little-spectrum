@@ -2,6 +2,7 @@
 
 import { useActionState, useState, useTransition } from "react";
 import { LogOut, MailCheck, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Group, Row, RowButton } from "@/components/ui/Card";
 import { Feedback } from "@/components/ui/Feedback";
@@ -14,7 +15,15 @@ type Props = { gardenId: string; email: string | null; isAnonymous: boolean; jus
 export function AccountSection({ gardenId, email, isAnonymous, justKept }: Props) {
   const [open, setOpen] = useState(false);
   const [signOutOpen, setSignOutOpen] = useState(false);
-  const [state, action, pending] = useActionState<AccountState, FormData>(attachEmailAction.bind(null, gardenId), {});
+  const [state, action, pending] = useActionState<AccountState, FormData>(
+    async (prev, formData) => {
+      const next = await attachEmailAction(gardenId, prev, formData);
+      if (next.done) toast.success("Email attached to account");
+      else if (next.pending) toast.success("Confirmation link sent", { description: `Check ${next.pending}` });
+      return next;
+    },
+    {},
+  );
   const [signingOut, startSignOut] = useTransition();
   const kept = !isAnonymous && email;
 

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Palette } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Sheet } from "@/components/ui/Sheet";
 import { cn } from "@/lib/cn";
@@ -40,7 +41,10 @@ export function ThemePicker({ gardenId, current }: { gardenId: string; current: 
                 startTransition(async () => {
                   const result = await updateThemeAction(gardenId, choice);
                   if (result.error) setError(result.error);
-                  else setOpen(false);
+                  else {
+                    setOpen(false);
+                    toast.success(`Theme set to ${THEMES[choice].name}`);
+                  }
                 })
               }
             >

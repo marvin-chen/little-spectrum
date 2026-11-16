@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Link2Off, RefreshCw, UsersRound } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ConfirmationSheet } from "@/components/ui/ConfirmationSheet";
@@ -30,7 +31,10 @@ export function InviteManager({
     startTransition(async () => {
       const result = await rotateInviteAction(gardenId, revokeOnly);
       if (result.error) setError(result.error);
-      else setConfirm(null);
+      else {
+        setConfirm(null);
+        toast.success(revokeOnly ? "Invites paused" : "New invite link ready");
+      }
     });
   }
 
@@ -104,7 +108,10 @@ export function ExpandGarden({ gardenId }: { gardenId: string }) {
         onConfirm={() => startTransition(async () => {
           const result = await expandGardenAction(gardenId);
           if (result.error) setError(result.error);
-          else setOpen(false);
+          else {
+            setOpen(false);
+            toast.success("Garden expanded to eight spots");
+          }
         })}
       >
         <p className="text-callout text-ink-2">This cannot be shrunk back, but nobody has to join.</p>
