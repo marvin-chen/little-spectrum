@@ -121,7 +121,7 @@ test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, 
   await cy.page.goto(url);
   await cy.page.getByRole("button", { name: "Delete my photo" }).click();
   await cy.page.getByRole("button", { name: "Delete photo" }).click();
-  await expect(cy.page.getByText("Photo removed")).toBeVisible({ timeout: 20_000 });
+  await expect(cy.page.getByTestId("game-session-layout").getByText("Photo removed")).toBeVisible({ timeout: 20_000 });
 
   // Home and memories reflect five completed games this week with one reward.
   await ada.page.goto(`/g/${gardenId}`);
