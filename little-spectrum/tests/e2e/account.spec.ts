@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Browser } from "@playwright/test";
 import { createGarden, createProfile, newPlayer } from "./helpers";
 
 const MAIL_API = process.env.MAILPIT_URL ?? "http://127.0.0.1:54324";
@@ -23,8 +23,7 @@ async function latestLinkFor(email: string): Promise<string> {
   throw new Error(`no sign-in email for ${email}`);
 }
 
-test("a guest keeps the account with an email and signs in again on a new device", async ({ browser }) => {
-  const email = `keeper-${Date.now()}@example.com`;
+async function keepAccount(browser: Browser, email: string) {
   const ada = await newPlayer(browser, "Ada");
   await createProfile(ada.page, "Ada");
   const gardenId = await createGarden(ada.page, "Kept garden", "two");
@@ -37,6 +36,32 @@ test("a guest keeps the account with an email and signs in again on a new device
   await expect(ada.page.getByText(`Done. ${email} is attached to this account.`)).toBeVisible();
   await ada.page.getByRole("button", { name: "Got it" }).click();
   await expect(ada.page.getByText("Account kept")).toBeVisible();
+  return gardenId;
+}
+
+test("a sign-in link never sends the person to another site", async ({ browser, baseURL }) => {
+  const email = `redirect-${Date.now()}@example.com`;
+  await keepAccount(browser, email);
+
+  const phone = await newPlayer(browser, "Ada on a new phone");
+  const offsite: string[] = [];
+  phone.page.on("request", (request) => {
+    if (new URL(request.url()).hostname === "evil.example") offsite.push(request.url());
+  });
+  await phone.page.goto(`/signin?next=${encodeURIComponent("/\t/evil.example/phish")}`);
+  await phone.page.getByLabel("Email").fill(email);
+  await phone.page.getByRole("button", { name: "Email me a sign-in link" }).click();
+  await expect(phone.page.getByText("Check your email")).toBeVisible();
+  // An off-site redirect cannot be resolved here, so the assertions below report it instead of the navigation error.
+  await phone.page.goto(await latestLinkFor(email)).catch(() => undefined);
+
+  expect(offsite).toEqual([]);
+  expect(new URL(phone.page.url()).origin).toBe(new URL(baseURL!).origin);
+});
+
+test("a guest keeps the account with an email and signs in again on a new device", async ({ browser }) => {
+  const email = `keeper-${Date.now()}@example.com`;
+  const gardenId = await keepAccount(browser, email);
 
   // A brand new browser asks for a link and lands back in the garden.
   const phone = await newPlayer(browser, "Ada on a new phone");
