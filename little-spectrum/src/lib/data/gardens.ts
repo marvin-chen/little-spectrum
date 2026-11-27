@@ -235,18 +235,17 @@ export async function updateProfile(userId: string, displayName: string, avatar:
   if (error) throw new Error(error.message);
 }
 
-export async function updateGardenTheme(userId: string, gardenId: string, theme: GardenTheme): Promise<void> {
-  const db = createServiceClient();
-  const { data: membership } = await db.from("memberships").select("role").eq("garden_id", gardenId).eq("user_id", userId).maybeSingle();
-  if (membership?.role !== "creator") throw new Error("not_creator");
-  const { error } = await db.from("gardens").update({ theme }).eq("id", gardenId);
+// The creator row and the update are one statement, so a non-creator changes nothing.
+async function updateAsCreator(userId: string, gardenId: string, patch: Record<string, unknown>): Promise<void> {
+  const { data, error } = await createServiceClient().from("gardens").update(patch).eq("id", gardenId).eq("created_by", userId).select("id").maybeSingle();
   if (error) throw new Error(error.message);
+  if (!data) throw new Error("not_creator");
+}
+
+export async function updateGardenTheme(userId: string, gardenId: string, theme: GardenTheme): Promise<void> {
+  await updateAsCreator(userId, gardenId, { theme });
 }
 
 export async function updateInviteCard(userId: string, gardenId: string, card: InviteCard): Promise<void> {
-  const db = createServiceClient();
-  const { data: membership } = await db.from("memberships").select("role").eq("garden_id", gardenId).eq("user_id", userId).maybeSingle();
-  if (membership?.role !== "creator") throw new Error("not_creator");
-  const { error } = await db.from("gardens").update({ invite_card: card, invite_card_updated_at: new Date().toISOString() }).eq("id", gardenId);
-  if (error) throw new Error(error.message);
+  await updateAsCreator(userId, gardenId, { invite_card: card, invite_card_updated_at: new Date().toISOString() });
 }
