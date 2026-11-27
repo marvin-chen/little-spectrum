@@ -25,50 +25,60 @@ type Outcome = { ok: true } | { ok: false; error: string };
 
 export const MAX_COMMENT_LENGTH = 300;
 
+export const MEMORIES_PAGE_SIZE = 20;
+const ACTIVITY_SIZE = 10;
+// How many of the garden's newest rounds to scan for ones the viewer was not in.
+const ACTIVITY_WINDOW = 40;
+
+// Pass a `next` cursor back as `before` to get the following, older page.
+export const REVEALED_AT_CURSOR = /^\d{4}-\d{2}-\d{2}T[\d:.]+(?:Z|[+-]\d{2}:\d{2})$/;
+
+type Revealed = { id: string; game: string; revealed_at: string; session_participants: Array<{ user_id: string }> };
+
+// The viewer's own revealed rounds, newest first. Rounds they were not in only show up as activity on the first page.
 export async function listMemories(
   gardenId: string,
   userId: string,
-  game?: GameKey,
-): Promise<{ memories: Memory[]; activity: ActivityEntry[] }> {
+  options: { game?: GameKey; before?: string } = {},
+): Promise<{ memories: Memory[]; activity: ActivityEntry[]; next: string | null }> {
+  const { game, before } = options;
   const db = createServiceClient();
-  let query = db
-    .from("sessions")
-    .select("id, game, revealed_at, created_at")
-    .eq("garden_id", gardenId)
-    .eq("status", "revealed")
+  const revealedIn = (columns: string) => {
+    const query = db.from("sessions").select(columns).eq("garden_id", gardenId).eq("status", "revealed");
+    return game ? query.eq("game", game) : query;
+  };
+  let mineQuery = revealedIn("id, game, revealed_at, session_participants!inner(user_id)")
+    .eq("session_participants.user_id", userId)
     .order("revealed_at", { ascending: false })
-    .limit(100);
-  if (game) query = query.eq("game", game);
-  const { data: rows } = await query;
-  const revealed = (rows ?? [])
+    .limit(MEMORIES_PAGE_SIZE + 1);
+  if (before) mineQuery = mineQuery.lt("revealed_at", before);
+  const [mine, recent] = await Promise.all([
+    mineQuery,
+    before
+      ? { data: [], error: null }
+      : revealedIn("id, game, revealed_at, session_participants(user_id)")
+          .order("revealed_at", { ascending: false })
+          .limit(ACTIVITY_WINDOW),
+  ]);
+  if (mine.error) throw new Error(mine.error.message);
+  if (recent.error) throw new Error(recent.error.message);
+
+  const shown = (rows: Revealed[]) => rows.filter((r) => isGameKey(r.game) && isGameAvailable(r.game));
+  const activity: ActivityEntry[] = shown((recent.data ?? []) as unknown as Revealed[])
+    .filter((r) => !r.session_participants.some((p) => p.user_id === userId))
+    .slice(0, ACTIVITY_SIZE)
     .map((r) => ({
-      id: r.id as string,
-      game: r.game as string,
-      revealedAt: (r.revealed_at as string | null) ?? (r.created_at as string),
-    }))
-    .filter(
-      (r): r is { id: string; game: GameKey; revealedAt: string } => isGameKey(r.game) && isGameAvailable(r.game),
-    );
-  if (revealed.length === 0) return { memories: [], activity: [] };
+      id: r.id,
+      game: r.game as GameKey,
+      revealedAt: r.revealed_at,
+      participantCount: r.session_participants.length,
+    }));
 
-  const ids = revealed.map((r) => r.id);
-  const { data: participants } = await db
-    .from("session_participants")
-    .select("session_id, user_id")
-    .in("session_id", ids);
-  const countBy = new Map<string, number>();
-  const mine = new Set<string>();
-  for (const p of participants ?? []) {
-    countBy.set(p.session_id, (countBy.get(p.session_id) ?? 0) + 1);
-    if (p.user_id === userId) mine.add(p.session_id);
-  }
-
-  const activity: ActivityEntry[] = revealed
-    .filter((r) => !mine.has(r.id))
-    .map((r) => ({ id: r.id, game: r.game, revealedAt: r.revealedAt, participantCount: countBy.get(r.id) ?? 0 }));
-
-  const mineIds = ids.filter((id) => mine.has(id));
-  if (mineIds.length === 0) return { memories: [], activity };
+  const rows = (mine.data ?? []) as unknown as Revealed[];
+  const page = rows.slice(0, MEMORIES_PAGE_SIZE);
+  const next = rows.length > MEMORIES_PAGE_SIZE ? page[page.length - 1].revealed_at : null;
+  const mineIds = shown(page).map((r) => r.id);
+  if (mineIds.length === 0) return { memories: [], activity, next };
 
   const [states, { data: reactions }, { data: comments }] = await Promise.all([
     loadStates(mineIds),
@@ -99,7 +109,7 @@ export async function listMemories(
       .filter((row) => row.session_id === session.id)
       .map((row) => ({ userId: row.user_id as string, body: row.body as string, updatedAt: row.updated_at as string })),
   }));
-  return { memories, activity };
+  return { memories, activity, next };
 }
 
 async function authorizeRevealed(userId: string, sessionId: string): Promise<Outcome> {

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { anonymousUser, service } from "../db/helpers";
 import { createGarden, createProfile, inviteUrlFor, joinGarden, newPlayer, shot } from "./helpers";
 
 async function startGame(
@@ -175,4 +176,70 @@ test("memories feed shows rounds, reactions, notes, filters, and garden activity
   await expect(widePage.getByRole("heading", { name: "Memories" })).toBeVisible();
   await shot(widePage, "memories-ada-desktop");
   await wide.close();
+});
+
+test("memories pages back to older rounds", async ({ browser }) => {
+  const ada = await newPlayer(browser, "Ada");
+  const name = `Ada${Date.now().toString(36)}`;
+  await createProfile(ada.page, name);
+  const gardenId = await createGarden(ada.page, "Long memory", "two");
+  const memories = `/g/${gardenId}/memories`;
+
+  const { data: profile } = await service().from("profiles").select("id").eq("display_name", name).single();
+  const bo = await anonymousUser("Bo");
+  const people = [profile!.id as string, bo.id];
+  const first = Date.parse("2026-01-01T00:00:00Z");
+  const clue = (n: number) => `Clue ${String(n).padStart(2, "0")}`;
+  const { data: sessions, error } = await service()
+    .from("sessions")
+    .insert(
+      Array.from({ length: 21 }, (_, i) => ({
+        garden_id: gardenId,
+        game: "hue-knew",
+        status: "revealed",
+        created_by: people[0],
+        clue_giver_id: people[0],
+        prompt: { id: "cozy-chaotic", left: "Cozy", right: "Chaotic" },
+        result: {
+          target: 50,
+          clue: clue(i + 1),
+          guesses: [{ userId: bo.id, guess: 40, score: 80 }],
+          shared: 80,
+          missing: [],
+          suggestedClueGiverId: people[0],
+        },
+        revealed_at: new Date(first + i * 60_000).toISOString(),
+      })),
+    )
+    .select("id");
+  expect(error).toBeNull();
+  const ids = sessions!.map((s) => s.id as string);
+  await service()
+    .from("session_participants")
+    .insert(ids.flatMap((id) => people.map((userId) => ({ session_id: id, user_id: userId }))));
+  await service()
+    .from("session_secrets")
+    .insert(ids.map((id) => ({ session_id: id, payload: { target: 50 } })));
+
+  await ada.page.goto(memories);
+  await expect(ada.page.getByRole("article")).toHaveCount(20);
+  await expect(ada.page.getByText(clue(21))).toBeVisible();
+  await expect(ada.page.getByText(clue(1))).toHaveCount(0);
+  await expect(ada.page.getByRole("link", { name: "Back to newest" })).toHaveCount(0);
+  const more = ada.page.getByRole("navigation", { name: "More memories" });
+  await ada.page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect(more.getByRole("link", { name: "Show older" })).toBeInViewport();
+  await shot(ada.page, "memories-show-older");
+
+  await more.getByRole("link", { name: "Show older" }).click();
+  await expect(ada.page).toHaveURL(/before=/);
+  await expect(ada.page.getByRole("article")).toHaveCount(1);
+  await expect(ada.page.getByText(clue(1))).toBeVisible();
+  await expect(ada.page.getByRole("link", { name: "Show older" })).toHaveCount(0);
+  await ada.page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await shot(ada.page, "memories-older-page");
+
+  await ada.page.getByRole("link", { name: "Back to newest" }).click();
+  await expect(ada.page).not.toHaveURL(/before=/);
+  await expect(ada.page.getByRole("article")).toHaveCount(20);
 });
