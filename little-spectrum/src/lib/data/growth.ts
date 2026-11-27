@@ -28,13 +28,17 @@ export type GrowthSummary = {
 
 export const WEEKLY_GOAL = 3;
 
+const getGrowthEvents = cache(async (gardenId: string): Promise<GrowthEventRow[]> => {
+  const { data } = await createServiceClient().from("growth_events").select("*").eq("garden_id", gardenId);
+  return (data ?? []) as GrowthEventRow[];
+});
+
 export const getGrowthSummary = cache(async (gardenId: string, timezone: string): Promise<GrowthSummary> => {
   const db = createServiceClient();
-  const [{ data: events }, { data: rewards }] = await Promise.all([
-    db.from("growth_events").select("*").eq("garden_id", gardenId),
+  const [eventRows, { data: rewards }] = await Promise.all([
+    getGrowthEvents(gardenId),
     db.from("weekly_rewards").select("*").eq("garden_id", gardenId).order("ordinal", { ascending: true }),
   ]);
-  const eventRows = (events ?? []) as GrowthEventRow[];
   const rewardRows = (rewards ?? []) as WeeklyRewardRow[];
   const weekStart = weekStartFor(new Date(), timezone);
   const weeks = new Set(eventRows.map((e) => e.week_start));
@@ -77,9 +81,7 @@ export type GardenDetails = {
 // Rewards with the completed rounds of their week. Only participants get names and links.
 export async function getGardenDetails(gardenId: string, userId: string, timezone: string): Promise<GardenDetails> {
   const db = createServiceClient();
-  const growth = await getGrowthSummary(gardenId, timezone);
-  const { data: events } = await db.from("growth_events").select("session_id, week_start").eq("garden_id", gardenId);
-  const eventRows = (events ?? []) as Array<{ session_id: string; week_start: string }>;
+  const [growth, eventRows] = await Promise.all([getGrowthSummary(gardenId, timezone), getGrowthEvents(gardenId)]);
   const sessionIds = eventRows.map((e) => e.session_id);
   const [{ data: sessions }, { data: participants }] = sessionIds.length
     ? await Promise.all([
