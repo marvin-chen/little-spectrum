@@ -1,6 +1,27 @@
 import { describe, expect, it } from "vitest";
+import { updateGardenTheme, updateInviteCard } from "@/lib/data/gardens";
 import { getGardenDetails } from "@/lib/data/growth";
+import { DEFAULT_INVITE_CARD } from "@/lib/inviteCard";
 import { anonymousUser, createGarden, service, token } from "./helpers";
+
+describe("creator only garden settings", () => {
+  it("lets the creator change the theme and invite card and refuses everyone else", async () => {
+    const [ada, bo, cy] = await Promise.all([anonymousUser("Ada"), anonymousUser("Bo"), anonymousUser("Cy")]);
+    const invite = token();
+    const gardenId = await createGarden(ada, 8, invite);
+    await service().rpc("join_garden", { p_user: bo.id, p_token: invite });
+
+    await updateGardenTheme(ada.id, gardenId, "sunset");
+    await updateInviteCard(ada.id, gardenId, { ...DEFAULT_INVITE_CARD, headline: "Hello" });
+    for (const other of [bo, cy]) {
+      await expect(updateGardenTheme(other.id, gardenId, "lagoon")).rejects.toThrow("not_creator");
+      await expect(updateInviteCard(other.id, gardenId, { ...DEFAULT_INVITE_CARD, headline: "Nope" })).rejects.toThrow("not_creator");
+    }
+
+    const { data } = await service().from("gardens").select("theme, invite_card").eq("id", gardenId).single();
+    expect(data).toMatchObject({ theme: "sunset", invite_card: { headline: "Hello" } });
+  });
+});
 
 describe("garden details", () => {
   it("lists the rounds behind a keepsake and who contributed this week", async () => {
