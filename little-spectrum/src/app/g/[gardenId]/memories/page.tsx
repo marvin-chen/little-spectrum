@@ -10,8 +10,9 @@ import { requireUser } from "@/lib/auth";
 import { cn } from "@/lib/cn";
 import { COLOR_CLASSES } from "@/lib/colors";
 import { getGardenContext } from "@/lib/data/gardens";
-import { formatRevealedDate, listMemories } from "@/lib/data/memories";
+import { listMemories } from "@/lib/data/memories";
 import { GAMES, GAME_KEYS, isGameKey } from "@/lib/games";
+import { formatRevealedDate } from "@/lib/week";
 
 export const metadata = { title: "Memories" };
 
@@ -69,7 +70,7 @@ export default async function MemoriesPage({
       ) : (
         <div className="flex flex-col gap-8">
           {memories.map((memory) => (
-            <MemoryCard key={memory.session.id} gardenId={gardenId} memory={memory} userId={user.id} />
+            <MemoryCard key={memory.session.id} gardenId={gardenId} memory={memory} userId={user.id} timeZone={garden.timezone} />
           ))}
         </div>
       )}
@@ -84,7 +85,7 @@ export default async function MemoriesPage({
                 icon={<GameIcon game={entry.game} size="sm" />}
                 label={
                   <span className="text-callout text-ink-2">
-                    {GAMES[entry.game].name} · {entry.participantCount} {entry.participantCount === 1 ? "player" : "players"} · {formatRevealedDate(entry.revealedAt)}
+                    {GAMES[entry.game].name} · {entry.participantCount} {entry.participantCount === 1 ? "player" : "players"} · {formatRevealedDate(entry.revealedAt, garden.timezone)}
                   </span>
                 }
               />
