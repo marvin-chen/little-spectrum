@@ -49,4 +49,16 @@ describe("home session cards", () => {
     expect(cards[0].id).toBe(ids[60]);
     expect(cards.map((c) => c.id)).not.toContain(ids[0]);
   });
+
+  it("returns every active session and only the four newest revealed ones", async () => {
+    const { ada, bo, gardenId } = await twoPlayerGarden();
+    const ids = await seedSessions(gardenId, ada, bo, [
+      ...Array(6).fill("revealed"),
+      "active",
+      "revealed",
+      "active",
+    ]);
+    const cards = await listSessionCards(gardenId, ada.id);
+    expect(cards.map((c) => c.id)).toEqual(ids.slice(3).reverse());
+  });
 });
