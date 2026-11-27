@@ -17,7 +17,12 @@ export function ThemePicker({ gardenId, current }: { gardenId: string; current: 
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} aria-label="Change garden theme" className="glass pressable absolute top-3 right-3 flex size-10 items-center justify-center rounded-capsule text-ink">
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Change garden theme"
+        className="glass pressable absolute top-3 right-3 flex size-10 items-center justify-center rounded-capsule text-ink"
+      >
         <Palette className="size-5" aria-hidden />
       </button>
       <Sheet
@@ -61,9 +66,18 @@ export function ThemePicker({ gardenId, current }: { gardenId: string; current: 
               role="radio"
               aria-checked={choice === t.key}
               onClick={() => setChoice(t.key)}
-              className={cn("pressable overflow-hidden rounded-tile bg-surface text-left shadow-card ring-1 ring-line", choice === t.key && "ring-2 ring-ink")}
+              className={cn(
+                "pressable overflow-hidden rounded-tile bg-surface text-left shadow-card ring-1 ring-line",
+                choice === t.key && "ring-2 ring-ink",
+              )}
             >
-              <span aria-hidden className="block h-14" style={{ background: `linear-gradient(180deg, ${t.skyTop} 0%, ${t.skyBottom} 55%, ${t.hillFront} 56%, ${t.ground} 100%)` }} />
+              <span
+                aria-hidden
+                className="block h-14"
+                style={{
+                  background: `linear-gradient(180deg, ${t.skyTop} 0%, ${t.skyBottom} 55%, ${t.hillFront} 56%, ${t.ground} 100%)`,
+                }}
+              />
               <span className="flex items-center gap-2 px-3 py-2">
                 <span className="size-3 rounded-full" style={{ background: t.tint }} aria-hidden />
                 <span className="text-callout font-semibold">{t.name}</span>

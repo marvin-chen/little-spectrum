@@ -56,7 +56,13 @@ test("two friends create a garden, join by invite, and play Hue Knew? with a pri
   expect(boHtml).not.toMatch(/target\\?":\s*\d/);
 
   // Presence: Ada sees that Bo has the game open.
-  await expect(ada.page.getByRole("list", { name: "Players", exact: true }).getByRole("listitem").filter({ hasText: "Bo" }).getByText("Pending · Here now", { exact: true })).toBeVisible({ timeout: 15_000 });
+  await expect(
+    ada.page
+      .getByRole("list", { name: "Players", exact: true })
+      .getByRole("listitem")
+      .filter({ hasText: "Bo" })
+      .getByText("Pending · Here now", { exact: true }),
+  ).toBeVisible({ timeout: 15_000 });
 
   await ada.page.getByPlaceholder("Your clue").fill("Sunday pancakes");
   await ada.page.getByRole("button", { name: "Send clue" }).click();

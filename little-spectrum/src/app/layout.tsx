@@ -7,7 +7,8 @@ export const metadata: Metadata = {
     default: "Little Spectrum",
     template: "%s | Little Spectrum",
   },
-  description: "A little color. A little closer. Short games, shared moments, and a garden that grows with your friends.",
+  description:
+    "A little color. A little closer. Short games, shared moments, and a garden that grows with your friends.",
   applicationName: "Little Spectrum",
   appleWebApp: { capable: true, title: "Little Spectrum", statusBarStyle: "default" },
 };

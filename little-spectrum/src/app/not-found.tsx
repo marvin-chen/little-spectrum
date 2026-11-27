@@ -12,7 +12,9 @@ export default function NotFound() {
         <Card className="p-5">
           <Sprout className="size-8 text-ink-3" aria-hidden />
           <h1 className="mt-3 font-display text-title-2 font-bold">Nothing growing here</h1>
-          <p className="mt-2 text-callout text-ink-2">That page does not exist, or it belongs to a round you are not part of.</p>
+          <p className="mt-2 text-callout text-ink-2">
+            That page does not exist, or it belongs to a round you are not part of.
+          </p>
           <ButtonLink className="mt-5" href="/" size="lg" full>
             Go home
           </ButtonLink>

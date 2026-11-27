@@ -7,7 +7,11 @@ import { removePhotoFiles } from "@/lib/photos/server";
 import { createServiceClient } from "@/lib/supabase/server";
 
 // Uploaders can remove their own photo. Before a reveal this also withdraws the submission.
-export async function deletePhotoAction(gardenId: string, sessionId: string, photoId: string): Promise<{ error?: string }> {
+export async function deletePhotoAction(
+  gardenId: string,
+  sessionId: string,
+  photoId: string,
+): Promise<{ error?: string }> {
   const user = await requireUser(`/g/${gardenId}/play/${sessionId}`);
   const state = await loadState(sessionId);
   if (!state) return { error: "Game not found." };

@@ -46,11 +46,7 @@ export const MAX_WORD_LENGTH = 40;
 
 // Exact matching after trimming, case folding, and dropping punctuation. No semantic matching.
 export function normalizeWord(input: string): string {
-  return input
-    .toLowerCase()
-    .replace(/\p{P}/gu, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  return input.toLowerCase().replace(/\p{P}/gu, "").replace(/\s+/g, " ").trim();
 }
 
 // Groups of two or more user ids sharing a normalized word, largest first, stable by first appearance.

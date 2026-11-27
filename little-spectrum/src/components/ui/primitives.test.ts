@@ -51,13 +51,19 @@ describe("shared control semantics", () => {
     expect(pending).toContain("Saving");
   });
   it("names icon-only actions", () => {
-    expect(render(h(IconButton, { label: "Close preview", icon: h("svg", { "aria-hidden": true }) }))).toContain('aria-label="Close preview"');
+    expect(render(h(IconButton, { label: "Close preview", icon: h("svg", { "aria-hidden": true }) }))).toContain(
+      'aria-label="Close preview"',
+    );
   });
   it("preserves field IDs and descriptions while associating hints and errors", () => {
-    const html = render(h(Field, {
-      label: "Email", hint: "Use your own email.", error: "Enter a valid email.",
-      children: h(TextInput, { id: "email", "aria-describedby": "privacy", name: "email" }),
-    }));
+    const html = render(
+      h(Field, {
+        label: "Email",
+        hint: "Use your own email.",
+        error: "Enter a valid email.",
+        children: h(TextInput, { id: "email", "aria-describedby": "privacy", name: "email" }),
+      }),
+    );
     expect(html).toContain('for="email"');
     expect(html).toContain('aria-describedby="privacy email-hint email-error"');
     expect(html).toContain('aria-invalid="true"');
@@ -76,11 +82,18 @@ describe("shared control semantics", () => {
 
 describe("choice groups", () => {
   it("keeps two groups independent and preserves selected and disabled states", () => {
-    const options = [{ value: "one", label: "One" }, { value: "two", label: "Two", disabled: true }];
-    const html = render(h("div", {},
-      h(ChoiceGroup, { label: "Answer", value: "one", options, onChange: () => {} }),
-      h(ChoiceGroup, { label: "Prediction", value: null, options, onChange: () => {} }),
-    ));
+    const options = [
+      { value: "one", label: "One" },
+      { value: "two", label: "Two", disabled: true },
+    ];
+    const html = render(
+      h(
+        "div",
+        {},
+        h(ChoiceGroup, { label: "Answer", value: "one", options, onChange: () => {} }),
+        h(ChoiceGroup, { label: "Prediction", value: null, options, onChange: () => {} }),
+      ),
+    );
     const names = [...html.matchAll(/name="([^"]+)"/g)].map((match) => match[1]);
     expect(names).toHaveLength(4);
     expect(names[0]).toBe(names[1]);

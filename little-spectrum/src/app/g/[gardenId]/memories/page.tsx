@@ -38,7 +38,11 @@ export default async function MemoriesPage({
       <PageTitle title="Memories" subtitle="Every finished round you were part of." />
 
       <nav aria-label="Filter by game" className="hide-scrollbar -mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1">
-        <Link href={base} aria-current={filter === null ? "page" : undefined} className={cn(CHIP, filter === null ? "bg-ink text-canvas" : "glass text-ink-2")}>
+        <Link
+          href={base}
+          aria-current={filter === null ? "page" : undefined}
+          className={cn(CHIP, filter === null ? "bg-ink text-canvas" : "glass text-ink-2")}
+        >
           All games
         </Link>
         {GAME_KEYS.map((key) => {
@@ -63,7 +67,11 @@ export default async function MemoriesPage({
           <EmptyState
             icon={<BookHeart className="size-8" aria-hidden />}
             title={filter ? `No ${GAMES[filter].name} memories yet` : "No memories yet"}
-            body={filter ? "Finish a round of it with you in it and it lands here." : "Finished rounds land here, with answers, photos, and scores."}
+            body={
+              filter
+                ? "Finish a round of it with you in it and it lands here."
+                : "Finished rounds land here, with answers, photos, and scores."
+            }
           />
         </Card>
       ) : (
@@ -84,7 +92,8 @@ export default async function MemoriesPage({
                 icon={<GameIcon game={entry.game} size="sm" />}
                 label={
                   <span className="text-callout text-ink-2">
-                    {GAMES[entry.game].name} · {entry.participantCount} {entry.participantCount === 1 ? "player" : "players"} · {formatRevealedDate(entry.revealedAt)}
+                    {GAMES[entry.game].name} · {entry.participantCount}{" "}
+                    {entry.participantCount === 1 ? "player" : "players"} · {formatRevealedDate(entry.revealedAt)}
                   </span>
                 }
               />

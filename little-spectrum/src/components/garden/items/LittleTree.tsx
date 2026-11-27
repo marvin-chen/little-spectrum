@@ -7,8 +7,18 @@ const PALETTES = [
   { leaf: "#f7b3c4", leafDark: "#f26b8a", bird: "#f2a93b", fruit: null },
 ];
 
-const CANOPY = [[34, 70, 14], [66, 70, 14], [50, 74, 16], [50, 58, 22]];
-const FRUIT = [[38, 66], [58, 50], [64, 74], [46, 80]];
+const CANOPY = [
+  [34, 70, 14],
+  [66, 70, 14],
+  [50, 74, 16],
+  [50, 58, 22],
+];
+const FRUIT = [
+  [38, 66],
+  [58, 50],
+  [64, 74],
+  [46, 80],
+];
 
 export function LittleTree({ variant = 0, className, title }: GardenItemProps) {
   const titleId = useId();

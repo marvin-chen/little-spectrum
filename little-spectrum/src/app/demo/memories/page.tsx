@@ -15,21 +15,48 @@ import { GAMES } from "@/lib/games";
 export const metadata = { title: "Memories" };
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-US", { timeZone: DEMO_GARDEN.timezone, month: "short", day: "numeric" }).format(new Date(iso));
+  return new Intl.DateTimeFormat("en-US", { timeZone: DEMO_GARDEN.timezone, month: "short", day: "numeric" }).format(
+    new Date(iso),
+  );
 }
 
 function Reveal({ entry }: { entry: DemoResult }) {
   switch (entry.game) {
     case "hue-knew":
-      return <HueKnewReveal session={entry.session} result={entry.result} left={entry.left} right={entry.right} userId={DEMO_VIEWER_ID} compact />;
+      return (
+        <HueKnewReveal
+          session={entry.session}
+          result={entry.result}
+          left={entry.left}
+          right={entry.right}
+          userId={DEMO_VIEWER_ID}
+          compact
+        />
+      );
     case "true-colors":
-      return <TrueColorsReveal session={entry.session} prompt={entry.prompt} result={entry.result} userId={DEMO_VIEWER_ID} compact />;
+      return (
+        <TrueColorsReveal
+          session={entry.session}
+          prompt={entry.prompt}
+          result={entry.result}
+          userId={DEMO_VIEWER_ID}
+          compact
+        />
+      );
     case "hue-clue":
       return <HueClueReveal session={entry.session} result={entry.result} userId={DEMO_VIEWER_ID} compact />;
     case "same-wavelength":
       return <SameWavelengthReveal session={entry.session} result={entry.result} userId={DEMO_VIEWER_ID} compact />;
     case "palette-picks":
-      return <PalettePicksReveal session={entry.session} result={entry.result} items={entry.items} userId={DEMO_VIEWER_ID} compact />;
+      return (
+        <PalettePicksReveal
+          session={entry.session}
+          result={entry.result}
+          items={entry.items}
+          userId={DEMO_VIEWER_ID}
+          compact
+        />
+      );
   }
 }
 
@@ -49,7 +76,9 @@ export default function DemoMemoriesPage() {
                   <h2 id={`${entry.session.id}-title`} className="truncate text-body font-semibold text-ink">
                     {game.name}
                   </h2>
-                  <p className="text-footnote text-ink-3">{formatDate(entry.session.revealedAt ?? entry.session.createdAt)}</p>
+                  <p className="text-footnote text-ink-3">
+                    {formatDate(entry.session.revealedAt ?? entry.session.createdAt)}
+                  </p>
                 </div>
                 <AvatarStack people={people} size="xs" max={4} />
               </header>
@@ -67,7 +96,10 @@ export default function DemoMemoriesPage() {
               Photo memories need somewhere private to live, so they appear once the backend is configured. The demo
               keeps its camera roll to itself.
             </p>
-            <Link href="/demo/setup" className="mt-2 inline-flex items-center gap-1 text-footnote font-semibold text-blue-ink">
+            <Link
+              href="/demo/setup"
+              className="mt-2 inline-flex items-center gap-1 text-footnote font-semibold text-blue-ink"
+            >
               Enable real multiplayer <ArrowRight className="size-3.5" aria-hidden />
             </Link>
           </div>

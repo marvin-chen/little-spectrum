@@ -30,12 +30,18 @@ if (existsSync(dir)) {
 }
 mkdirSync(dir, { recursive: true });
 
-const result = spawnSync("pnpm", ["exec", "playwright", "test", "--project=mobile-chromium", ...process.argv.slice(3)], {
-  stdio: "inherit",
-  env: { ...process.env, E2E_SHOTS: dir, E2E_BASE_URL: base },
-});
+const result = spawnSync(
+  "pnpm",
+  ["exec", "playwright", "test", "--project=mobile-chromium", ...process.argv.slice(3)],
+  {
+    stdio: "inherit",
+    env: { ...process.env, E2E_SHOTS: dir, E2E_BASE_URL: base },
+  },
+);
 
-const files = readdirSync(dir).filter((f) => f.endsWith(".png")).sort();
+const files = readdirSync(dir)
+  .filter((f) => f.endsWith(".png"))
+  .sort();
 const total = files.reduce((n, f) => n + statSync(path.join(dir, f)).size, 0);
 const lines = [
   `# Screenshots ${label}`,

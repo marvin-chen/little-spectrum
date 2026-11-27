@@ -6,7 +6,9 @@ export class BackendUnavailableError extends Error {
   }
 }
 
-export function isConnectionError(error: { message?: string; name?: string; status?: number } | null | undefined): boolean {
+export function isConnectionError(
+  error: { message?: string; name?: string; status?: number } | null | undefined,
+): boolean {
   if (!error) return false;
   const text = `${error.name ?? ""} ${error.message ?? ""}`.toLowerCase();
   return (
@@ -22,6 +24,8 @@ export function isConnectionError(error: { message?: string; name?: string; stat
   );
 }
 
-export function raiseIfUnavailable(error: { message?: string; name?: string; status?: number } | null | undefined): void {
+export function raiseIfUnavailable(
+  error: { message?: string; name?: string; status?: number } | null | undefined,
+): void {
   if (isConnectionError(error)) throw new BackendUnavailableError(error?.message);
 }

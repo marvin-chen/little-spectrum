@@ -13,10 +13,28 @@ export function Card({ className, children, ...rest }: HTMLAttributes<HTMLDivEle
 }
 
 // Sentence case section headers, like iOS 26 grouped lists.
-export function SectionLabel({ children, action, className, muted }: { children: ReactNode; action?: ReactNode; className?: string; muted?: boolean }) {
+export function SectionLabel({
+  children,
+  action,
+  className,
+  muted,
+}: {
+  children: ReactNode;
+  action?: ReactNode;
+  className?: string;
+  muted?: boolean;
+}) {
   return (
     <div className={cn("mb-2 flex items-end justify-between px-1", className)}>
-      <h2 className={cn(muted ? "text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3" : "text-title-3 font-bold text-ink")}>{children}</h2>
+      <h2
+        className={cn(
+          muted
+            ? "text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3"
+            : "text-title-3 font-bold text-ink",
+        )}
+      >
+        {children}
+      </h2>
       {action}
     </div>
   );
@@ -24,7 +42,11 @@ export function SectionLabel({ children, action, className, muted }: { children:
 
 // Inset grouped list: 26px corners, rows separated by hairlines.
 export function Group({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn("overflow-hidden rounded-group bg-surface shadow-card ring-1 ring-line", className)}>{children}</div>;
+  return (
+    <div className={cn("overflow-hidden rounded-group bg-surface shadow-card ring-1 ring-line", className)}>
+      {children}
+    </div>
+  );
 }
 
 type RowBaseProps = {
@@ -49,7 +71,8 @@ function RowInner({ icon, label, detail, trailing, chevron }: RowBaseProps & { c
   );
 }
 
-const rowClass = "flex min-h-[52px] w-full items-center gap-3 px-4 py-2.5 text-left not-last:border-b not-last:border-line";
+const rowClass =
+  "flex min-h-[52px] w-full items-center gap-3 px-4 py-2.5 text-left not-last:border-b not-last:border-line";
 
 export function Row(props: RowBaseProps) {
   return (
@@ -67,9 +90,19 @@ export function RowLink({ href, ...props }: RowBaseProps & { href: string }) {
   );
 }
 
-export function RowButton({ onClick, disabled, chevron = true, ...props }: RowBaseProps & { onClick: () => void; disabled?: boolean; chevron?: boolean }) {
+export function RowButton({
+  onClick,
+  disabled,
+  chevron = true,
+  ...props
+}: RowBaseProps & { onClick: () => void; disabled?: boolean; chevron?: boolean }) {
   return (
-    <button type="button" onClick={onClick} disabled={disabled} className={cn(rowClass, "pressable hover:bg-fill disabled:opacity-50", props.className)}>
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={cn(rowClass, "pressable hover:bg-fill disabled:opacity-50", props.className)}
+    >
       <RowInner {...props} chevron={chevron} />
     </button>
   );

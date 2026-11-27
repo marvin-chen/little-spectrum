@@ -11,7 +11,9 @@ import { DemoSessionRow } from "./DemoSessionRow";
 export const metadata = { title: "Demo home" };
 
 function greeting(timezone: string, name: string): string {
-  const hour = Number(new Intl.DateTimeFormat("en-US", { timeZone: timezone, hour: "numeric", hour12: false }).format(new Date()));
+  const hour = Number(
+    new Intl.DateTimeFormat("en-US", { timeZone: timezone, hour: "numeric", hour12: false }).format(new Date()),
+  );
   const part = hour < 5 ? "Up late" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   return `${part}, ${name}.`;
 }
@@ -22,7 +24,9 @@ export default function DemoHomePage() {
   const waiting = DEMO_CARDS.filter((c) => c.status === "active" && !c.turn.needsYou);
   const recent = DEMO_CARDS.filter((c) => c.status === "revealed").slice(0, 5);
   const context =
-    yourTurn.length === 1 ? "One little thing is waiting on you." : `${yourTurn.length} little things are waiting on you.`;
+    yourTurn.length === 1
+      ? "One little thing is waiting on you."
+      : `${yourTurn.length} little things are waiting on you.`;
 
   return (
     <>
@@ -33,7 +37,11 @@ export default function DemoHomePage() {
       </header>
 
       <div className="mb-5 flex items-center gap-3">
-        <AvatarStack people={DEMO_GARDEN.members.map((m) => ({ id: m.userId, name: m.name, avatar: m.avatar }))} size="md" max={8} />
+        <AvatarStack
+          people={DEMO_GARDEN.members.map((m) => ({ id: m.userId, name: m.name, avatar: m.avatar }))}
+          size="md"
+          max={8}
+        />
         <p className="text-callout text-ink-2">
           {DEMO_GARDEN.members.map((m) => (m.userId === DEMO_VIEWER_ID ? "You" : m.name)).join(", ")}
         </p>
@@ -58,7 +66,12 @@ export default function DemoHomePage() {
       ) : null}
 
       <section className="mb-6">
-        <ButtonLink href="/demo/games" variant="tinted" accent="coral" icon={<Sparkles className="size-4" aria-hidden />}>
+        <ButtonLink
+          href="/demo/games"
+          variant="tinted"
+          accent="coral"
+          icon={<Sparkles className="size-4" aria-hidden />}
+        >
           Browse the games
         </ButtonLink>
       </section>

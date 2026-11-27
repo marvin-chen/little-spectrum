@@ -39,12 +39,19 @@ export function CreateGardenForm() {
           ]}
         />
         <p className="mt-2 px-1 text-footnote text-ink-3">
-          {capacity === "2" ? "Room for two. You can make space for up to eight later." : "Up to eight people, including you."}
+          {capacity === "2"
+            ? "Room for two. You can make space for up to eight later."
+            : "Up to eight people, including you."}
         </p>
       </div>
 
       <Field label="Garden name">
-        <TextInput name="name" maxLength={40} required placeholder={capacity === "2" ? "Our little patch" : "The Thursday crew"} />
+        <TextInput
+          name="name"
+          maxLength={40}
+          required
+          placeholder={capacity === "2" ? "Our little patch" : "The Thursday crew"}
+        />
       </Field>
 
       <fieldset>
@@ -67,7 +74,9 @@ export function CreateGardenForm() {
                 <span
                   aria-hidden
                   className="block h-16"
-                  style={{ background: `linear-gradient(180deg, ${t.skyTop} 0%, ${t.skyBottom} 55%, ${t.hillFront} 56%, ${t.ground} 100%)` }}
+                  style={{
+                    background: `linear-gradient(180deg, ${t.skyTop} 0%, ${t.skyBottom} 55%, ${t.hillFront} 56%, ${t.ground} 100%)`,
+                  }}
                 />
                 <span className="block px-3 py-2">
                   <span className="block text-callout font-semibold">{t.name}</span>

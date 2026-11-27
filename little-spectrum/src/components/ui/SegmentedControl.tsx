@@ -15,7 +15,14 @@ type Props<T extends string> = {
   size?: "md" | "lg";
 };
 
-export function SegmentedControl<T extends string>({ label, options, value, onChange, className, size = "md" }: Props<T>) {
+export function SegmentedControl<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+  className,
+  size = "md",
+}: Props<T>) {
   const id = useId();
   const containerRef = useRef<HTMLDivElement>(null);
 

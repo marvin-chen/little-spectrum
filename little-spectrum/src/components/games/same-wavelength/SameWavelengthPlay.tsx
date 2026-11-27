@@ -37,11 +37,15 @@ export function SameWavelengthPlay({ gardenId, session, game, userId }: Props) {
         <Card className="flex flex-col gap-5 p-5">
           <div>
             <p className="text-title-3 font-semibold">Earlier attempts</p>
-            <p className="mt-1 text-callout text-ink-2">Try to match the room. Borrowing an earlier answer is fair game.</p>
+            <p className="mt-1 text-callout text-ink-2">
+              Try to match the room. Borrowing an earlier answer is fair game.
+            </p>
           </div>
           {game.previousRounds.map((round) => (
             <section key={round.round}>
-              <h3 className="mb-2 text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Attempt {round.round}</h3>
+              <h3 className="mb-2 text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">
+                Attempt {round.round}
+              </h3>
               <SameWavelengthRoundTiles round={round} participants={session.participants} userId={userId} />
             </section>
           ))}
@@ -64,7 +68,13 @@ export function SameWavelengthPlay({ gardenId, session, game, userId }: Props) {
           />
         </>
       ) : game.phase === "waiting" && game.myWord !== null ? (
-        <WaitingPanel session={session} game={game} userId={userId} myAvatar={me?.avatar ?? "sun:amber"} myName={me?.name ?? "You"} />
+        <WaitingPanel
+          session={session}
+          game={game}
+          userId={userId}
+          myAvatar={me?.avatar ?? "sun:amber"}
+          myName={me?.name ?? "You"}
+        />
       ) : (
         <AnswerPanel gardenId={gardenId} sessionId={session.id} game={game} />
       )}
@@ -118,7 +128,16 @@ function AnswerPanel({ gardenId, sessionId, game }: { gardenId: string; sessionI
           {error}
         </p>
       ) : null}
-      <Button className="mt-4" size="lg" full accent="blue" onClick={lockIn} loading={pending} disabled={!word.trim()} icon={<Lock className="size-4" aria-hidden />}>
+      <Button
+        className="mt-4"
+        size="lg"
+        full
+        accent="blue"
+        onClick={lockIn}
+        loading={pending}
+        disabled={!word.trim()}
+        icon={<Lock className="size-4" aria-hidden />}
+      >
         Lock in
       </Button>
     </Card>
@@ -139,7 +158,9 @@ function WaitingPanel({
   myName: string;
 }) {
   const submitted = new Set(game.submitted);
-  const waiting = session.participants.filter((p) => p.userId !== userId && !submitted.has(p.userId)).map((p) => p.name);
+  const waiting = session.participants
+    .filter((p) => p.userId !== userId && !submitted.has(p.userId))
+    .map((p) => p.name);
   return (
     <Card className="p-5">
       <p className="text-title-3 font-semibold">Your answer is locked in</p>
@@ -154,7 +175,8 @@ function WaitingPanel({
       </p>
       {game.attemptsLeft > 0 ? (
         <p className="mt-1 text-footnote text-ink-3">
-          If it is not a full match, everyone gets another go. {game.attemptsLeft === 1 ? "One attempt left after this." : `${game.attemptsLeft} attempts left after this.`}
+          If it is not a full match, everyone gets another go.{" "}
+          {game.attemptsLeft === 1 ? "One attempt left after this." : `${game.attemptsLeft} attempts left after this.`}
         </p>
       ) : null}
     </Card>

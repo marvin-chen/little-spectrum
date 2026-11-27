@@ -2,10 +2,26 @@ import { ImageOff } from "lucide-react";
 import { cn } from "@/lib/cn";
 import type { PhotoView } from "@/lib/games/colorQuest";
 
-export function PhotoFigure({ photo, alt, className, square }: { photo: PhotoView; alt: string; className?: string; square?: boolean }) {
+export function PhotoFigure({
+  photo,
+  alt,
+  className,
+  square,
+}: {
+  photo: PhotoView;
+  alt: string;
+  className?: string;
+  square?: boolean;
+}) {
   if (photo.removed || !photo.url) {
     return (
-      <div className={cn("flex items-center justify-center rounded-row bg-fill text-ink-3", square ? "aspect-square" : "aspect-[4/3]", className)}>
+      <div
+        className={cn(
+          "flex items-center justify-center rounded-row bg-fill text-ink-3",
+          square ? "aspect-square" : "aspect-[4/3]",
+          className,
+        )}
+      >
         <span className="flex flex-col items-center gap-1 text-footnote">
           <ImageOff className="size-5" aria-hidden />
           Photo removed

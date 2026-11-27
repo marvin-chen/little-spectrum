@@ -3,7 +3,9 @@ import { createGarden, createProfile } from "./helpers";
 
 test("fields expose help text as an accessible description", async ({ page }) => {
   await page.goto("/styleguide");
-  await expect(page.getByRole("textbox", { name: "Garden name", exact: true })).toHaveAccessibleDescription("Up to 40 characters.");
+  await expect(page.getByRole("textbox", { name: "Garden name", exact: true })).toHaveAccessibleDescription(
+    "Up to 40 characters.",
+  );
 });
 
 test("settings confirmations cancel safely, return focus, and perform the selected action", async ({ page }) => {
@@ -83,8 +85,12 @@ for (const appearance of ["light", "dark"] as const) {
     expect(errors).toEqual([]);
 
     if (process.env.E2E_SHOTS) {
-      await page.locator("#forms").screenshot({ path: `${process.env.E2E_SHOTS}/ui-forms-${appearance}.png`, scale: "css" });
-      await page.locator("#selection").screenshot({ path: `${process.env.E2E_SHOTS}/ui-selection-${appearance}.png`, scale: "css" });
+      await page
+        .locator("#forms")
+        .screenshot({ path: `${process.env.E2E_SHOTS}/ui-forms-${appearance}.png`, scale: "css" });
+      await page
+        .locator("#selection")
+        .screenshot({ path: `${process.env.E2E_SHOTS}/ui-selection-${appearance}.png`, scale: "css" });
       await opener.click();
       await dialog.screenshot({ path: `${process.env.E2E_SHOTS}/ui-confirmation-${appearance}.png`, scale: "css" });
     }

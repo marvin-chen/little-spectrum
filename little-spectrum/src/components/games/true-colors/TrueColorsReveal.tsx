@@ -31,7 +31,12 @@ export function TrueColorsReveal({ session, prompt, result, userId, compact = fa
         <div className="flex items-baseline justify-between gap-3">
           <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Correct predictions</p>
           {result.scorable > 0 ? (
-            <p className={cn("font-display font-bold text-rose-ink tabular-nums", compact ? "text-title-2" : "text-title-1")}>
+            <p
+              className={cn(
+                "font-display font-bold text-rose-ink tabular-nums",
+                compact ? "text-title-2" : "text-title-1",
+              )}
+            >
               {result.correct}
               <span className="text-ink-3"> of {result.scorable}</span>
             </p>
@@ -47,12 +52,19 @@ export function TrueColorsReveal({ session, prompt, result, userId, compact = fa
             const prediction = predictionBy.get(p.userId);
             return (
               <li key={p.userId} className={cn("flex items-start gap-3", compact ? "py-2" : "py-3")}>
-                <Avatar avatar={p.avatar} name={p.name} size={compact ? "xs" : "sm"} className={compact ? "mt-0.5" : undefined} />
+                <Avatar
+                  avatar={p.avatar}
+                  name={p.name}
+                  size={compact ? "xs" : "sm"}
+                  className={compact ? "mt-0.5" : undefined}
+                />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                     <p className="text-body">
                       <span className="font-semibold">{isMe ? "You" : p.name}</span>
-                      {answer !== undefined ? <span className="text-ink-2"> picked {prompt.options[answer]}</span> : null}
+                      {answer !== undefined ? (
+                        <span className="text-ink-2"> picked {prompt.options[answer]}</span>
+                      ) : null}
                     </p>
                     {answer === undefined ? <Badge>Didn&apos;t play this round</Badge> : null}
                   </div>

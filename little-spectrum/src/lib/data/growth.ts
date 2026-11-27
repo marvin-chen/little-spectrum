@@ -93,8 +93,12 @@ export async function getGardenDetails(gardenId: string, userId: string, timezon
   const { data: profiles } = peopleIds.length
     ? await db.from("profiles").select("id, display_name").in("id", peopleIds)
     : { data: [] };
-  const nameBy = new Map(((profiles ?? []) as Array<{ id: string; display_name: string }>).map((p) => [p.id, p.display_name]));
-  const sessionBy = new Map(((sessions ?? []) as Array<{ id: string; game: GameKey; revealed_at: string | null }>).map((s) => [s.id, s]));
+  const nameBy = new Map(
+    ((profiles ?? []) as Array<{ id: string; display_name: string }>).map((p) => [p.id, p.display_name]),
+  );
+  const sessionBy = new Map(
+    ((sessions ?? []) as Array<{ id: string; game: GameKey; revealed_at: string | null }>).map((s) => [s.id, s]),
+  );
 
   const activityFor = (sessionId: string): WeekActivity | null => {
     const s = sessionBy.get(sessionId);

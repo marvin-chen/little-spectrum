@@ -9,46 +9,69 @@ async function checkLayout(page: Page, columns: boolean, count: number) {
   await expect(interaction).toBeVisible();
   await expect(guide.getByRole("heading", { name: "How to play" })).toBeVisible();
   await expect(guide.getByRole("list", { name: "Players" }).getByRole("listitem")).toHaveCount(count);
-  await expect.poll(async () => layout.evaluate((element, sideBySide) => {
-    const a = element.querySelector('[aria-label="Game interaction"]')!.getBoundingClientRect();
-    const b = element.querySelector('[aria-label="Round guide"]')!.getBoundingClientRect();
-    return {
-      arranged: sideBySide ? b.x >= a.right && b.y < a.y + 60 : b.y >= a.bottom && Math.abs(b.x - a.x) < 2,
-      fits: document.documentElement.scrollWidth <= innerWidth,
-    };
-  }, columns)).toEqual({ arranged: true, fits: true });
+  await expect
+    .poll(async () =>
+      layout.evaluate((element, sideBySide) => {
+        const a = element.querySelector('[aria-label="Game interaction"]')!.getBoundingClientRect();
+        const b = element.querySelector('[aria-label="Round guide"]')!.getBoundingClientRect();
+        return {
+          arranged: sideBySide ? b.x >= a.right && b.y < a.y + 60 : b.y >= a.bottom && Math.abs(b.x - a.x) < 2,
+          fits: document.documentElement.scrollWidth <= innerWidth,
+        };
+      }, columns),
+    )
+    .toEqual({ arranged: true, fits: true });
 }
 
 for (const game of GAME_KEYS) {
   test(`${game} shares a responsive round guide across roles and states`, async ({ page }) => {
     const external: string[] = [];
     page.on("request", (r) => {
-      if (!["GET", "HEAD"].includes(r.method()) || /\/auth\/v1|\/rest\/v1|\/storage\/v1/.test(r.url())) external.push(r.url());
+      if (!["GET", "HEAD"].includes(r.method()) || /\/auth\/v1|\/rest\/v1|\/storage\/v1/.test(r.url()))
+        external.push(r.url());
     });
-    page.on("websocket", (socket) => { if (!socket.url().includes("/_next/hmr")) external.push(socket.url()); });
+    page.on("websocket", (socket) => {
+      if (!socket.url().includes("/_next/hmr")) external.push(socket.url());
+    });
     await page.emulateMedia({ reducedMotion: "reduce" });
     for (const width of [390, 820, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme: width === 820 ? "dark" : "light" });
       for (const scenario of ["initial", "answering", "waiting", "early", "revealed"]) {
         const count = scenario === "initial" ? 2 : 8;
-        await page.goto(`/styleguide/games?game=${game}&scenario=${scenario}&players=${count}&viewer=${scenario === "initial" ? "first" : "last"}`);
+        await page.goto(
+          `/styleguide/games?game=${game}&scenario=${scenario}&players=${count}&viewer=${scenario === "initial" ? "first" : "last"}`,
+        );
         await checkLayout(page, width >= 1280, count);
         const players = page.getByRole("list", { name: "Players", exact: true });
-        await expect(players).toContainText((scenario === "revealed" || scenario === "early") ? "Round finished" : scenario === "waiting" ? "Submitted" : "Pending");
+        await expect(players).toContainText(
+          scenario === "revealed" || scenario === "early"
+            ? "Round finished"
+            : scenario === "waiting"
+              ? "Submitted"
+              : "Pending",
+        );
         if (scenario === "answering" || scenario === "revealed") {
-          await page.getByTestId("game-session-layout").evaluate((element) => element.scrollIntoView({ block: "start", behavior: "instant" }));
+          await page
+            .getByTestId("game-session-layout")
+            .evaluate((element) => element.scrollIntoView({ block: "start", behavior: "instant" }));
           await shot(page, `layout-${game}-${width}-${scenario}`);
         }
       }
       // Larger text must reflow into a single column even in a desktop viewport.
-      await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+      await page.evaluate(() => {
+        document.documentElement.style.fontSize = "200%";
+      });
       await checkLayout(page, false, 8);
       if (width === 1280) {
-        await page.getByTestId("game-session-layout").evaluate((element) => element.scrollIntoView({ block: "start", behavior: "instant" }));
+        await page
+          .getByTestId("game-session-layout")
+          .evaluate((element) => element.scrollIntoView({ block: "start", behavior: "instant" }));
         await shot(page, `layout-${game}-200-percent-text`);
       }
-      await page.evaluate(() => { document.documentElement.style.fontSize = ""; });
+      await page.evaluate(() => {
+        document.documentElement.style.fontSize = "";
+      });
     }
     expect(external).toEqual([]);
   });

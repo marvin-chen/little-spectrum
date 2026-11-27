@@ -11,7 +11,11 @@ import { CreateGardenForm } from "./CreateGardenForm";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Start a garden" };
 
-export default async function StartPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+export default async function StartPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   const user = await requireUser("/start");
   const params = await searchParams;
   const gardens = await listGardens(user.id);
@@ -21,7 +25,10 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
       <div className="flex flex-1 flex-col gap-6 py-4">
         <div className="flex items-center justify-between">
           <Wordmark />
-          <Link href="/welcome?edit=1&next=%2Fstart" className="pressable flex items-center gap-2 rounded-capsule py-1 pr-1 pl-3 text-callout font-semibold text-ink-2 hover:bg-fill">
+          <Link
+            href="/welcome?edit=1&next=%2Fstart"
+            className="pressable flex items-center gap-2 rounded-capsule py-1 pr-1 pl-3 text-callout font-semibold text-ink-2 hover:bg-fill"
+          >
             {user.displayName}
             <Avatar avatar={user.avatar} name={user.displayName} size="sm" />
           </Link>

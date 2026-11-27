@@ -26,17 +26,29 @@ import { WeeklyProgress } from "../WeeklyProgress";
 export const metadata = { title: "Home" };
 
 function greeting(timezone: string): string {
-  const hour = Number(new Intl.DateTimeFormat("en-US", { timeZone: timezone, hour: "numeric", hour12: false }).format(new Date()));
+  const hour = Number(
+    new Intl.DateTimeFormat("en-US", { timeZone: timezone, hour: "numeric", hour12: false }).format(new Date()),
+  );
   return hour < 5 ? "Up late" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 }
 
-export default async function HomePage({ params, searchParams }: { params: Promise<{ gardenId: string }>; searchParams: Promise<Record<string, string | undefined>> }) {
+export default async function HomePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ gardenId: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   const { gardenId } = await params;
   const query = await searchParams;
   const user = await requireUser(`/g/${gardenId}`);
   const garden = await getGardenContext(gardenId, user.id);
   if (!garden) notFound();
-  const [cards, growth, gardens] = await Promise.all([listSessionCards(gardenId, user.id), getGrowthSummary(gardenId, garden.timezone), listGardens(user.id)]);
+  const [cards, growth, gardens] = await Promise.all([
+    listSessionCards(gardenId, user.id),
+    getGrowthSummary(gardenId, garden.timezone),
+    listGardens(user.id),
+  ]);
   const yourTurn = cards.filter((c) => c.status === "active" && c.turn.needsYou);
   const waiting = cards.filter((c) => c.status === "active" && !c.turn.needsYou);
   const recent = cards.filter((c) => c.status === "revealed").slice(0, 4);
@@ -52,7 +64,11 @@ export default async function HomePage({ params, searchParams }: { params: Promi
     <>
       <LiveGarden gardenId={gardenId} fallbackMs={waiting.length > 0 || yourTurn.length > 0 || solo ? 10000 : 60000} />
       {/* Sky header: the theme's sky bleeds behind the title and fades into the canvas. */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72" style={{ background: `linear-gradient(180deg, ${sky.top} 0%, transparent 100%)`, opacity: sky.night ? 0.5 : 1 }} />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72"
+        style={{ background: `linear-gradient(180deg, ${sky.top} 0%, transparent 100%)`, opacity: sky.night ? 0.5 : 1 }}
+      />
 
       <header className="flex items-start justify-between gap-3 pt-3 pb-4">
         <div className="min-w-0">
@@ -63,16 +79,26 @@ export default async function HomePage({ params, searchParams }: { params: Promi
         </div>
         <ToolbarGroup>
           {gardens.length > 1 ? <GardenSwitcher gardens={gardens} currentId={gardenId} variant="toolbar" /> : null}
-          <Link href={`/g/${gardenId}/settings`} aria-label="Garden settings" className="pressable flex size-9 items-center justify-center rounded-capsule text-ink hover:bg-fill">
+          <Link
+            href={`/g/${gardenId}/settings`}
+            aria-label="Garden settings"
+            className="pressable flex size-9 items-center justify-center rounded-capsule text-ink hover:bg-fill"
+          >
             <Settings className="size-[18px]" aria-hidden />
           </Link>
         </ToolbarGroup>
       </header>
 
       <div className="mb-4 flex items-center gap-3">
-        <AvatarStack people={garden.members.map((m) => ({ id: m.userId, name: m.name, avatar: m.avatar }))} size="sm" max={8} />
+        <AvatarStack
+          people={garden.members.map((m) => ({ id: m.userId, name: m.name, avatar: m.avatar }))}
+          size="sm"
+          max={8}
+        />
         <p className="truncate text-callout text-ink-2">
-          {garden.members.length > 4 ? `You and ${garden.members.length - 1} friends` : garden.members.map((m) => (m.userId === user.id ? "You" : m.name)).join(", ")}
+          {garden.members.length > 4
+            ? `You and ${garden.members.length - 1} friends`
+            : garden.members.map((m) => (m.userId === user.id ? "You" : m.name)).join(", ")}
         </p>
       </div>
 
@@ -84,9 +110,21 @@ export default async function HomePage({ params, searchParams }: { params: Promi
 
       {/* The garden, edge to edge, with the weekly indicator resting on the ground. */}
       <section className="relative -mx-4 mb-7 md:mx-0">
-        <Link href={`/g/${gardenId}/garden`} aria-label="Open the garden" transitionTypes={["nav-forward"]} className="block overflow-hidden md:rounded-group">
+        <Link
+          href={`/g/${gardenId}/garden`}
+          aria-label="Open the garden"
+          transitionTypes={["nav-forward"]}
+          className="block overflow-hidden md:rounded-group"
+        >
           <ViewTransition name="garden-scene" share="morph" default="none">
-            <GardenScene theme={garden.theme} items={growth.rewards} compact className="block h-56 w-full md:h-64" animate hour={hour} />
+            <GardenScene
+              theme={garden.theme}
+              items={growth.rewards}
+              compact
+              className="block h-56 w-full md:h-64"
+              animate
+              hour={hour}
+            />
           </ViewTransition>
         </Link>
         <div className="glass mx-4 -mt-4 rounded-row px-4 py-3 md:mx-4">
@@ -97,8 +135,12 @@ export default async function HomePage({ params, searchParams }: { params: Promi
       {solo && inviteUrl ? (
         <section className="anim-rise mb-7 rounded-group bg-surface p-5 shadow-card ring-1 ring-line">
           <p className="text-title-3 font-bold">Invite a friend to start playing</p>
-          <p className="mt-1 mb-3 text-callout text-ink-2">Every game needs two people. Your friend joins in ten seconds, no account needed.</p>
-          <p className="mb-3 break-all rounded-row bg-fill px-3 py-2 text-footnote text-ink-2 select-all">{inviteUrl}</p>
+          <p className="mt-1 mb-3 text-callout text-ink-2">
+            Every game needs two people. Your friend joins in ten seconds, no account needed.
+          </p>
+          <p className="mb-3 break-all rounded-row bg-fill px-3 py-2 text-footnote text-ink-2 select-all">
+            {inviteUrl}
+          </p>
           <ShareButton url={inviteUrl} size="lg" full />
         </section>
       ) : null}
@@ -109,7 +151,10 @@ export default async function HomePage({ params, searchParams }: { params: Promi
           <Link
             href={`/g/${gardenId}/play/${hero.id}`}
             transitionTypes={["nav-forward"]}
-            className={cn("pressable anim-rise block overflow-hidden rounded-group p-5 shadow-card ring-1 ring-line", COLOR_CLASSES[GAMES[hero.game].color].soft)}
+            className={cn(
+              "pressable anim-rise block overflow-hidden rounded-group p-5 shadow-card ring-1 ring-line",
+              COLOR_CLASSES[GAMES[hero.game].color].soft,
+            )}
           >
             <span className="flex items-center gap-4">
               <ViewTransition name={`session-${hero.id}`} share="morph" default="none">
@@ -117,10 +162,24 @@ export default async function HomePage({ params, searchParams }: { params: Promi
               </ViewTransition>
               <span className="min-w-0 flex-1">
                 <span className="block text-title-3 font-bold text-ink">{GAMES[hero.game].name}</span>
-                <span className={cn("block text-callout font-medium", COLOR_CLASSES[GAMES[hero.game].color].ink)}>{hero.turn.line}</span>
-                <span className="mt-1 block truncate text-footnote text-ink-2">With {hero.participants.filter((p) => p.userId !== user.id).map((p) => p.name).join(", ")}</span>
+                <span className={cn("block text-callout font-medium", COLOR_CLASSES[GAMES[hero.game].color].ink)}>
+                  {hero.turn.line}
+                </span>
+                <span className="mt-1 block truncate text-footnote text-ink-2">
+                  With{" "}
+                  {hero.participants
+                    .filter((p) => p.userId !== user.id)
+                    .map((p) => p.name)
+                    .join(", ")}
+                </span>
               </span>
-              <span className={cn("lit flex size-11 shrink-0 items-center justify-center rounded-capsule text-white", COLOR_CLASSES[GAMES[hero.game].color].bgDeep)} aria-hidden>
+              <span
+                className={cn(
+                  "lit flex size-11 shrink-0 items-center justify-center rounded-capsule text-white",
+                  COLOR_CLASSES[GAMES[hero.game].color].bgDeep,
+                )}
+                aria-hidden
+              >
                 <Play className="ml-0.5 size-5" fill="currentColor" />
               </span>
             </span>
@@ -139,8 +198,14 @@ export default async function HomePage({ params, searchParams }: { params: Promi
             <Sparkles className="size-6" aria-hidden />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-headline font-semibold">{waiting.length > 0 ? "You are all caught up" : "Nothing in play"}</span>
-            <span className="block text-footnote text-ink-2">{waiting.length > 0 ? "Your friends are up. Start another while you wait?" : "Pick a game and your friends get a turn."}</span>
+            <span className="block text-headline font-semibold">
+              {waiting.length > 0 ? "You are all caught up" : "Nothing in play"}
+            </span>
+            <span className="block text-footnote text-ink-2">
+              {waiting.length > 0
+                ? "Your friends are up. Start another while you wait?"
+                : "Pick a game and your friends get a turn."}
+            </span>
           </span>
           <ButtonLink href={`/g/${gardenId}/games`} size="sm" variant="tinted" accent="coral">
             Start
@@ -163,7 +228,10 @@ export default async function HomePage({ params, searchParams }: { params: Promi
         <section className="mb-7">
           <SectionLabel
             action={
-              <Link href={`/g/${gardenId}/memories`} className="flex items-center gap-1 text-footnote font-semibold text-tint">
+              <Link
+                href={`/g/${gardenId}/memories`}
+                className="flex items-center gap-1 text-footnote font-semibold text-tint"
+              >
                 Memories <ArrowRight className="size-3.5" aria-hidden />
               </Link>
             }

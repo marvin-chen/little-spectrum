@@ -13,16 +13,39 @@ import type { PalettePicksView } from "@/lib/games/palettePicks";
 import type { SameWavelengthView } from "@/lib/games/sameWavelength";
 import type { TrueColorsView } from "@/lib/games/trueColors";
 
-export function GameReveal({ session, userId, compact = false }: { session: SessionView; userId: string; compact?: boolean }): ReactNode {
+export function GameReveal({
+  session,
+  userId,
+  compact = false,
+}: {
+  session: SessionView;
+  userId: string;
+  compact?: boolean;
+}): ReactNode {
   switch (session.game) {
     case "hue-knew": {
       const v = session.view as HueKnewView;
-      return v.result ? <HueKnewReveal session={session} result={v.result} left={v.left} right={v.right} userId={userId} compact={compact} /> : null;
+      return v.result ? (
+        <HueKnewReveal
+          session={session}
+          result={v.result}
+          left={v.left}
+          right={v.right}
+          userId={userId}
+          compact={compact}
+        />
+      ) : null;
     }
     case "true-colors": {
       const v = session.view as TrueColorsView;
       return v.result ? (
-        <TrueColorsReveal session={session} prompt={{ text: v.question, options: v.options }} result={v.result} userId={userId} compact={compact} />
+        <TrueColorsReveal
+          session={session}
+          prompt={{ text: v.question, options: v.options }}
+          result={v.result}
+          userId={userId}
+          compact={compact}
+        />
       ) : null;
     }
     case "hue-clue": {
@@ -31,13 +54,19 @@ export function GameReveal({ session, userId, compact = false }: { session: Sess
     }
     case "same-wavelength": {
       const v = session.view as SameWavelengthView;
-      return v.result ? <SameWavelengthReveal session={session} result={v.result} userId={userId} compact={compact} /> : null;
+      return v.result ? (
+        <SameWavelengthReveal session={session} result={v.result} userId={userId} compact={compact} />
+      ) : null;
     }
     case "palette-picks": {
       const v = session.view as PalettePicksView;
-      return v.result ? <PalettePicksReveal session={session} result={v.result} items={v.items} userId={userId} compact={compact} /> : null;
+      return v.result ? (
+        <PalettePicksReveal session={session} result={v.result} items={v.items} userId={userId} compact={compact} />
+      ) : null;
     }
     case "color-quest":
-      return <ColorQuestReveal session={session} game={session.view as ColorQuestView} userId={userId} compact={compact} />;
+      return (
+        <ColorQuestReveal session={session} game={session.view as ColorQuestView} userId={userId} compact={compact} />
+      );
   }
 }

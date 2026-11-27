@@ -9,7 +9,11 @@ export type MemoryActionState = { error?: string };
 
 const THROTTLE_MESSAGE = "That is a lot of feelings. Give it a minute.";
 
-export async function toggleReactionAction(gardenId: string, sessionId: string, emoji: string): Promise<MemoryActionState> {
+export async function toggleReactionAction(
+  gardenId: string,
+  sessionId: string,
+  emoji: string,
+): Promise<MemoryActionState> {
   const user = await requireUser(`/g/${gardenId}/memories`);
   if (!throttle(`memories:${user.id}`, 60, 60 * 1000)) return { error: THROTTLE_MESSAGE };
   const result = await toggleReaction(user.id, sessionId, emoji);

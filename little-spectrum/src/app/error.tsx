@@ -19,7 +19,9 @@ export default function AppError({ error, reset }: { error: Error & { digest?: s
         <Wordmark />
         <Card className="p-5">
           <CloudOff className="size-8 text-ink-3" aria-hidden />
-          <h1 className="mt-3 font-display text-title-2 font-bold">{unreachable ? "The garden is out of reach" : "Something went sideways"}</h1>
+          <h1 className="mt-3 font-display text-title-2 font-bold">
+            {unreachable ? "The garden is out of reach" : "Something went sideways"}
+          </h1>
           <p className="mt-2 text-callout text-ink-2">
             {unreachable
               ? "We could not reach the backend. Free Supabase projects pause after a week without activity and take about a minute to wake up. Your data is safe."

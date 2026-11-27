@@ -14,8 +14,20 @@ async function playedSession(gardenId: string, a: TestUser, b: TestUser): Promis
   });
   if (error) throw new Error(error.message);
   const id = data as string;
-  await service().rpc("submit_answer", { p_user: a.id, p_session: id, p_round: 1, p_kind: "answer", p_payload: { word: "towel" } });
-  await service().rpc("submit_answer", { p_user: b.id, p_session: id, p_round: 1, p_kind: "answer", p_payload: { word: "towel" } });
+  await service().rpc("submit_answer", {
+    p_user: a.id,
+    p_session: id,
+    p_round: 1,
+    p_kind: "answer",
+    p_payload: { word: "towel" },
+  });
+  await service().rpc("submit_answer", {
+    p_user: b.id,
+    p_session: id,
+    p_round: 1,
+    p_kind: "answer",
+    p_payload: { word: "towel" },
+  });
   return id;
 }
 
@@ -29,7 +41,14 @@ describe("weekly rewards", () => {
     const sessions = await Promise.all(Array.from({ length: 5 }, () => playedSession(gardenId, ada, bo)));
     const reveals = await Promise.all(
       sessions.map((id) =>
-        service().rpc("reveal_round", { p_session: id, p_round: 1, p_result: {}, p_final: true, p_early: false, p_expected_submissions: 2 }),
+        service().rpc("reveal_round", {
+          p_session: id,
+          p_round: 1,
+          p_result: {},
+          p_final: true,
+          p_early: false,
+          p_expected_submissions: 2,
+        }),
       ),
     );
     const rewarded = reveals.filter((r) => (r.data as { reward: unknown }).reward !== null);
@@ -48,11 +67,37 @@ describe("weekly rewards", () => {
     const gardenId = await createGarden(ada, 2, invite);
     await service().rpc("join_garden", { p_user: bo.id, p_token: invite });
     const id = await playedSession(gardenId, ada, bo);
-    const first = await service().rpc("reveal_round", { p_session: id, p_round: 1, p_result: { rounds: [1] }, p_final: false, p_early: false, p_expected_submissions: 2 });
+    const first = await service().rpc("reveal_round", {
+      p_session: id,
+      p_round: 1,
+      p_result: { rounds: [1] },
+      p_final: false,
+      p_early: false,
+      p_expected_submissions: 2,
+    });
     expect(first.data).toMatchObject({ status: "revealed", growth: false });
-    await service().rpc("submit_answer", { p_user: ada.id, p_session: id, p_round: 2, p_kind: "answer", p_payload: { word: "sand" } });
-    await service().rpc("submit_answer", { p_user: bo.id, p_session: id, p_round: 2, p_kind: "answer", p_payload: { word: "sand" } });
-    const second = await service().rpc("reveal_round", { p_session: id, p_round: 2, p_result: { rounds: [1, 2] }, p_final: true, p_early: false, p_expected_submissions: 2 });
+    await service().rpc("submit_answer", {
+      p_user: ada.id,
+      p_session: id,
+      p_round: 2,
+      p_kind: "answer",
+      p_payload: { word: "sand" },
+    });
+    await service().rpc("submit_answer", {
+      p_user: bo.id,
+      p_session: id,
+      p_round: 2,
+      p_kind: "answer",
+      p_payload: { word: "sand" },
+    });
+    const second = await service().rpc("reveal_round", {
+      p_session: id,
+      p_round: 2,
+      p_result: { rounds: [1, 2] },
+      p_final: true,
+      p_early: false,
+      p_expected_submissions: 2,
+    });
     expect(second.data).toMatchObject({ status: "revealed", growth: true });
     const { data: events } = await service().from("growth_events").select("id").eq("session_id", id);
     expect(events).toHaveLength(1);
@@ -65,7 +110,14 @@ describe("weekly rewards", () => {
     const gardenId = await createGarden(ada, 2, invite);
     await service().rpc("join_garden", { p_user: bo.id, p_token: invite });
     const id = await playedSession(gardenId, ada, bo);
-    const { data } = await service().rpc("reveal_round", { p_session: id, p_round: 1, p_result: {}, p_final: true, p_early: true, p_expected_submissions: 1 });
+    const { data } = await service().rpc("reveal_round", {
+      p_session: id,
+      p_round: 1,
+      p_result: {},
+      p_final: true,
+      p_early: true,
+      p_expected_submissions: 1,
+    });
     expect(data).toMatchObject({ status: "retry" });
   });
 });

@@ -8,7 +8,9 @@ export const metadata = { title: "Garden" };
 
 function weekLabel(weekStart: string): string {
   const [y, m, d] = weekStart.split("-").map(Number);
-  return new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "short", day: "numeric" }).format(new Date(Date.UTC(y, m - 1, d, 12)));
+  return new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "short", day: "numeric" }).format(
+    new Date(Date.UTC(y, m - 1, d, 12)),
+  );
 }
 
 export default function DemoGardenPage() {

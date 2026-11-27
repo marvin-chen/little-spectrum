@@ -11,7 +11,11 @@ import { ProfileForm } from "./ProfileForm";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Welcome" };
 
-export default async function WelcomePage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+export default async function WelcomePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   if (!isSupabaseConfigured()) redirect("/");
   const params = await searchParams;
   const next = safeNextPath(params.next, "/start");

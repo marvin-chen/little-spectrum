@@ -146,7 +146,10 @@ export const hueClue: GameEngine<HueClueView> = {
       target: isClueGiver && !revealed ? (state.secret as HueClueSecret).target : null,
       clue,
       myGuess: cellOf(findSubmission(state, userId, "answer")?.payload),
-      guessers: guessers(state).map((p) => ({ userId: p.userId, submitted: Boolean(findSubmission(state, p.userId, "answer")) })),
+      guessers: guessers(state).map((p) => ({
+        userId: p.userId,
+        submitted: Boolean(findSubmission(state, p.userId, "answer")),
+      })),
       result: revealed ? (state.result as HueClueResult) : null,
     };
   },

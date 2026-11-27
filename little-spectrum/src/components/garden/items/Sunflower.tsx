@@ -8,7 +8,15 @@ const PALETTES = [
 ];
 
 const PETALS = Array.from({ length: 14 }, (_, i) => (i * 360) / 14);
-const SEEDS = [[-5, -3], [0, -5], [5, -3], [-5, 3], [0, 5], [5, 3], [0, 0]];
+const SEEDS = [
+  [-5, -3],
+  [0, -5],
+  [5, -3],
+  [-5, 3],
+  [0, 5],
+  [5, 3],
+  [0, 0],
+];
 
 export function Sunflower({ variant = 0, className, title }: GardenItemProps) {
   const titleId = useId();
@@ -21,7 +29,15 @@ export function Sunflower({ variant = 0, className, title }: GardenItemProps) {
       <path d="M50 100 C60 102 72 96 74 84 C62 82 52 90 50 100 Z" fill="#3f8f5f" />
       <path d="M49 89 Q40 84 31 76" stroke="#3f8f5f" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.6" />
       {PETALS.map((a) => (
-        <ellipse key={`b${a}`} cx="50" cy="23" rx="5" ry="10.5" fill={p.petalDark} transform={`rotate(${a + 12.8} 50 40)`} />
+        <ellipse
+          key={`b${a}`}
+          cx="50"
+          cy="23"
+          rx="5"
+          ry="10.5"
+          fill={p.petalDark}
+          transform={`rotate(${a + 12.8} 50 40)`}
+        />
       ))}
       {PETALS.map((a) => (
         <ellipse key={`f${a}`} cx="50" cy="24" rx="4.6" ry="9.5" fill={p.petal} transform={`rotate(${a} 50 40)`} />

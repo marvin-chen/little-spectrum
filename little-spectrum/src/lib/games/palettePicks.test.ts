@@ -106,7 +106,11 @@ describe("palettePicks engine", () => {
   });
 
   it("computes averages, consensus, and pair scores for three players", () => {
-    const result = reveal([ranking("a", [0, 1, 2, 3, 4]), ranking("b", [1, 0, 2, 3, 4]), ranking("c", [4, 3, 2, 1, 0])]);
+    const result = reveal([
+      ranking("a", [0, 1, 2, 3, 4]),
+      ranking("b", [1, 0, 2, 3, 4]),
+      ranking("c", [4, 3, 2, 1, 0]),
+    ]);
     expect(result.rankings).toEqual([
       { userId: "a", order: [0, 1, 2, 3, 4] },
       { userId: "b", order: [1, 0, 2, 3, 4] },
@@ -134,7 +138,11 @@ describe("palettePicks engine", () => {
   });
 
   it("flags the items with the widest spread as the biggest disagreements", () => {
-    const result = reveal([ranking("a", [0, 1, 2, 3, 4]), ranking("b", [1, 0, 2, 3, 4]), ranking("c", [4, 3, 2, 1, 0])]);
+    const result = reveal([
+      ranking("a", [0, 1, 2, 3, 4]),
+      ranking("b", [1, 0, 2, 3, 4]),
+      ranking("c", [4, 3, 2, 1, 0]),
+    ]);
     expect(result.biggestDisagreements).toEqual([0, 4]);
     const agreed = reveal([ranking("a", [0, 1, 2, 3, 4]), ranking("b", [0, 1, 2, 3, 4])]);
     expect(agreed.biggestDisagreements).toEqual([]);
@@ -142,7 +150,11 @@ describe("palettePicks engine", () => {
   });
 
   it("keeps every pair tied for the top similarity", () => {
-    const result = reveal([ranking("a", [0, 1, 2, 3, 4]), ranking("b", [1, 0, 2, 3, 4]), ranking("c", [0, 1, 2, 4, 3])]);
+    const result = reveal([
+      ranking("a", [0, 1, 2, 3, 4]),
+      ranking("b", [1, 0, 2, 3, 4]),
+      ranking("c", [0, 1, 2, 4, 3]),
+    ]);
     expect(result.mostSimilarPairs).toEqual([
       { a: "a", b: "b", similarity: 83 },
       { a: "a", b: "c", similarity: 83 },
@@ -175,7 +187,12 @@ describe("palettePicks engine", () => {
 
   it("shows each player their own order and nobody else's before the reveal", () => {
     const s = state({ submissions: [ranking("a", [3, 1, 4, 0, 2])] });
-    expect(palettePicks.view(s, "a")).toMatchObject({ phase: "waiting", myOrder: [3, 1, 4, 0, 2], submitted: ["a"], result: null });
+    expect(palettePicks.view(s, "a")).toMatchObject({
+      phase: "waiting",
+      myOrder: [3, 1, 4, 0, 2],
+      submitted: ["a"],
+      result: null,
+    });
     const other = palettePicks.view(s, "b") as { phase: string; myOrder: number[] | null };
     expect(other).toMatchObject({ phase: "rank", myOrder: null, submitted: ["a"] });
     expect(JSON.stringify(other)).not.toContain("[3,1,4,0,2]");
@@ -189,6 +206,9 @@ describe("palettePicks engine", () => {
     expect(palettePicks.turnStatus(s, "a")).toEqual({ needsYou: false, line: "Waiting for Cy's ranking." });
     const one = state({ submissions: [ranking("a", [0, 1, 2, 3, 4])] });
     expect(palettePicks.turnStatus(one, "a")).toEqual({ needsYou: false, line: "One of three rankings are in." });
-    expect(palettePicks.turnStatus(state({ status: "revealed" }), "a")).toEqual({ needsYou: false, line: "The reveal is ready." });
+    expect(palettePicks.turnStatus(state({ status: "revealed" }), "a")).toEqual({
+      needsYou: false,
+      line: "The reveal is ready.",
+    });
   });
 });

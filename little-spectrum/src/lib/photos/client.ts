@@ -29,7 +29,8 @@ export async function prepareImage(file: File): Promise<{ blob: Blob; width: num
   const source = await decode(file);
   const sourceWidth = "naturalWidth" in source ? source.naturalWidth : source.width;
   const sourceHeight = "naturalHeight" in source ? source.naturalHeight : source.height;
-  if (!sourceWidth || !sourceHeight) throw new UnsupportedImageError("We could not read that image. Try a JPEG, PNG, or WebP.");
+  if (!sourceWidth || !sourceHeight)
+    throw new UnsupportedImageError("We could not read that image. Try a JPEG, PNG, or WebP.");
   const scale = Math.min(1, CLIENT_MAX_EDGE / Math.max(sourceWidth, sourceHeight));
   const width = Math.max(1, Math.round(sourceWidth * scale));
   const height = Math.max(1, Math.round(sourceHeight * scale));

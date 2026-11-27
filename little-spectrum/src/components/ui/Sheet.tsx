@@ -16,16 +16,7 @@ type SheetProps = {
   dismissible?: boolean;
 };
 
-export function Sheet({
-  open,
-  onClose,
-  title,
-  description,
-  children,
-  footer,
-  tone,
-  dismissible = true,
-}: SheetProps) {
+export function Sheet({ open, onClose, title, description, children, footer, tone, dismissible = true }: SheetProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -73,9 +64,11 @@ export function Sheet({
       onKeyDown={(event) => {
         if (event.key !== "Tab") return;
         const dialog = event.currentTarget;
-        const controls = Array.from(dialog.querySelectorAll<HTMLElement>(
-          'button, a[href], input, select, textarea, [tabindex]',
-        )).filter((element) => element.tabIndex >= 0 && !element.matches(":disabled") && element.getClientRects().length > 0);
+        const controls = Array.from(
+          dialog.querySelectorAll<HTMLElement>("button, a[href], input, select, textarea, [tabindex]"),
+        ).filter(
+          (element) => element.tabIndex >= 0 && !element.matches(":disabled") && element.getClientRects().length > 0,
+        );
         const first = controls[0];
         const last = controls[controls.length - 1];
         if (!first) {
@@ -137,9 +130,13 @@ export function Sheet({
               ) : null}
             </div>
             {dismissible ? (
-              <IconButton label="Close" onClick={onClose} variant="plain"
+              <IconButton
+                label="Close"
+                onClick={onClose}
+                variant="plain"
                 className="-mt-1 -mr-1 bg-fill text-ink-2 hover:bg-fill-2"
-                icon={<X className="size-5" aria-hidden />} />
+                icon={<X className="size-5" aria-hidden />}
+              />
             ) : null}
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-4">{children}</div>

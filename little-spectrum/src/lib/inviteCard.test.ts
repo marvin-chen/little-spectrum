@@ -16,7 +16,16 @@ describe("parseInviteCard", () => {
   });
 
   it("keeps valid choices and allows an empty note", () => {
-    expect(parseInviteCard({ layout: "ticket", sticker: "hue-clue", accent: "violet", showMembers: false, showGarden: true, note: "" })).toMatchObject({
+    expect(
+      parseInviteCard({
+        layout: "ticket",
+        sticker: "hue-clue",
+        accent: "violet",
+        showMembers: false,
+        showGarden: true,
+        note: "",
+      }),
+    ).toMatchObject({
       layout: "ticket",
       sticker: "hue-clue",
       accent: "violet",

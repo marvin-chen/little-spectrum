@@ -1,24 +1,32 @@
 import { describe, expect, it, vi } from "vitest";
 import { GAME_KEYS } from "@/lib/games";
 import { createFixture, previewFixture, revealFixture, submitFixture } from "./builders";
-vi.mock("@/lib/photos/server", () => ({ signedPhotoUrls: vi.fn(() => { throw new Error("Fixtures must not sign real URLs"); }) }));
+vi.mock("@/lib/photos/server", () => ({
+  signedPhotoUrls: vi.fn(() => {
+    throw new Error("Fixtures must not sign real URLs");
+  }),
+}));
 const { getEngine } = await import("../registry");
 const { gameExample, playerExample, exampleInput, FIXTURE_SCENARIOS } = await import("./examples");
 
 describe.each(GAME_KEYS)("%s shared fixtures", (game) => {
-  it.each([2, 8] as const)("shapes actionable and waiting snapshots for either viewer with %i players", async (players) => {
-    const engine = getEngine(game);
-    for (const index of [0, players - 1]) {
-      const active = playerExample(game, "answering", players, index);
-      const id = active.participants[index].userId;
-      const view = await previewFixture(engine, active, id);
-      expect(view.turn.needsYou).toBe(true);
-      const waiting = playerExample(game, "waiting", players, index);
-      expect((await previewFixture(engine, waiting, id)).turn.needsYou).toBe(false);
-      expect(waiting.status).toBe("active");
-      if (active.clueGiverId && id !== active.clueGiverId) expect(view.view).toMatchObject({ target: null, clue: "Warm summer evening" });
-    }
-  });
+  it.each([2, 8] as const)(
+    "shapes actionable and waiting snapshots for either viewer with %i players",
+    async (players) => {
+      const engine = getEngine(game);
+      for (const index of [0, players - 1]) {
+        const active = playerExample(game, "answering", players, index);
+        const id = active.participants[index].userId;
+        const view = await previewFixture(engine, active, id);
+        expect(view.turn.needsYou).toBe(true);
+        const waiting = playerExample(game, "waiting", players, index);
+        expect((await previewFixture(engine, waiting, id)).turn.needsYou).toBe(false);
+        expect(waiting.status).toBe("active");
+        if (active.clueGiverId && id !== active.clueGiverId)
+          expect(view.view).toMatchObject({ target: null, clue: "Warm summer evening" });
+      }
+    },
+  );
   it.each([2, 3, 8] as const)("builds deterministic valid lifecycle examples for %i players", async (players) => {
     const engine = getEngine(game);
     for (const scenario of FIXTURE_SCENARIOS) {
@@ -50,7 +58,9 @@ describe.each(GAME_KEYS)("%s shared fixtures", (game) => {
     const waiting = gameExample(game, "waiting");
     const submitted = waiting.submissions.at(-1)!;
     expect(() => submitFixture(engine, waiting, submitted.userId, submitted.payload)).toThrow();
-    expect(() => submitFixture(engine, gameExample(game, "revealed"), initial.createdBy, {})).toThrow("already revealed");
+    expect(() => submitFixture(engine, gameExample(game, "revealed"), initial.createdBy, {})).toThrow(
+      "already revealed",
+    );
   });
 
   it("keeps earlier examples independent and active answers private", async () => {
@@ -83,7 +93,11 @@ it("advances a nonmatching round without finalizing and preserves only earlier a
   expect(state.round).toBe(2);
   expect(state.revealedAt).toBeNull();
   const view = (await previewFixture(engine, state, state.createdBy)).view;
-  expect(view).toMatchObject({ phase: "answer", myWord: null, previousRounds: [{ round: 1, answers: [{ word: "Moon" }, { word: "Sun" }] }] });
+  expect(view).toMatchObject({
+    phase: "answer",
+    myWord: null,
+    previousRounds: [{ round: 1, answers: [{ word: "Moon" }, { word: "Sun" }] }],
+  });
 });
 
 it("represents deleted photos without signing or exposing storage paths", async () => {
@@ -91,5 +105,11 @@ it("represents deleted photos without signing or exposing storage paths", async 
   const state = gameExample("color-quest", "revealed");
   state.photos = [];
   const view = (await previewFixture(engine, state, state.createdBy)).view;
-  expect(view).toMatchObject({ gallery: [{ removed: true, url: null }, { removed: true, url: null }, { removed: true, url: null }] });
+  expect(view).toMatchObject({
+    gallery: [
+      { removed: true, url: null },
+      { removed: true, url: null },
+      { removed: true, url: null },
+    ],
+  });
 });

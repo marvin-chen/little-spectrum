@@ -1,8 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createGarden, createProfile, inviteUrlFor, joinGarden, newPlayer, shot } from "./helpers";
 
-
-async function startGame(page: Page, gardenId: string, gameName: RegExp, expectedPeople: number, deselect: string[] = []) {
+async function startGame(
+  page: Page,
+  gardenId: string,
+  gameName: RegExp,
+  expectedPeople: number,
+  deselect: string[] = [],
+) {
   await page.goto(`/g/${gardenId}/games`);
   await page.getByRole("button", { name: gameName }).click();
   for (const name of deselect) await page.getByRole("checkbox", { name: new RegExp(`^${name}`) }).click();
@@ -43,8 +48,16 @@ test("memories feed shows rounds, reactions, notes, filters, and garden activity
   url = await startGame(ada.page, gardenId, /True Colors/, 3);
   for (const p of [ada, bo, cy]) {
     await p.page.goto(url);
-    await p.page.getByRole("radiogroup", { name: /Your answer/i }).getByRole("radio").first().click();
-    await p.page.getByRole("radiogroup", { name: /Your prediction/i }).getByRole("radio").first().click();
+    await p.page
+      .getByRole("radiogroup", { name: /Your answer/i })
+      .getByRole("radio")
+      .first()
+      .click();
+    await p.page
+      .getByRole("radiogroup", { name: /Your prediction/i })
+      .getByRole("radio")
+      .first()
+      .click();
     await p.page.getByRole("button", { name: "Lock in both" }).click();
   }
   await expect(cy.page.getByText(/Correct predictions/)).toBeVisible({ timeout: 20_000 });
@@ -62,7 +75,11 @@ test("memories feed shows rounds, reactions, notes, filters, and garden activity
   url = await startGame(ada.page, gardenId, /Palette Picks/, 3);
   for (const p of [ada, bo]) {
     await p.page.goto(url);
-    if (p === bo) await p.page.getByRole("button", { name: /Move .* down/ }).first().click();
+    if (p === bo)
+      await p.page
+        .getByRole("button", { name: /Move .* down/ })
+        .first()
+        .click();
     await p.page.getByRole("button", { name: "Confirm ranking" }).click();
   }
   await ada.page.getByRole("button", { name: "Reveal" }).click();
@@ -110,7 +127,9 @@ test("memories feed shows rounds, reactions, notes, filters, and garden activity
   await adaCard.getByRole("button", { name: "Save" }).click();
   await expect(adaCard.getByText("We are one brain.")).toBeVisible();
   await ada.page.reload();
-  await expect(ada.page.getByRole("article", { name: /Same Wavelength/ }).getByRole("button", { name: "Love it, 2" })).toHaveAttribute("aria-pressed", "true");
+  await expect(
+    ada.page.getByRole("article", { name: /Same Wavelength/ }).getByRole("button", { name: "Love it, 2" }),
+  ).toHaveAttribute("aria-pressed", "true");
   await shot(ada.page, "memories-ada-top");
   await shot(ada.page, "memories-ada-full");
 
@@ -139,11 +158,18 @@ test("memories feed shows rounds, reactions, notes, filters, and garden activity
 
   // Each header links to the full round.
   await ada.page.goto(memories);
-  await ada.page.getByRole("article", { name: /Hue Knew/ }).getByRole("link").first().click();
+  await ada.page
+    .getByRole("article", { name: /Hue Knew/ })
+    .getByRole("link")
+    .first()
+    .click();
   await expect(ada.page).toHaveURL(/\/play\//);
 
   // Desktop width sanity check.
-  const wide = await browser.newContext({ viewport: { width: 1100, height: 900 }, storageState: await ada.context.storageState() });
+  const wide = await browser.newContext({
+    viewport: { width: 1100, height: 900 },
+    storageState: await ada.context.storageState(),
+  });
   const widePage = await wide.newPage();
   await widePage.goto(memories);
   await expect(widePage.getByRole("heading", { name: "Memories" })).toBeVisible();

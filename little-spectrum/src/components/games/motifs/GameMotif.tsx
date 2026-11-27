@@ -30,7 +30,14 @@ function GlyphShapes({ game, id }: { game: GameKey; id: string }): JSX.Element {
         <>
           <mask id={`${id}-check`}>
             <rect x="4" y="3.5" width="20" height="9.5" rx="4.75" fill={WHITE} />
-            <path d="m10.3 8.5 2.4 2.4 5-5.2" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="m10.3 8.5 2.4 2.4 5-5.2"
+              fill="none"
+              stroke="#000"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </mask>
           <rect x="4" y="3.5" width="20" height="9.5" rx="4.75" mask={`url(#${id}-check)`} />
           <g opacity="0.7" fill="none" stroke={WHITE} strokeLinecap="round" strokeLinejoin="round">
@@ -172,9 +179,34 @@ export function GameStageArt({ game, className }: { game: GameKey; className?: s
         <>
           <circle cx="160" cy="80" r="66" fill={top} opacity="0.12" />
           <rect x="56" y="32" width="150" height="42" rx="21" fill={top} opacity="0.22" />
-          <path d="m118 53 10 10 22-22" fill="none" stroke={bottom} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" opacity="0.35" />
-          <rect x="116.5" y="88.5" width="147" height="39" rx="19.5" fill="none" stroke={bottom} strokeWidth="5" opacity="0.25" />
-          <path d="M181 103a8 8 0 1 1 12 7c-2.6 1.4-3.6 3-3.6 5.4v.6" fill="none" stroke={bottom} strokeWidth="6" strokeLinecap="round" opacity="0.3" />
+          <path
+            d="m118 53 10 10 22-22"
+            fill="none"
+            stroke={bottom}
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.35"
+          />
+          <rect
+            x="116.5"
+            y="88.5"
+            width="147"
+            height="39"
+            rx="19.5"
+            fill="none"
+            stroke={bottom}
+            strokeWidth="5"
+            opacity="0.25"
+          />
+          <path
+            d="M181 103a8 8 0 1 1 12 7c-2.6 1.4-3.6 3-3.6 5.4v.6"
+            fill="none"
+            stroke={bottom}
+            strokeWidth="6"
+            strokeLinecap="round"
+            opacity="0.3"
+          />
           <circle cx="189.4" cy="121.5" r="3.6" fill={bottom} opacity="0.3" />
         </>
       );
@@ -234,12 +266,37 @@ export function GameStageArt({ game, className }: { game: GameKey; className?: s
             <rect x="103" y="31" width="114" height="90" rx="11" />
           </clipPath>
           <g transform="rotate(6 160 80)">
-            <rect x="112" y="24" width="120" height="96" rx="14" fill="none" stroke={top} strokeWidth="5" opacity="0.14" />
+            <rect
+              x="112"
+              y="24"
+              width="120"
+              height="96"
+              rx="14"
+              fill="none"
+              stroke={top}
+              strokeWidth="5"
+              opacity="0.14"
+            />
           </g>
           <g transform="rotate(-6 160 80)">
-            <rect x="100" y="28" width="120" height="96" rx="14" fill="none" stroke={bottom} strokeWidth="6" opacity="0.3" />
+            <rect
+              x="100"
+              y="28"
+              width="120"
+              height="96"
+              rx="14"
+              fill="none"
+              stroke={bottom}
+              strokeWidth="6"
+              opacity="0.3"
+            />
             <circle cx="134" cy="58" r="12" fill={top} opacity="0.35" />
-            <path d="M96 128c20-38 44-48 64-24 20-30 44-28 64 0v24Z" fill={bottom} opacity="0.2" clipPath={`url(#${id}-inner)`} />
+            <path
+              d="M96 128c20-38 44-48 64-24 20-30 44-28 64 0v24Z"
+              fill={bottom}
+              opacity="0.2"
+              clipPath={`url(#${id}-inner)`}
+            />
           </g>
         </>
       );

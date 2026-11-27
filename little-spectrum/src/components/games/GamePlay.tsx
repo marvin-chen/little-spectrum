@@ -22,21 +22,43 @@ export function GamePlay({ session, userId, live = false }: { session: SessionVi
       body = <HueKnewPlay gardenId={gardenId} session={session} game={session.view as HueKnewView} userId={userId} />;
       break;
     case "true-colors":
-      body = <TrueColorsPlay gardenId={gardenId} session={session} game={session.view as TrueColorsView} userId={userId} />;
+      body = (
+        <TrueColorsPlay gardenId={gardenId} session={session} game={session.view as TrueColorsView} userId={userId} />
+      );
       break;
     case "hue-clue":
       body = <HueCluePlay gardenId={gardenId} session={session} game={session.view as HueClueView} userId={userId} />;
       break;
     case "same-wavelength":
-      body = <SameWavelengthPlay gardenId={gardenId} session={session} game={session.view as SameWavelengthView} userId={userId} />;
+      body = (
+        <SameWavelengthPlay
+          gardenId={gardenId}
+          session={session}
+          game={session.view as SameWavelengthView}
+          userId={userId}
+        />
+      );
       break;
     case "palette-picks":
-      body = <PalettePicksPlay gardenId={gardenId} session={session} game={session.view as PalettePicksView} userId={userId} />;
+      body = (
+        <PalettePicksPlay
+          gardenId={gardenId}
+          session={session}
+          game={session.view as PalettePicksView}
+          userId={userId}
+        />
+      );
       break;
     case "color-quest":
-      body = <ColorQuestPlay gardenId={gardenId} session={session} game={session.view as ColorQuestView} userId={userId} />;
+      body = (
+        <ColorQuestPlay gardenId={gardenId} session={session} game={session.view as ColorQuestView} userId={userId} />
+      );
       break;
   }
 
-  return <GameSessionLayout session={session} userId={userId} live={live}>{body}</GameSessionLayout>;
+  return (
+    <GameSessionLayout session={session} userId={userId} live={live}>
+      {body}
+    </GameSessionLayout>
+  );
 }

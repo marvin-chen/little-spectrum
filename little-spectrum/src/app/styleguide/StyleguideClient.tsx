@@ -102,7 +102,10 @@ export function StyleguideClient() {
           </div>
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {GAME_KEYS.map((key) => (
-              <li key={key} className={cn("relative h-28 overflow-hidden rounded-tile", COLOR_CLASSES[GAMES[key].color].soft)}>
+              <li
+                key={key}
+                className={cn("relative h-28 overflow-hidden rounded-tile", COLOR_CLASSES[GAMES[key].color].soft)}
+              >
                 <GameStageArt game={key} className="absolute -top-2 right-0 h-28 w-auto" />
                 <span className="absolute bottom-2 left-3 text-footnote font-semibold text-ink">{GAMES[key].name}</span>
               </li>
@@ -153,10 +156,18 @@ export function StyleguideClient() {
           </div>
           <div className="flex items-center gap-3">
             <ToolbarGroup>
-              <button type="button" aria-label="Switch garden" className="pressable flex size-9 items-center justify-center rounded-capsule hover:bg-fill">
+              <button
+                type="button"
+                aria-label="Switch garden"
+                className="pressable flex size-9 items-center justify-center rounded-capsule hover:bg-fill"
+              >
                 <Users className="size-[18px]" aria-hidden />
               </button>
-              <button type="button" aria-label="Settings" className="pressable flex size-9 items-center justify-center rounded-capsule hover:bg-fill">
+              <button
+                type="button"
+                aria-label="Settings"
+                className="pressable flex size-9 items-center justify-center rounded-capsule hover:bg-fill"
+              >
                 <Settings className="size-[18px]" aria-hidden />
               </button>
             </ToolbarGroup>
@@ -225,14 +236,32 @@ export function StyleguideClient() {
       <section>
         <SectionLabel action={<Badge>Grouped</Badge>}>Rows</SectionLabel>
         <Group>
-          <RowLink href="/styleguide" icon={<Users className="size-5 text-ink-2" aria-hidden />} label="Members" detail="2 of 8 spots filled" />
-          <RowButton onClick={() => setOpen(true)} icon={<Sparkles className="size-5 text-ink-2" aria-hidden />} label="Open a sheet" trailing="Demo" />
+          <RowLink
+            href="/styleguide"
+            icon={<Users className="size-5 text-ink-2" aria-hidden />}
+            label="Members"
+            detail="2 of 8 spots filled"
+          />
+          <RowButton
+            onClick={() => setOpen(true)}
+            icon={<Sparkles className="size-5 text-ink-2" aria-hidden />}
+            label="Open a sheet"
+            trailing="Demo"
+          />
           <Row icon={<Settings className="size-5 text-ink-2" aria-hidden />} label="Timezone" trailing="Pacific" />
         </Group>
       </section>
 
       <section>
-        <SectionLabel action={<Button size="sm" variant="glass" onClick={() => setReplay((n) => n + 1)}>Replay</Button>}>Motion</SectionLabel>
+        <SectionLabel
+          action={
+            <Button size="sm" variant="glass" onClick={() => setReplay((n) => n + 1)}>
+              Replay
+            </Button>
+          }
+        >
+          Motion
+        </SectionLabel>
         <Card className="p-4" key={replay}>
           <div className="flex items-baseline justify-between">
             <span className="text-footnote font-semibold text-ink-3">Count up</span>
@@ -240,14 +269,22 @@ export function StyleguideClient() {
           </div>
           <ul className="mt-3 flex flex-col gap-2">
             {["Staggered rise", "Each item waits 60ms longer", "Reduced motion collapses it to a fade"].map((t, i) => (
-              <li key={t} className="anim-rise rounded-row bg-fill px-3 py-2 text-callout" style={{ "--i": i } as React.CSSProperties}>
+              <li
+                key={t}
+                className="anim-rise rounded-row bg-fill px-3 py-2 text-callout"
+                style={{ "--i": i } as React.CSSProperties}
+              >
                 {t}
               </li>
             ))}
           </ul>
           <div className="mt-3 flex gap-3">
-            <span className="anim-pop flex size-12 items-center justify-center rounded-tile bg-violet-soft text-violet-ink">pop</span>
-            <span className="anim-grow flex size-12 items-center justify-center rounded-tile bg-green-soft text-green-ink">grow</span>
+            <span className="anim-pop flex size-12 items-center justify-center rounded-tile bg-violet-soft text-violet-ink">
+              pop
+            </span>
+            <span className="anim-grow flex size-12 items-center justify-center rounded-tile bg-green-soft text-green-ink">
+              grow
+            </span>
           </div>
         </Card>
       </section>
@@ -255,7 +292,16 @@ export function StyleguideClient() {
       <section>
         <SectionLabel>Empty state</SectionLabel>
         <Card>
-          <EmptyState icon={<Sparkles className="size-8" aria-hidden />} title="Nothing waiting on you" body="Start something and your friends get a turn." action={<Button variant="tinted" accent="coral">Start a game</Button>} />
+          <EmptyState
+            icon={<Sparkles className="size-8" aria-hidden />}
+            title="Nothing waiting on you"
+            body="Start something and your friends get a turn."
+            action={
+              <Button variant="tinted" accent="coral">
+                Start a game
+              </Button>
+            }
+          />
         </Card>
       </section>
 

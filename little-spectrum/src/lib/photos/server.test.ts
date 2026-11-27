@@ -18,7 +18,9 @@ describe("processImage", () => {
   });
 
   it("resizes, re-encodes as JPEG under the target size, and drops metadata", async () => {
-    const source = await sharp({ create: { width: 3000, height: 2000, channels: 3, background: { r: 200, g: 120, b: 80 } } })
+    const source = await sharp({
+      create: { width: 3000, height: 2000, channels: 3, background: { r: 200, g: 120, b: 80 } },
+    })
       .withMetadata({ exif: { IFD0: { ImageDescription: "secret location" } } })
       .png()
       .toBuffer();

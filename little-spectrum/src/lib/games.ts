@@ -1,12 +1,6 @@
 import type { ColorKey } from "./colors";
 
-export type GameKey =
-  | "hue-knew"
-  | "true-colors"
-  | "hue-clue"
-  | "same-wavelength"
-  | "palette-picks"
-  | "color-quest";
+export type GameKey = "hue-knew" | "true-colors" | "hue-clue" | "same-wavelength" | "palette-picks" | "color-quest";
 
 export type GameDefinition = {
   key: GameKey;

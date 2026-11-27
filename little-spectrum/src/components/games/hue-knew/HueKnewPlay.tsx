@@ -28,7 +28,11 @@ export function HueKnewPlay({ gardenId, session, game, userId }: Props) {
         <PlayAgain
           gardenId={gardenId}
           sessionId={session.id}
-          line={suggestedIsMe ? "Next time, you give the clue." : `Next time, ${nameOf(result.suggestedClueGiverId)} could give the clue.`}
+          line={
+            suggestedIsMe
+              ? "Next time, you give the clue."
+              : `Next time, ${nameOf(result.suggestedClueGiverId)} could give the clue.`
+          }
           primary={suggestedIsMe}
         />
       </div>
@@ -81,11 +85,17 @@ function ClueGiverPanel({ gardenId, session, game }: { gardenId: string; session
           <SpectrumScale
             left={game.left}
             right={game.right}
-            markers={game.target !== null ? [{ id: "t", position: game.target, kind: "target", label: `Target ${game.target}` }] : []}
+            markers={
+              game.target !== null
+                ? [{ id: "t", position: game.target, kind: "target", label: `Target ${game.target}` }]
+                : []
+            }
           />
         </div>
         <p className="mt-5 text-callout text-ink-2">
-          {waiting.length > 0 ? `Waiting for ${joinNames(waiting)} to guess. The reveal happens on its own once everyone is in.` : "Everyone is in. Revealing."}
+          {waiting.length > 0
+            ? `Waiting for ${joinNames(waiting)} to guess. The reveal happens on its own once everyone is in.`
+            : "Everyone is in. Revealing."}
         </p>
       </Card>
     );
@@ -102,7 +112,11 @@ function ClueGiverPanel({ gardenId, session, game }: { gardenId: string; session
           <SpectrumScale
             left={game.left}
             right={game.right}
-            markers={game.target !== null ? [{ id: "t", position: game.target, kind: "target", label: `Target ${game.target}` }] : []}
+            markers={
+              game.target !== null
+                ? [{ id: "t", position: game.target, kind: "target", label: `Target ${game.target}` }]
+                : []
+            }
           />
         </div>
       </Card>
@@ -127,14 +141,25 @@ function ClueGiverPanel({ gardenId, session, game }: { gardenId: string; session
         </label>
         <div className="mt-2 flex items-center justify-between text-footnote text-ink-3">
           <span>Committed clues cannot be edited.</span>
-          <span className="tabular-nums">{clue.length}/{MAX_CLUE_LENGTH}</span>
+          <span className="tabular-nums">
+            {clue.length}/{MAX_CLUE_LENGTH}
+          </span>
         </div>
         {error ? (
           <p role="alert" className="mt-3 rounded-row bg-danger-soft px-4 py-2 text-footnote text-danger">
             {error}
           </p>
         ) : null}
-        <Button className="mt-4" size="lg" full accent="coral" onClick={send} loading={pending} disabled={!clue.trim()} icon={<Lock className="size-4" aria-hidden />}>
+        <Button
+          className="mt-4"
+          size="lg"
+          full
+          accent="coral"
+          onClick={send}
+          loading={pending}
+          disabled={!clue.trim()}
+          icon={<Lock className="size-4" aria-hidden />}
+        >
           Send clue
         </Button>
       </Card>
@@ -142,7 +167,17 @@ function ClueGiverPanel({ gardenId, session, game }: { gardenId: string; session
   );
 }
 
-function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; session: SessionView; game: HueKnewView; userId: string }) {
+function GuesserPanel({
+  gardenId,
+  session,
+  game,
+  userId,
+}: {
+  gardenId: string;
+  session: SessionView;
+  game: HueKnewView;
+  userId: string;
+}) {
   const { submitAction, initialError } = useGameActions();
   const [guess, setGuess] = useState(50);
   const [error, setError] = useState<string | null>(initialError ?? null);
@@ -164,20 +199,32 @@ function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; s
   return (
     <div className="flex flex-col gap-4">
       <Card className="p-5">
-        <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">{clueGiverName}&apos;s clue</p>
+        <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">
+          {clueGiverName}&apos;s clue
+        </p>
         <p className="mt-1 font-display text-title-2 font-bold">&ldquo;{game.clue}&rdquo;</p>
       </Card>
       {game.myGuess === null ? (
         <Card className="p-5">
           <p className="text-title-3 font-semibold">Where does it land?</p>
-          <p className="mt-1 mb-5 text-callout text-ink-2">Slide to the spot you think {clueGiverName} meant, then lock it in.</p>
+          <p className="mt-1 mb-5 text-callout text-ink-2">
+            Slide to the spot you think {clueGiverName} meant, then lock it in.
+          </p>
           <Slider label="Your guess" value={guess} onChange={setGuess} leftLabel={game.left} rightLabel={game.right} />
           {error ? (
             <p role="alert" className="mt-3 rounded-row bg-danger-soft px-4 py-2 text-footnote text-danger">
               {error}
             </p>
           ) : null}
-          <Button className="mt-5" size="lg" full accent="coral" onClick={lockIn} loading={pending} icon={<Lock className="size-4" aria-hidden />}>
+          <Button
+            className="mt-5"
+            size="lg"
+            full
+            accent="coral"
+            onClick={lockIn}
+            loading={pending}
+            icon={<Lock className="size-4" aria-hidden />}
+          >
             Lock in {guess}
           </Button>
         </Card>
@@ -185,10 +232,16 @@ function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; s
         <Card className="p-5">
           <p className="text-title-3 font-semibold">Your guess is locked in</p>
           <div className="mt-5">
-            <SpectrumScale left={game.left} right={game.right} markers={[{ id: "me", position: game.myGuess, kind: "mine", label: String(game.myGuess) }]} />
+            <SpectrumScale
+              left={game.left}
+              right={game.right}
+              markers={[{ id: "me", position: game.myGuess, kind: "mine", label: String(game.myGuess) }]}
+            />
           </div>
           <p className="mt-4 text-callout text-ink-2">
-            {waiting.length > 0 ? `Waiting for ${joinNames(waiting)}. The reveal happens on its own once everyone is in.` : "Everyone is in. Revealing."}
+            {waiting.length > 0
+              ? `Waiting for ${joinNames(waiting)}. The reveal happens on its own once everyone is in.`
+              : "Everyone is in. Revealing."}
           </p>
         </Card>
       )}
@@ -196,7 +249,17 @@ function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; s
   );
 }
 
-function PlayAgain({ gardenId, sessionId, line, primary }: { gardenId: string; sessionId: string; line: string; primary: boolean }) {
+function PlayAgain({
+  gardenId,
+  sessionId,
+  line,
+  primary,
+}: {
+  gardenId: string;
+  sessionId: string;
+  line: string;
+  primary: boolean;
+}) {
   const { playAgainAction, initialError } = useGameActions();
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();

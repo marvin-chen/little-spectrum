@@ -29,10 +29,20 @@ export function GardenSwitcher({ gardens, currentId, variant }: Props) {
         {variant === "sidebar" ? <span className="truncate">{current?.name ?? "Gardens"}</span> : null}
         <ChevronsUpDown className="size-[18px] shrink-0" aria-hidden />
       </button>
-      <Sheet open={open} onClose={() => setOpen(false)} title="Your gardens" description="Each garden keeps its own members, games, and growth.">
+      <Sheet
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Your gardens"
+        description="Each garden keeps its own members, games, and growth."
+      >
         <Group>
           {gardens.map((g) => (
-            <Link key={g.id} href={`/g/${g.id}`} onClick={() => setOpen(false)} className="pressable flex min-h-[52px] items-center gap-3 px-4 py-2.5 not-last:border-b not-last:border-line hover:bg-fill">
+            <Link
+              key={g.id}
+              href={`/g/${g.id}`}
+              onClick={() => setOpen(false)}
+              className="pressable flex min-h-[52px] items-center gap-3 px-4 py-2.5 not-last:border-b not-last:border-line hover:bg-fill"
+            >
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-body text-ink">{g.name}</span>
                 <span className="block text-footnote text-ink-3">
@@ -44,8 +54,16 @@ export function GardenSwitcher({ gardens, currentId, variant }: Props) {
           ))}
         </Group>
         <Group className="mt-3">
-          <RowLink href="/start" icon={<Plus className="size-5 text-ink-2" aria-hidden />} label="Plant another garden" />
-          <RowLink href={`/g/${currentId}/settings`} icon={<Settings className="size-5 text-ink-2" aria-hidden />} label="Garden settings" />
+          <RowLink
+            href="/start"
+            icon={<Plus className="size-5 text-ink-2" aria-hidden />}
+            label="Plant another garden"
+          />
+          <RowLink
+            href={`/g/${currentId}/settings`}
+            icon={<Settings className="size-5 text-ink-2" aria-hidden />}
+            label="Garden settings"
+          />
         </Group>
       </Sheet>
     </>

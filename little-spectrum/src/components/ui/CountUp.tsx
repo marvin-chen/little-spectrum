@@ -4,7 +4,15 @@ import { useEffect, useState } from "react";
 import NumberFlow from "@number-flow/react";
 
 // Counts from zero to the value on mount using NumberFlow's rolling digits. Honors reduced motion automatically.
-export function CountUp({ value, duration = 800, className }: { value: number; duration?: number; className?: string }) {
+export function CountUp({
+  value,
+  duration = 800,
+  className,
+}: {
+  value: number;
+  duration?: number;
+  className?: string;
+}) {
   const [shown, setShown] = useState(0);
   useEffect(() => {
     const frame = requestAnimationFrame(() => setShown(value));

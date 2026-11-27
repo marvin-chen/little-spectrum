@@ -25,7 +25,10 @@ export function Slider({ label, value, onChange, leftLabel, rightLabel, disabled
         >
           {value}
         </div>
-        <div aria-hidden className="absolute inset-x-0 top-11 h-3.5 rounded-full bg-gradient-to-r from-coral-soft via-amber to-coral-deep shadow-[inset_0_1px_2px_rgba(20,18,33,0.15)]" />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-11 h-3.5 rounded-full bg-gradient-to-r from-coral-soft via-amber to-coral-deep shadow-[inset_0_1px_2px_rgba(20,18,33,0.15)]"
+        />
         <input
           id={id}
           type="range"

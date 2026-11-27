@@ -10,7 +10,11 @@ import { GAMES, GAME_KEYS } from "@/lib/games";
 
 export const metadata = { title: "Games" };
 
-export default async function DemoGamesPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+export default async function DemoGamesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   const { color } = await searchParams;
   const filter: ColorKey | "all" = color && (COLOR_KEYS as string[]).includes(color) ? (color as ColorKey) : "all";
   const games = GAME_KEYS.filter((k) => filter === "all" || GAMES[k].color === filter);
@@ -37,7 +41,9 @@ export default async function DemoGamesPage({ searchParams }: { searchParams: Pr
               aria-current={filter === key ? "true" : undefined}
               className={cn(
                 "pressable flex h-10 shrink-0 items-center gap-2 rounded-capsule px-4 text-callout font-semibold ring-1",
-                filter === key ? `${COLOR_CLASSES[key].soft} ${COLOR_CLASSES[key].ink} ring-current` : "bg-surface text-ink-2 ring-line",
+                filter === key
+                  ? `${COLOR_CLASSES[key].soft} ${COLOR_CLASSES[key].ink} ring-current`
+                  : "bg-surface text-ink-2 ring-line",
               )}
             >
               <span className={cn("size-3 rounded-full", COLOR_CLASSES[key].bg)} aria-hidden />
@@ -73,7 +79,10 @@ export default async function DemoGamesPage({ searchParams }: { searchParams: Pr
             The demo garden is read-only. Hook up a free Supabase project and these cards turn into actual games with
             actual friends.
           </p>
-          <Link href="/demo/setup" className="mt-3 inline-flex items-center gap-1 text-footnote font-semibold text-blue-ink">
+          <Link
+            href="/demo/setup"
+            className="mt-3 inline-flex items-center gap-1 text-footnote font-semibold text-blue-ink"
+          >
             Enable real multiplayer <ArrowRight className="size-3.5" aria-hidden />
           </Link>
         </Card>

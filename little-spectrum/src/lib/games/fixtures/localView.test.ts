@@ -20,7 +20,10 @@ describe("local preview submission", () => {
   });
 
   it("shows the submitted clue without inventing other players' guesses", () => {
-    const session = { game: "hue-knew", view: { clue: null, phase: "clue", target: 37, guessers: [{ userId: "b", submitted: false }] } } as unknown as SessionView;
+    const session = {
+      game: "hue-knew",
+      view: { clue: null, phase: "clue", target: 37, guessers: [{ userId: "b", submitted: false }] },
+    } as unknown as SessionView;
     const next = localSubmission(session, "a", { clue: "Warm breeze" });
     expect(next.view).toMatchObject({ clue: "Warm breeze", phase: "guess", guessers: [{ submitted: false }] });
   });

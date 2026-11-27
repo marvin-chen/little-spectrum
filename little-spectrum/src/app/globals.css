@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
   /* Canvas and surfaces */
   --color-canvas: #f5f1ea;
@@ -67,7 +69,9 @@
   --shadow-hairline: 0 0 0 1px rgba(20, 18, 33, 0.06);
   --shadow-card: 0 1px 2px rgba(20, 18, 33, 0.04), 0 8px 24px -12px rgba(20, 18, 33, 0.18);
   --shadow-float: 0 12px 32px -8px rgba(20, 18, 33, 0.22), 0 2px 6px rgba(20, 18, 33, 0.06);
-  --shadow-glass: inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 10px 30px -10px rgba(20, 18, 33, 0.25);
+  --shadow-glass:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 10px 30px -10px rgba(20, 18, 33, 0.25);
 
   /* Motion */
   --ease-out-soft: cubic-bezier(0.32, 0.72, 0, 1);
@@ -149,7 +153,9 @@
     --shadow-hairline: 0 0 0 1px rgba(255, 255, 255, 0.06);
     --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
     --shadow-float: 0 12px 32px -8px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.4);
-    --shadow-glass: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+    --shadow-glass:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 10px 30px -10px rgba(0, 0, 0, 0.7);
     --glass-bg: rgba(33, 30, 44, 0.62);
     --glass-bg-strong: rgba(33, 30, 44, 0.85);
   }
@@ -169,7 +175,9 @@
   }
   .lit {
     background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 55%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 8px 20px -10px rgba(0, 0, 0, 0.6);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 8px 20px -10px rgba(0, 0, 0, 0.6);
   }
   dialog::backdrop {
     background: rgba(0, 0, 0, 0.5);
@@ -257,7 +265,9 @@
   /* Prominent filled surfaces get a soft top light. */
   .lit {
     background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 8px 20px -10px rgba(20, 18, 33, 0.35);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.35),
+      0 8px 20px -10px rgba(20, 18, 33, 0.35);
   }
 
   .pressable {
@@ -408,16 +418,24 @@ dialog::backdrop {
   }
 }
 ::view-transition-old(.nav-forward) {
-  animation: 180ms ease-out both vt-fade reverse, 180ms ease-out both vt-slide-left-out;
+  animation:
+    180ms ease-out both vt-fade reverse,
+    180ms ease-out both vt-slide-left-out;
 }
 ::view-transition-new(.nav-forward) {
-  animation: 240ms ease-out 60ms both vt-fade, 360ms var(--ease-out-soft) both vt-slide-left-in;
+  animation:
+    240ms ease-out 60ms both vt-fade,
+    360ms var(--ease-out-soft) both vt-slide-left-in;
 }
 ::view-transition-old(.nav-back) {
-  animation: 180ms ease-out both vt-fade reverse, 180ms ease-out both vt-slide-right-out;
+  animation:
+    180ms ease-out both vt-fade reverse,
+    180ms ease-out both vt-slide-right-out;
 }
 ::view-transition-new(.nav-back) {
-  animation: 240ms ease-out 60ms both vt-fade, 360ms var(--ease-out-soft) both vt-slide-right-in;
+  animation:
+    240ms ease-out 60ms both vt-fade,
+    360ms var(--ease-out-soft) both vt-slide-right-in;
 }
 ::view-transition-old(.tab-fade) {
   animation: 120ms ease-out both vt-fade reverse;

@@ -28,9 +28,24 @@ export function ToolbarGroup({ children, className }: { children: ReactNode; cla
   return <div className={cn("glass flex h-11 items-center gap-0.5 rounded-capsule p-1", className)}>{children}</div>;
 }
 
-export function CompactHeader({ leading, title, trailing, tint }: { leading?: ReactNode; title: ReactNode; trailing?: ReactNode; tint?: string }) {
+export function CompactHeader({
+  leading,
+  title,
+  trailing,
+  tint,
+}: {
+  leading?: ReactNode;
+  title: ReactNode;
+  trailing?: ReactNode;
+  tint?: string;
+}) {
   return (
-    <header className={cn("sticky top-0 z-20 -mx-4 mb-3 flex h-[60px] items-center gap-2 px-3 pt-[var(--safe-top)] md:-mx-8 md:px-6", tint)}>
+    <header
+      className={cn(
+        "sticky top-0 z-20 -mx-4 mb-3 flex h-[60px] items-center gap-2 px-3 pt-[var(--safe-top)] md:-mx-8 md:px-6",
+        tint,
+      )}
+    >
       <div className="flex w-24 items-center">{leading}</div>
       <div className="min-w-0 flex-1 truncate text-center text-headline font-semibold text-ink">{title}</div>
       <div className="flex w-24 items-center justify-end">{trailing}</div>

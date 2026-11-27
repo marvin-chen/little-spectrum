@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { createGarden, createProfile, inviteUrlFor, newPlayer, shot } from "./helpers";
 
-test("the creator designs the invite card and friends see it on the link and in the preview image", async ({ browser, request }) => {
+test("the creator designs the invite card and friends see it on the link and in the preview image", async ({
+  browser,
+  request,
+}) => {
   const ada = await newPlayer(browser, "Ada");
   await createProfile(ada.page, "Ada");
   const gardenId = await createGarden(ada.page, "Porch club", "group");

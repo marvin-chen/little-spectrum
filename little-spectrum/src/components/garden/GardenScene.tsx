@@ -52,7 +52,17 @@ type Props = {
   hour?: number;
 };
 
-export function GardenScene({ theme, items, compact, className, selectable, onSelect, selectedId, animate, hour = 12 }: Props) {
+export function GardenScene({
+  theme,
+  items,
+  compact,
+  className,
+  selectable,
+  onSelect,
+  selectedId,
+  animate,
+  hour = 12,
+}: Props) {
   const t = themeFor(theme);
   const sky = skyFor(t, hour);
   const shade = (hex: string) => (sky.night ? mix(hex, "#2b2f55", 0.3) : hex);
@@ -67,7 +77,11 @@ export function GardenScene({ theme, items, compact, className, selectable, onSe
       preserveAspectRatio="xMidYMid slice"
       className={className}
       role="img"
-      aria-label={items.length === 0 ? "An empty garden, ready to grow" : `A garden with ${items.length} ${items.length === 1 ? "item" : "items"}`}
+      aria-label={
+        items.length === 0
+          ? "An empty garden, ready to grow"
+          : `A garden with ${items.length} ${items.length === 1 ? "item" : "items"}`
+      }
     >
       <defs>
         <linearGradient id={skyId} x1="0" y1="0" x2="0" y2="1">
@@ -132,9 +146,33 @@ export function GardenScene({ theme, items, compact, className, selectable, onSe
         const Item = def.Component;
         const selected = selectedId === item.id;
         const content = (
-          <g className={animate ? "anim-grow" : undefined} style={animate ? ({ "--i": index, transformOrigin: `${slot.x}px ${slot.baseline}px` } as React.CSSProperties) : undefined}>
-            <ellipse cx={slot.x} cy={slot.baseline + 1} rx={width * 0.42} ry={width * 0.08} fill="rgba(20,18,33,0.12)" />
-            {selected ? <ellipse cx={slot.x} cy={slot.baseline + 1} rx={width * 0.5} ry={width * 0.11} fill="none" stroke="#141221" strokeWidth="1.5" strokeDasharray="3 3" /> : null}
+          <g
+            className={animate ? "anim-grow" : undefined}
+            style={
+              animate
+                ? ({ "--i": index, transformOrigin: `${slot.x}px ${slot.baseline}px` } as React.CSSProperties)
+                : undefined
+            }
+          >
+            <ellipse
+              cx={slot.x}
+              cy={slot.baseline + 1}
+              rx={width * 0.42}
+              ry={width * 0.08}
+              fill="rgba(20,18,33,0.12)"
+            />
+            {selected ? (
+              <ellipse
+                cx={slot.x}
+                cy={slot.baseline + 1}
+                rx={width * 0.5}
+                ry={width * 0.11}
+                fill="none"
+                stroke="#141221"
+                strokeWidth="1.5"
+                strokeDasharray="3 3"
+              />
+            ) : null}
             <svg x={x} y={y} width={width} height={height} viewBox="0 0 100 120" overflow="visible">
               <Item variant={item.variant} title={def.name} />
             </svg>

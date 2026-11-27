@@ -17,11 +17,17 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
   const info = await getInviteInfo(token);
   if (info.status === "invalid") return { title: "This invite has wilted" };
   const image = `${getSiteUrl()}/join/${token}/opengraph-image?v=${info.cardVersion}`;
-  const description = info.card.note || `Join ${info.creatorName} and friends in ${info.gardenName} on Little Spectrum.`;
+  const description =
+    info.card.note || `Join ${info.creatorName} and friends in ${info.gardenName} on Little Spectrum.`;
   return {
     title: `${info.card.headline} · ${info.gardenName}`,
     description,
-    openGraph: { title: info.card.headline, description, siteName: "Little Spectrum", images: [{ url: image, width: 1200, height: 630 }] },
+    openGraph: {
+      title: info.card.headline,
+      description,
+      siteName: "Little Spectrum",
+      images: [{ url: image, width: 1200, height: 630 }],
+    },
     twitter: { card: "summary_large_image", title: info.card.headline, description, images: [image] },
   };
 }
@@ -39,8 +45,8 @@ export default async function JoinPage({ params }: { params: Promise<{ token: st
           <div>
             <h1 className="font-display text-title-1 font-bold">This link has wilted</h1>
             <p className="mt-2 text-callout text-ink-2">
-              The invitation is no longer valid. Links can be paused or replaced by whoever made the garden,
-              so ask them for a fresh one.
+              The invitation is no longer valid. Links can be paused or replaced by whoever made the garden, so ask them
+              for a fresh one.
             </p>
           </div>
           <ButtonLink href="/" variant="glass" full>
@@ -60,7 +66,11 @@ export default async function JoinPage({ params }: { params: Promise<{ token: st
 
   return (
     <PlainShell narrow>
-      <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[40vh]" style={{ background: `linear-gradient(180deg, ${theme.skyTop} 0%, transparent 100%)` }} />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[40vh]"
+        style={{ background: `linear-gradient(180deg, ${theme.skyTop} 0%, transparent 100%)` }}
+      />
       <div className="flex flex-1 flex-col justify-center gap-6 py-8">
         <Wordmark />
         <h1 className="sr-only">{info.card.headline}</h1>

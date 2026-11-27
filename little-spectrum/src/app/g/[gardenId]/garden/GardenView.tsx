@@ -16,10 +16,24 @@ import { ThemePicker } from "./ThemePicker";
 
 function weekLabel(weekStart: string): string {
   const [y, m, d] = weekStart.split("-").map(Number);
-  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(y, m - 1, d)));
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(
+    new Date(Date.UTC(y, m - 1, d)),
+  );
 }
 
-export function GardenView({ gardenId, theme, items, hour, canEditTheme }: { gardenId: string; theme: string; items: GardenItemDetail[]; hour: number; canEditTheme: boolean }) {
+export function GardenView({
+  gardenId,
+  theme,
+  items,
+  hour,
+  canEditTheme,
+}: {
+  gardenId: string;
+  theme: string;
+  items: GardenItemDetail[];
+  hour: number;
+  canEditTheme: boolean;
+}) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = items.find((i) => i.id === selectedId) ?? null;
   const def = selected ? getGardenItem(selected.itemKey) : null;
@@ -28,7 +42,16 @@ export function GardenView({ gardenId, theme, items, hour, canEditTheme }: { gar
     <>
       <div className="relative -mx-4 overflow-hidden md:mx-0 md:rounded-group md:shadow-card md:ring-1 md:ring-line">
         <ViewTransition name="garden-scene" share="morph" default="none">
-          <GardenScene theme={theme} items={items} className="block h-[300px] w-full md:h-[360px]" selectable selectedId={selectedId} onSelect={setSelectedId} animate hour={hour} />
+          <GardenScene
+            theme={theme}
+            items={items}
+            className="block h-[300px] w-full md:h-[360px]"
+            selectable
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            animate
+            hour={hour}
+          />
         </ViewTransition>
         {canEditTheme ? <ThemePicker gardenId={gardenId} current={theme} /> : null}
       </div>
@@ -47,13 +70,18 @@ export function GardenView({ gardenId, theme, items, hour, canEditTheme }: { gar
                     type="button"
                     onClick={() => setSelectedId(item.id)}
                     aria-pressed={selectedId === item.id}
-                    className={cn("pressable flex w-full flex-col items-center gap-1.5 rounded-tile bg-surface px-2 pt-3 pb-2.5 shadow-card ring-1 ring-line hover:bg-surface-2", selectedId === item.id && "ring-2 ring-ink")}
+                    className={cn(
+                      "pressable flex w-full flex-col items-center gap-1.5 rounded-tile bg-surface px-2 pt-3 pb-2.5 shadow-card ring-1 ring-line hover:bg-surface-2",
+                      selectedId === item.id && "ring-2 ring-ink",
+                    )}
                   >
                     <span className="block h-14 w-12">
                       <Item variant={item.variant} title={itemDef.name} />
                     </span>
                     <span className="text-caption font-semibold text-ink">{itemDef.name}</span>
-                    <span className="text-caption text-ink-3">Week of {weekLabel(item.weekStart).replace(/, \d{4}$/, "")}</span>
+                    <span className="text-caption text-ink-3">
+                      Week of {weekLabel(item.weekStart).replace(/, \d{4}$/, "")}
+                    </span>
                   </button>
                 </li>
               );
@@ -62,7 +90,12 @@ export function GardenView({ gardenId, theme, items, hour, canEditTheme }: { gar
         </section>
       ) : null}
 
-      <Sheet open={selected !== null} onClose={() => setSelectedId(null)} title={def?.name ?? ""} description={def?.blurb}>
+      <Sheet
+        open={selected !== null}
+        onClose={() => setSelectedId(null)}
+        title={def?.name ?? ""}
+        description={def?.blurb}
+      >
         {selected && def ? (
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4 rounded-tile bg-surface-3 p-4">
@@ -81,7 +114,9 @@ export function GardenView({ gardenId, theme, items, hour, canEditTheme }: { gar
               <ul className="overflow-hidden rounded-group bg-surface ring-1 ring-line">
                 {selected.activities.map((a) => {
                   const game = GAMES[a.game];
-                  const date = a.revealedAt ? new Date(a.revealedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
+                  const date = a.revealedAt
+                    ? new Date(a.revealedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                    : "";
                   const inner = (
                     <>
                       <GameMotif game={a.game} size={36} />
@@ -92,13 +127,20 @@ export function GardenView({ gardenId, theme, items, hour, canEditTheme }: { gar
                           {date ? ` · ${date}` : ""}
                         </span>
                       </span>
-                      {a.isParticipant ? <ChevronRight className="size-4 shrink-0 text-ink-3/70" aria-hidden /> : <Badge>Not in this one</Badge>}
+                      {a.isParticipant ? (
+                        <ChevronRight className="size-4 shrink-0 text-ink-3/70" aria-hidden />
+                      ) : (
+                        <Badge>Not in this one</Badge>
+                      )}
                     </>
                   );
                   return (
                     <li key={a.id} className="not-last:border-b not-last:border-line">
                       {a.isParticipant ? (
-                        <Link href={`/g/${gardenId}/play/${a.id}`} className="pressable flex min-h-12 items-center gap-3 px-3 py-2 hover:bg-fill">
+                        <Link
+                          href={`/g/${gardenId}/play/${a.id}`}
+                          className="pressable flex min-h-12 items-center gap-3 px-3 py-2 hover:bg-fill"
+                        >
                           {inner}
                         </Link>
                       ) : (

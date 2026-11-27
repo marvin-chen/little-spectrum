@@ -17,20 +17,31 @@ export default async function GardenPage({ params }: { params: Promise<{ gardenI
   const user = await requireUser(`/g/${gardenId}/garden`);
   const garden = await getGardenContext(gardenId, user.id);
   if (!garden) notFound();
-  const [growth, details] = await Promise.all([getGrowthSummary(gardenId, garden.timezone), getGardenDetails(gardenId, user.id, garden.timezone)]);
+  const [growth, details] = await Promise.all([
+    getGrowthSummary(gardenId, garden.timezone),
+    getGardenDetails(gardenId, user.id, garden.timezone),
+  ]);
   const theme = themeFor(garden.theme);
   const hour = hourIn(garden.timezone);
   const sky = skyFor(theme, hour);
-  const contributors = details.contributorsThisWeek >= 2 ? `${countWord(details.contributorsThisWeek)} friends added a little color this week.` : null;
+  const contributors =
+    details.contributorsThisWeek >= 2
+      ? `${countWord(details.contributorsThisWeek)} friends added a little color this week.`
+      : null;
 
   return (
     <>
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-64" style={{ background: `linear-gradient(180deg, ${sky.top} 0%, transparent 100%)`, opacity: sky.night ? 0.5 : 1 }} />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-64"
+        style={{ background: `linear-gradient(180deg, ${sky.top} 0%, transparent 100%)`, opacity: sky.night ? 0.5 : 1 }}
+      />
       <header className="flex items-start justify-between gap-3 pt-3 pb-4">
         <div>
           <h1 className="font-display text-large-title font-bold text-ink">Garden</h1>
           <p className="mt-1 text-callout text-ink-2">
-            {growth.totalCompletions} {growth.totalCompletions === 1 ? "round" : "rounds"} so far. Nothing here ever wilts.
+            {growth.totalCompletions} {growth.totalCompletions === 1 ? "round" : "rounds"} so far. Nothing here ever
+            wilts.
           </p>
         </div>
         {growth.streak > 1 ? (
@@ -39,7 +50,13 @@ export default async function GardenPage({ params }: { params: Promise<{ gardenI
           </Badge>
         ) : null}
       </header>
-      <GardenView gardenId={gardenId} theme={garden.theme} items={details.items} hour={hour} canEditTheme={garden.role === "creator"} />
+      <GardenView
+        gardenId={gardenId}
+        theme={garden.theme}
+        items={details.items}
+        hour={hour}
+        canEditTheme={garden.role === "creator"}
+      />
       <section className={cn("mt-5 rounded-group bg-surface p-4 shadow-card ring-1 ring-line")}>
         <WeeklyProgress growth={growth} />
         <p className="mt-2 text-footnote text-ink-3">

@@ -40,9 +40,7 @@ export type SessionState = {
   photos: PhotoRef[];
 };
 
-export type ValidationResult =
-  | { ok: true; kind: "clue" | "answer"; payload: unknown }
-  | { ok: false; error: string };
+export type ValidationResult = { ok: true; kind: "clue" | "answer"; payload: unknown } | { ok: false; error: string };
 
 export type RevealOutcome = { result: unknown; final: boolean };
 
@@ -70,4 +68,3 @@ export interface GameEngine<View = unknown> {
   hydrateView?(state: SessionState, userId: string, view: View): Promise<View>;
   turnStatus(state: SessionState, userId: string): TurnStatus;
 }
-

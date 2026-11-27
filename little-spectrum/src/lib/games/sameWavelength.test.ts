@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { SessionState, Submission } from "./engine";
-import { groupMatches, normalizeWord, sameWavelength, type SameWavelengthResult, type SameWavelengthView } from "./sameWavelength";
+import {
+  groupMatches,
+  normalizeWord,
+  sameWavelength,
+  type SameWavelengthResult,
+  type SameWavelengthView,
+} from "./sameWavelength";
 
 function state(overrides: Partial<SessionState> = {}): SessionState {
   return {

@@ -34,8 +34,12 @@ export function HueKnewReveal({ session, result, left, right, userId, compact }:
   return (
     <div className={cn("flex flex-col", compact ? "gap-3" : "gap-4")}>
       <Card className={compact ? "p-4" : "p-5"}>
-        <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">{clueGiverName}&apos;s clue</p>
-        <p className={cn("mt-1 font-display font-bold", compact ? "text-title-3" : "text-title-2")}>&ldquo;{result.clue}&rdquo;</p>
+        <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">
+          {clueGiverName}&apos;s clue
+        </p>
+        <p className={cn("mt-1 font-display font-bold", compact ? "text-title-3" : "text-title-2")}>
+          &ldquo;{result.clue}&rdquo;
+        </p>
         <div className={compact ? "mt-4" : "mt-6"}>
           <SpectrumScale left={left} right={right} markers={markers} />
         </div>
@@ -43,14 +47,25 @@ export function HueKnewReveal({ session, result, left, right, userId, compact }:
       <Card className={compact ? "p-4" : "p-5"}>
         <div className="flex items-baseline justify-between">
           <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Shared score</p>
-          <p className={cn("font-display font-bold text-coral-ink tabular-nums", compact ? "text-title-2" : "text-title-1")}>{result.shared === null ? "–" : <CountUp value={result.shared} />}</p>
+          <p
+            className={cn(
+              "font-display font-bold text-coral-ink tabular-nums",
+              compact ? "text-title-2" : "text-title-1",
+            )}
+          >
+            {result.shared === null ? "–" : <CountUp value={result.shared} />}
+          </p>
         </div>
         <ul className="mt-2 divide-y divide-line">
           {result.guesses
             .slice()
             .sort((a, b) => b.score - a.score)
             .map((g, index) => (
-              <li key={g.userId} className="anim-rise flex items-center gap-3 py-2.5" style={{ "--i": index + 2 } as React.CSSProperties}>
+              <li
+                key={g.userId}
+                className="anim-rise flex items-center gap-3 py-2.5"
+                style={{ "--i": index + 2 } as React.CSSProperties}
+              >
                 <Avatar avatar={avatarOf(g.userId)} name={nameOf(g.userId)} size="sm" />
                 <span className="flex-1 text-body">
                   {g.userId === userId ? "You" : nameOf(g.userId)}
