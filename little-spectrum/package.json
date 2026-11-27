@@ -13,7 +13,7 @@
     "test:db": "vitest run --config vitest.db.config.mts",
     "typecheck": "next typegen && tsc --noEmit",
     "test:e2e": "playwright test",
-    "check": "pnpm typecheck && pnpm lint && pnpm test",
+    "check": "pnpm format:check && pnpm typecheck && pnpm lint && pnpm test",
     "check:full": "node scripts/check-full.mjs",
     "test:smoke": "playwright test tests/e2e/smoke.spec.ts",
     "shots": "node scripts/screenshots.mjs"

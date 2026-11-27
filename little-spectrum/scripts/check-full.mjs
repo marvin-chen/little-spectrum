@@ -92,7 +92,7 @@ loadEnvLocal();
 process.env.NEXT_PUBLIC_SITE_URL = `http://localhost:${PORT}`;
 let failed = false;
 try {
-  if (!(await run("Fast checks (typecheck, lint, unit)", "pnpm", ["check"]))) failed = true;
+  if (!(await run("Fast checks (format, typecheck, lint, unit)", "pnpm", ["check"]))) failed = true;
   if (!(await run("Production build", "pnpm", ["build"]))) failed = true;
   assertLocalBackend();
   await waitForBackend();

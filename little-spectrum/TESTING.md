@@ -6,7 +6,7 @@ Two commands, one habit: run `check` before every commit, run `check:full` befor
 
 | Command | What it runs | Needs |
 |---|---|---|
-| `pnpm check` | Type check, lint, unit tests (game logic, week math, photo processing, backend detection) | Nothing beyond `pnpm install` |
+| `pnpm check` | Formatting (oxfmt), type check, lint, unit tests (game logic, week math, photo processing, backend detection) | Nothing beyond `pnpm install` |
 | `pnpm check:full` | Everything in `check`, the production build, database and policy tests against a local Supabase, then every browser journey against the production build on port 3100 | Docker, `pnpm supabase start`, `.env.local` pointing at it, Playwright's Chromium |
 
 `check:full` fails if any step fails, and it refuses to run database tests against anything but a local Supabase unless `ALLOW_REMOTE_TEST_DB=1` is set for a disposable project you own.
