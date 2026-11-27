@@ -5,7 +5,7 @@ import { GameIcon } from "@/components/games/GameIcon";
 import { AvatarStack } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
-import { formatRevealedDate, type Memory } from "@/lib/data/memories";
+import type { Memory } from "@/lib/data/memories";
 import type { SessionView } from "@/lib/data/sessions";
 import { GAMES } from "@/lib/games";
 import type { ColorQuestView } from "@/lib/games/colorQuest";
@@ -14,6 +14,7 @@ import type { HueKnewView } from "@/lib/games/hueKnew";
 import type { PalettePicksView } from "@/lib/games/palettePicks";
 import type { SameWavelengthView } from "@/lib/games/sameWavelength";
 import type { TrueColorsView } from "@/lib/games/trueColors";
+import { formatRevealedDate } from "@/lib/week";
 import { MemoryFooter } from "./MemoryFooter";
 
 const WAVELENGTH_OUTCOME = { all: "Everyone matched", some: "Some matched", none: "No match" } as const;
@@ -57,10 +58,20 @@ function contextFor(session: SessionView): string | null {
   }
 }
 
-export function MemoryCard({ gardenId, memory, userId }: { gardenId: string; memory: Memory; userId: string }) {
+export function MemoryCard({
+  gardenId,
+  memory,
+  userId,
+  timeZone,
+}: {
+  gardenId: string;
+  memory: Memory;
+  userId: string;
+  timeZone: string;
+}) {
   const { session } = memory;
   const game = GAMES[session.game];
-  const date = formatRevealedDate(session.revealedAt ?? session.createdAt);
+  const date = formatRevealedDate(session.revealedAt ?? session.createdAt, timeZone);
   const score = scoreFor(session);
   const context = contextFor(session);
 

@@ -59,6 +59,18 @@ export function isValidTimeZone(value: string): boolean {
   }
 }
 
+// "Nov 10" in the garden's timezone, with the year when it is not the current one.
+export function formatRevealedDate(iso: string, timeZone: string): string {
+  const date = new Date(iso);
+  const sameYear = partsInZone(date, timeZone).year === partsInZone(new Date(), timeZone).year;
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    month: "short",
+    day: "numeric",
+    year: sameYear ? undefined : "numeric",
+  }).format(date);
+}
+
 export function formatWeekReset(weekStart: string, timeZone: string): string {
   const nextMonday = addDays(weekStart, 7);
   const [y, m, d] = nextMonday.split("-").map(Number);

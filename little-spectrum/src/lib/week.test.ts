@@ -1,5 +1,29 @@
-import { describe, expect, it } from "vitest";
-import { addDays, formatWeekReset, streakWeeks, weekStartFor } from "./week";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { addDays, formatRevealedDate, formatWeekReset, streakWeeks, weekStartFor } from "./week";
+
+describe("revealed dates", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("shows the day in the garden timezone", () => {
+    vi.useFakeTimers({ now: new Date("2026-11-26T12:00:00Z") });
+    // 6pm on Nov 10 in Los Angeles is already Nov 11 in UTC.
+    expect(formatRevealedDate("2026-11-11T02:00:00Z", "America/Los_Angeles")).toBe("Nov 10");
+    expect(formatRevealedDate("2026-11-11T02:00:00Z", "UTC")).toBe("Nov 11");
+  });
+
+  it("adds the year only for other years", () => {
+    vi.useFakeTimers({ now: new Date("2026-11-26T12:00:00Z") });
+    expect(formatRevealedDate("2026-06-15T12:00:00Z", "UTC")).toBe("Jun 15");
+    expect(formatRevealedDate("2025-06-15T12:00:00Z", "UTC")).toBe("Jun 15, 2025");
+  });
+
+  it("compares years in the garden timezone", () => {
+    // It is still Dec 31, 2025 in Los Angeles, but already 2026 in UTC.
+    vi.useFakeTimers({ now: new Date("2026-01-01T03:00:00Z") });
+    expect(formatRevealedDate("2025-12-31T20:00:00Z", "America/Los_Angeles")).toBe("Dec 31");
+    expect(formatRevealedDate("2025-12-31T20:00:00Z", "UTC")).toBe("Dec 31, 2025");
+  });
+});
 
 describe("week boundaries", () => {
   it("starts weeks on Monday in the garden timezone", () => {

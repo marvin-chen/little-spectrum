@@ -1,4 +1,4 @@
-// Small in-memory throttle. Good enough for a personal project on a single instance.
+// shortcut: in-memory buckets are per server instance and reset on deploy, so limits are approximate on serverless, move to a shared store if abuse shows up.
 const buckets = new Map<string, { count: number; resetAt: number }>();
 
 export function throttle(key: string, limit: number, windowMs: number): boolean {
