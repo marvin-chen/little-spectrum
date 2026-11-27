@@ -4,13 +4,14 @@ import { BookHeart } from "lucide-react";
 import { GameIcon } from "@/components/games/GameIcon";
 import { MemoryCard } from "@/components/memories/MemoryCard";
 import { Card, Group, Row, SectionLabel } from "@/components/ui/Card";
+import { ButtonLink } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { requireUser } from "@/lib/auth";
 import { cn } from "@/lib/cn";
 import { COLOR_CLASSES } from "@/lib/colors";
 import { getGardenContext } from "@/lib/data/gardens";
-import { listMemories } from "@/lib/data/memories";
+import { listMemories, REVEALED_AT_CURSOR } from "@/lib/data/memories";
 import { GAMES, GAME_KEYS, isGameKey } from "@/lib/games";
 import { formatRevealedDate } from "@/lib/week";
 
@@ -31,8 +32,13 @@ export default async function MemoriesPage({
   const garden = await getGardenContext(gardenId, user.id);
   if (!garden) notFound();
   const filter = query.game && isGameKey(query.game) ? query.game : null;
-  const { memories, activity } = await listMemories(gardenId, user.id, filter ?? undefined);
+  const before = query.before && REVEALED_AT_CURSOR.test(query.before) ? query.before : undefined;
+  const { memories, activity, next } = await listMemories(gardenId, user.id, {
+    game: filter ?? undefined,
+    before,
+  });
   const base = `/g/${gardenId}/memories`;
+  const filterQuery = filter ? `game=${filter}&` : "";
 
   return (
     <>
@@ -89,11 +95,26 @@ export default async function MemoriesPage({
         </div>
       )}
 
+      {next || before ? (
+        <nav aria-label="More memories" className="mt-8 flex flex-wrap justify-center gap-2">
+          {before ? (
+            <ButtonLink href={filter ? `${base}?game=${filter}` : base} variant="glass">
+              Back to newest
+            </ButtonLink>
+          ) : null}
+          {next ? (
+            <ButtonLink href={`${base}?${filterQuery}before=${encodeURIComponent(next)}`} variant="glass">
+              Show older
+            </ButtonLink>
+          ) : null}
+        </nav>
+      ) : null}
+
       {activity.length > 0 ? (
         <section className="mt-8">
           <SectionLabel>Around the garden</SectionLabel>
           <Group>
-            {activity.slice(0, 10).map((entry) => (
+            {activity.map((entry) => (
               <Row
                 key={entry.id}
                 icon={<GameIcon game={entry.game} size="sm" />}
