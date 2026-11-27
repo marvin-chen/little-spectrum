@@ -15,7 +15,9 @@ describe("creator only garden settings", () => {
     await updateInviteCard(ada.id, gardenId, { ...DEFAULT_INVITE_CARD, headline: "Hello" });
     for (const other of [bo, cy]) {
       await expect(updateGardenTheme(other.id, gardenId, "lagoon")).rejects.toThrow("not_creator");
-      await expect(updateInviteCard(other.id, gardenId, { ...DEFAULT_INVITE_CARD, headline: "Nope" })).rejects.toThrow("not_creator");
+      await expect(updateInviteCard(other.id, gardenId, { ...DEFAULT_INVITE_CARD, headline: "Nope" })).rejects.toThrow(
+        "not_creator",
+      );
     }
 
     const { data } = await service().from("gardens").select("theme, invite_card").eq("id", gardenId).single();
@@ -42,9 +44,28 @@ describe("garden details", () => {
         p_predictions: {},
       });
       if (error) throw new Error(error.message);
-      await service().rpc("submit_answer", { p_user: ada.id, p_session: id, p_round: 1, p_kind: "clue", p_payload: { clue: "blanket" } });
-      await service().rpc("submit_answer", { p_user: bo.id, p_session: id, p_round: 1, p_kind: "answer", p_payload: { guess: 40 } });
-      await service().rpc("reveal_round", { p_session: id, p_round: 1, p_result: { target: 42 }, p_final: true, p_early: false, p_expected_submissions: 2 });
+      await service().rpc("submit_answer", {
+        p_user: ada.id,
+        p_session: id,
+        p_round: 1,
+        p_kind: "clue",
+        p_payload: { clue: "blanket" },
+      });
+      await service().rpc("submit_answer", {
+        p_user: bo.id,
+        p_session: id,
+        p_round: 1,
+        p_kind: "answer",
+        p_payload: { guess: 40 },
+      });
+      await service().rpc("reveal_round", {
+        p_session: id,
+        p_round: 1,
+        p_result: { target: 42 },
+        p_final: true,
+        p_early: false,
+        p_expected_submissions: 2,
+      });
     }
 
     const mine = await getGardenDetails(gardenId, ada.id, "America/Los_Angeles");

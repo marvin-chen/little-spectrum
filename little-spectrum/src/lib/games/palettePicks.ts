@@ -69,7 +69,7 @@ export function pairSimilarity(a: number[], b: number[]): number {
 function rankingsOf(state: SessionState): Array<{ userId: string; order: number[] }> {
   return roundSubmissions(state)
     .filter((s) => s.kind === "answer" && isRecord(s.payload) && isPermutation(s.payload.order))
-    .map((s) => ({ userId: s.userId, order: [...((s.payload as { order: number[] }).order)] }));
+    .map((s) => ({ userId: s.userId, order: [...(s.payload as { order: number[] }).order] }));
 }
 
 export const palettePicks: GameEngine<PalettePicksView> = {
@@ -117,7 +117,8 @@ export const palettePicks: GameEngine<PalettePicksView> = {
 
     const bestAverage = averages[0].averageRank;
     const widestSpread = Math.max(...averages.map((a) => a.spread));
-    const sharedFavorites = rankings.length > 0 ? averages.filter((a) => a.averageRank === bestAverage).map((a) => a.item) : [];
+    const sharedFavorites =
+      rankings.length > 0 ? averages.filter((a) => a.averageRank === bestAverage).map((a) => a.item) : [];
     const biggestDisagreements =
       widestSpread > 0
         ? averages

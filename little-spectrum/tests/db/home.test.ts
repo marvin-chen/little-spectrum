@@ -11,7 +11,12 @@ async function twoPlayerGarden(): Promise<{ ada: TestUser; bo: TestUser; gardenI
 }
 
 // Inserts one Hue Knew session per status, oldest first and a minute apart, with both players in each.
-async function seedSessions(gardenId: string, ada: TestUser, bo: TestUser, statuses: Array<"active" | "revealed">): Promise<string[]> {
+async function seedSessions(
+  gardenId: string,
+  ada: TestUser,
+  bo: TestUser,
+  statuses: Array<"active" | "revealed">,
+): Promise<string[]> {
   const start = Date.parse("2026-01-01T00:00:00Z");
   const { data, error } = await service()
     .from("sessions")
@@ -35,7 +40,12 @@ async function seedSessions(gardenId: string, ada: TestUser, bo: TestUser, statu
   const ids = data.sort((a, b) => a.created_at.localeCompare(b.created_at)).map((row) => row.id as string);
   const { error: participantError } = await service()
     .from("session_participants")
-    .insert(ids.flatMap((id) => [{ session_id: id, user_id: ada.id }, { session_id: id, user_id: bo.id }]));
+    .insert(
+      ids.flatMap((id) => [
+        { session_id: id, user_id: ada.id },
+        { session_id: id, user_id: bo.id },
+      ]),
+    );
   if (participantError) throw new Error(participantError.message);
   return ids;
 }
@@ -52,12 +62,7 @@ describe("home session cards", () => {
 
   it("returns every active session and only the four newest revealed ones", async () => {
     const { ada, bo, gardenId } = await twoPlayerGarden();
-    const ids = await seedSessions(gardenId, ada, bo, [
-      ...Array(6).fill("revealed"),
-      "active",
-      "revealed",
-      "active",
-    ]);
+    const ids = await seedSessions(gardenId, ada, bo, [...Array(6).fill("revealed"), "active", "revealed", "active"]);
     const cards = await listSessionCards(gardenId, ada.id);
     expect(cards.map((c) => c.id)).toEqual(ids.slice(3).reverse());
   });

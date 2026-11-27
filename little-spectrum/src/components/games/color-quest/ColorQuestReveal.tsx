@@ -6,7 +6,17 @@ import type { SessionView } from "@/lib/games/sessionView";
 import type { ColorQuestView } from "@/lib/games/colorQuest";
 import { PhotoFigure } from "./PhotoFigure";
 
-export function ColorQuestReveal({ session, game, userId, compact }: { session: Pick<SessionView, "participants">; game: ColorQuestView; userId: string; compact?: boolean }) {
+export function ColorQuestReveal({
+  session,
+  game,
+  userId,
+  compact,
+}: {
+  session: Pick<SessionView, "participants">;
+  game: ColorQuestView;
+  userId: string;
+  compact?: boolean;
+}) {
   const nameOf = (id: string) => session.participants.find((p) => p.userId === id)?.name ?? "Someone";
   const avatarOf = (id: string) => session.participants.find((p) => p.userId === id)?.avatar ?? "sun:amber";
   const gallery = game.gallery ?? [];
@@ -20,8 +30,18 @@ export function ColorQuestReveal({ session, game, userId, compact }: { session: 
       ) : null}
       <ul className={cn("grid gap-3", compact ? "grid-cols-2 sm:grid-cols-3" : "grid-cols-1 sm:grid-cols-2")}>
         {gallery.map((photo) => (
-          <li key={photo.photoId} className={cn("overflow-hidden rounded-card bg-surface shadow-card ring-1 ring-line", compact ? "p-2" : "p-3")}>
-            <PhotoFigure photo={photo} alt={photo.caption ? `${nameOf(photo.userId)}: ${photo.caption}` : `Photo from ${nameOf(photo.userId)}`} square={compact} />
+          <li
+            key={photo.photoId}
+            className={cn(
+              "overflow-hidden rounded-card bg-surface shadow-card ring-1 ring-line",
+              compact ? "p-2" : "p-3",
+            )}
+          >
+            <PhotoFigure
+              photo={photo}
+              alt={photo.caption ? `${nameOf(photo.userId)}: ${photo.caption}` : `Photo from ${nameOf(photo.userId)}`}
+              square={compact}
+            />
             <div className={cn("flex items-start gap-2", compact ? "mt-2" : "mt-3")}>
               <Avatar avatar={avatarOf(photo.userId)} name={nameOf(photo.userId)} size="xs" className="mt-0.5" />
               <p className="min-w-0 text-footnote text-ink-2">

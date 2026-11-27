@@ -7,7 +7,11 @@ const PALETTES = [
   { stone: "#bccfd9", stoneDark: "#95adbb", grass: "#8bd1a0", grassDark: "#5fb37c" },
 ];
 
-const STONES = [[24, 106, 14, 6], [52, 103, 12, 5.5], [78, 106, 12, 6]];
+const STONES = [
+  [24, 106, 14, 6],
+  [52, 103, 12, 5.5],
+  [78, 106, 12, 6],
+];
 const TUFTS = [8, 38, 66, 92];
 
 export function SteppingStones({ variant = 0, className, title }: GardenItemProps) {

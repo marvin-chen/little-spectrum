@@ -4,7 +4,20 @@ export const HUE_CLUE_COLS = 12;
 export const HUE_CLUE_ROWS = 8;
 
 const HUES = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
-const HUE_NAMES = ["Red", "Orange", "Yellow", "Lime", "Green", "Mint", "Cyan", "Sky", "Blue", "Violet", "Magenta", "Pink"];
+const HUE_NAMES = [
+  "Red",
+  "Orange",
+  "Yellow",
+  "Lime",
+  "Green",
+  "Mint",
+  "Cyan",
+  "Sky",
+  "Blue",
+  "Violet",
+  "Magenta",
+  "Pink",
+];
 const ROW_NAMES = ["Pale", "Light", "Soft", "Clear", "Bright", "Deep", "Dark", "Dusky"];
 const ROW_LIGHTNESS = [90, 81, 72, 63, 53, 43, 33, 24];
 const ROW_SATURATION = [60, 65, 68, 72, 75, 70, 60, 45];

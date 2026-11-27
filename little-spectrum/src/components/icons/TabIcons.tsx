@@ -34,7 +34,10 @@ export function HomeIcon({ active = false, className }: TabIconProps): JSX.Eleme
           <path d="M4.5 10.3 12 4.6l7.5 5.7V19a1.6 1.6 0 0 1-1.6 1.6H6.1A1.6 1.6 0 0 1 4.5 19v-8.7Z" />
           <path d="M9.9 20.6v-3.3a2.1 2.1 0 0 1 4.2 0v3.3" />
           <path d="M12 14v-2.2" strokeWidth={1.6} />
-          <path d="M12 11.8c0-1.8 1.2-2.8 3-2.8 0 1.8-1.2 2.8-3 2.8Zm0 0c0-1.8-1.2-2.8-3-2.8 0 1.8 1.2 2.8 3 2.8Z" strokeWidth={1.5} />
+          <path
+            d="M12 11.8c0-1.8 1.2-2.8 3-2.8 0 1.8-1.2 2.8-3 2.8Zm0 0c0-1.8-1.2-2.8-3-2.8 0 1.8 1.2 2.8 3 2.8Z"
+            strokeWidth={1.5}
+          />
         </>
       )}
     </TabSvg>

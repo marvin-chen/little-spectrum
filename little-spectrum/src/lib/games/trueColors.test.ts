@@ -137,7 +137,12 @@ describe("trueColors engine", () => {
       submitted: ["a", "b"],
       result: null,
     });
-    expect(trueColors.view(s, "c")).toMatchObject({ phase: "answer", predictsUserId: "d", myAnswer: null, myPrediction: null });
+    expect(trueColors.view(s, "c")).toMatchObject({
+      phase: "answer",
+      predictsUserId: "d",
+      myAnswer: null,
+      myPrediction: null,
+    });
     expect(JSON.stringify(trueColors.view(s, "c"))).not.toContain('"answer":0');
   });
 
@@ -152,6 +157,9 @@ describe("trueColors engine", () => {
     expect(trueColors.turnStatus(two, "a")).toEqual({ needsYou: false, line: "Two of four picks are in." });
     const three = state({ submissions: [...two.submissions, picks("d", 0, 0)] });
     expect(trueColors.turnStatus(three, "a")).toEqual({ needsYou: false, line: "Waiting for Bo's picks." });
-    expect(trueColors.turnStatus(state({ status: "revealed" }), "a")).toEqual({ needsYou: false, line: "The reveal is ready." });
+    expect(trueColors.turnStatus(state({ status: "revealed" }), "a")).toEqual({
+      needsYou: false,
+      line: "The reveal is ready.",
+    });
   });
 });

@@ -34,14 +34,20 @@ export function TrueColorsPlay({ gardenId, session, game, userId }: Props) {
 
   if (game.phase === "waiting" && game.myAnswer !== null && game.myPrediction !== null) {
     const submitted = new Set(game.submitted);
-    const waiting = session.participants.filter((p) => p.userId !== userId && !submitted.has(p.userId)).map((p) => p.name);
+    const waiting = session.participants
+      .filter((p) => p.userId !== userId && !submitted.has(p.userId))
+      .map((p) => p.name);
     return (
       <div className="flex flex-col gap-4">
         <QuestionCard question={game.question} />
         <Card className="p-5">
           <p className="text-title-3 font-semibold">Your picks are locked in</p>
           <ul className="mt-4 flex flex-col gap-2">
-            <LockedPick icon={<User className="size-4" aria-hidden />} label="Your answer" value={game.options[game.myAnswer]} />
+            <LockedPick
+              icon={<User className="size-4" aria-hidden />}
+              label="Your answer"
+              value={game.options[game.myAnswer]}
+            />
             <LockedPick
               icon={<UserRoundSearch className="size-4" aria-hidden />}
               label={`Your prediction for ${friendName}`}
@@ -116,11 +122,25 @@ function PicksPanel({
 
       <Card className="p-5">
         <section aria-labelledby="tc-answer-label">
-          <SectionHeading id="tc-answer-label" icon={<User className="size-4" aria-hidden />} title="Your answer" line="What you would honestly pick." />
-          <ChoiceGroup label="Your answer" options={game.options.map((label, i) => ({ value: String(i), label }))} value={answer === null ? null : String(answer)} onChange={(value) => setAnswer(Number(value))} disabled={pending} />
+          <SectionHeading
+            id="tc-answer-label"
+            icon={<User className="size-4" aria-hidden />}
+            title="Your answer"
+            line="What you would honestly pick."
+          />
+          <ChoiceGroup
+            label="Your answer"
+            options={game.options.map((label, i) => ({ value: String(i), label }))}
+            value={answer === null ? null : String(answer)}
+            onChange={(value) => setAnswer(Number(value))}
+            disabled={pending}
+          />
         </section>
 
-        <div role="separator" className="my-6 flex items-center gap-3 text-caption font-semibold uppercase tracking-wide text-ink-3">
+        <div
+          role="separator"
+          className="my-6 flex items-center gap-3 text-caption font-semibold uppercase tracking-wide text-ink-3"
+        >
           <span className="h-px flex-1 bg-line-strong" />
           Now switch hats
           <span className="h-px flex-1 bg-line-strong" />
@@ -133,7 +153,13 @@ function PicksPanel({
             title={`Your prediction for ${friendName}`}
             line={`Not what you want for ${friendName}, what ${friendName} would actually choose.`}
           />
-          <ChoiceGroup label={`Your prediction for ${friendName}`} options={game.options.map((label, i) => ({ value: String(i), label }))} value={prediction === null ? null : String(prediction)} onChange={(value) => setPrediction(Number(value))} disabled={pending} />
+          <ChoiceGroup
+            label={`Your prediction for ${friendName}`}
+            options={game.options.map((label, i) => ({ value: String(i), label }))}
+            value={prediction === null ? null : String(prediction)}
+            onChange={(value) => setPrediction(Number(value))}
+            disabled={pending}
+          />
         </section>
 
         {error ? (
@@ -142,7 +168,16 @@ function PicksPanel({
           </Feedback>
         ) : null}
         <p className="mt-4 text-footnote text-ink-3">Both go in together. Locked picks cannot be edited.</p>
-        <Button className="mt-3" size="lg" full accent="rose" onClick={lockIn} loading={pending} disabled={!ready} icon={<Lock className="size-4" aria-hidden />}>
+        <Button
+          className="mt-3"
+          size="lg"
+          full
+          accent="rose"
+          onClick={lockIn}
+          loading={pending}
+          disabled={!ready}
+          icon={<Lock className="size-4" aria-hidden />}
+        >
           Lock in both
         </Button>
       </Card>
@@ -154,7 +189,9 @@ function SectionHeading({ id, icon, title, line }: { id: string; icon: React.Rea
   return (
     <div className="mb-3">
       <h2 id={id} className="flex items-center gap-2 text-title-3 font-semibold">
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-rose-soft text-rose-ink">{icon}</span>
+        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-rose-soft text-rose-ink">
+          {icon}
+        </span>
         {title}
       </h2>
       <p className="mt-1 text-callout text-ink-2">{line}</p>
@@ -172,11 +209,7 @@ function PlayAgain({ gardenId, sessionId }: { gardenId: string; sessionId: strin
         <Sparkles className="size-4 text-amber" aria-hidden />
         Same people, fresh question.
       </p>
-      {error ? (
-        <Feedback tone="error">
-          {error}
-        </Feedback>
-      ) : null}
+      {error ? <Feedback tone="error">{error}</Feedback> : null}
       <Button
         variant="tinted"
         accent="rose"

@@ -19,7 +19,10 @@ export function AppShell({ base, children, sidebarExtra, action, wide }: AppShel
   const inGame = pathname.includes("/play/");
   return (
     <div className="min-h-dvh md:flex">
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-capsule focus:bg-ink focus:px-4 focus:py-2 focus:text-canvas">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-capsule focus:bg-ink focus:px-4 focus:py-2 focus:text-canvas"
+      >
         Skip to content
       </a>
       <aside className="glass-strong sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-6 border-r border-line px-4 py-6 md:flex">

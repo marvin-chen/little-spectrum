@@ -17,7 +17,10 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     failed = Boolean(error);
   } else if (tokenHash && type) {
-    const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as "email" | "magiclink" | "email_change" | "signup" });
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: type as "email" | "magiclink" | "email_change" | "signup",
+    });
     failed = Boolean(error);
   } else {
     failed = true;

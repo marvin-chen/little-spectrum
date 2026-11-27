@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest";
 import { anonymousUser, createGarden, service, token, type TestUser } from "./helpers";
 
 // Ada and Bo are in one session. Both have submitted and both have a photo.
-async function sessionWithPhotos(): Promise<{ ada: TestUser; bo: TestUser; sessionId: string; adaPhoto: string; boPhoto: string }> {
+async function sessionWithPhotos(): Promise<{
+  ada: TestUser;
+  bo: TestUser;
+  sessionId: string;
+  adaPhoto: string;
+  boPhoto: string;
+}> {
   const [ada, bo] = await Promise.all([anonymousUser("Ada"), anonymousUser("Bo")]);
   const invite = token();
   const gardenId = await createGarden(ada, 2, invite);
@@ -18,11 +24,30 @@ async function sessionWithPhotos(): Promise<{ ada: TestUser; bo: TestUser; sessi
     p_predictions: {},
   });
   if (error) throw new Error(error.message);
-  await service().rpc("submit_answer", { p_user: ada.id, p_session: sessionId, p_round: 1, p_kind: "clue", p_payload: { clue: "blanket" } });
-  await service().rpc("submit_answer", { p_user: bo.id, p_session: sessionId, p_round: 1, p_kind: "answer", p_payload: { guess: 40 } });
+  await service().rpc("submit_answer", {
+    p_user: ada.id,
+    p_session: sessionId,
+    p_round: 1,
+    p_kind: "clue",
+    p_payload: { clue: "blanket" },
+  });
+  await service().rpc("submit_answer", {
+    p_user: bo.id,
+    p_session: sessionId,
+    p_round: 1,
+    p_kind: "answer",
+    p_payload: { guess: 40 },
+  });
   const { data: photos, error: photoError } = await service()
     .from("photos")
-    .insert([ada, bo].map((u) => ({ session_id: sessionId, user_id: u.id, storage_path: `sessions/${sessionId}/${u.id}.jpg`, status: "ready" })))
+    .insert(
+      [ada, bo].map((u) => ({
+        session_id: sessionId,
+        user_id: u.id,
+        storage_path: `sessions/${sessionId}/${u.id}.jpg`,
+        status: "ready",
+      })),
+    )
     .select("id, user_id");
   if (photoError) throw new Error(photoError.message);
   const photoOf = (user: TestUser) => photos.find((p) => p.user_id === user.id)!.id as string;
@@ -38,7 +63,11 @@ async function rows(sessionId: string) {
 describe("deleting a photo", () => {
   it("withdraws the submission while the round is active and returns the file to remove", async () => {
     const { bo, sessionId, boPhoto } = await sessionWithPhotos();
-    const { data: path, error } = await service().rpc("delete_photo", { p_user: bo.id, p_session: sessionId, p_photo: boPhoto });
+    const { data: path, error } = await service().rpc("delete_photo", {
+      p_user: bo.id,
+      p_session: sessionId,
+      p_photo: boPhoto,
+    });
     expect(error).toBeNull();
     expect(path).toBe(`sessions/${sessionId}/${bo.id}.jpg`);
     const after = await rows(sessionId);
@@ -48,7 +77,14 @@ describe("deleting a photo", () => {
 
   it("keeps the submission once the round is revealed", async () => {
     const { bo, sessionId, boPhoto } = await sessionWithPhotos();
-    await service().rpc("reveal_round", { p_session: sessionId, p_round: 1, p_result: { target: 42 }, p_final: true, p_early: false, p_expected_submissions: 2 });
+    await service().rpc("reveal_round", {
+      p_session: sessionId,
+      p_round: 1,
+      p_result: { target: 42 },
+      p_final: true,
+      p_early: false,
+      p_expected_submissions: 2,
+    });
     const { error } = await service().rpc("delete_photo", { p_user: bo.id, p_session: sessionId, p_photo: boPhoto });
     expect(error).toBeNull();
     const after = await rows(sessionId);

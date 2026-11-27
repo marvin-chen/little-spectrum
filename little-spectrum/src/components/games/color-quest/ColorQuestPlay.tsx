@@ -27,13 +27,17 @@ export function ColorQuestPlay({ gardenId, session, game, userId }: Props) {
     return (
       <div className="flex flex-col gap-4">
         <ColorQuestReveal session={session} game={game} userId={userId} />
-        {game.myPhoto && !game.myPhoto.removed ? <DeleteOwnPhoto gardenId={gardenId} sessionId={session.id} photoId={game.myPhoto.photoId} /> : null}
+        {game.myPhoto && !game.myPhoto.removed ? (
+          <DeleteOwnPhoto gardenId={gardenId} sessionId={session.id} photoId={game.myPhoto.photoId} />
+        ) : null}
         <PlayAgain gardenId={gardenId} sessionId={session.id} />
       </div>
     );
   }
 
-  const waiting = session.participants.filter((p) => p.userId !== userId && !game.submitted.includes(p.userId)).map((p) => nameOf(p.userId));
+  const waiting = session.participants
+    .filter((p) => p.userId !== userId && !game.submitted.includes(p.userId))
+    .map((p) => nameOf(p.userId));
 
   return (
     <div className="flex flex-col gap-4">
@@ -58,7 +62,9 @@ export function ColorQuestPlay({ gardenId, session, game, userId }: Props) {
           </div>
           {game.myPhoto.caption ? <p className="mt-2 text-callout text-ink-2">{game.myPhoto.caption}</p> : null}
           <p className="mt-4 text-callout text-ink-2">
-            {waiting.length > 0 ? `Waiting for ${joinNames(waiting)}. Photos appear together once everyone is in.` : "Everyone is in. Revealing."}
+            {waiting.length > 0
+              ? `Waiting for ${joinNames(waiting)}. Photos appear together once everyone is in.`
+              : "Everyone is in. Revealing."}
           </p>
           <DeleteOwnPhoto gardenId={gardenId} sessionId={session.id} photoId={game.myPhoto.photoId} inline />
         </Card>
@@ -94,7 +100,9 @@ function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
       const prepared = await prepareImage(chosen);
       setFile({ blob: prepared.blob, previewUrl: URL.createObjectURL(prepared.blob), name: chosen.name });
     } catch (e) {
-      setError(e instanceof UnsupportedImageError ? e.message : "We could not read that image. Try a JPEG, PNG, or WebP.");
+      setError(
+        e instanceof UnsupportedImageError ? e.message : "We could not read that image. Try a JPEG, PNG, or WebP.",
+      );
     } finally {
       setBusy(null);
     }
@@ -130,15 +138,44 @@ function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
           It stays private until everyone is in. Photos are resized on your device and location data is removed.
         </p>
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="tinted" accent="green" size="lg" icon={<Camera className="size-5" aria-hidden />} onClick={() => cameraRef.current?.click()} loading={busy === "preparing"}>
+          <Button
+            variant="tinted"
+            accent="green"
+            size="lg"
+            icon={<Camera className="size-5" aria-hidden />}
+            onClick={() => cameraRef.current?.click()}
+            loading={busy === "preparing"}
+          >
             Take a photo
           </Button>
-          <Button variant="tinted" accent="green" size="lg" icon={<Images className="size-5" aria-hidden />} onClick={() => libraryRef.current?.click()} loading={busy === "preparing"}>
+          <Button
+            variant="tinted"
+            accent="green"
+            size="lg"
+            icon={<Images className="size-5" aria-hidden />}
+            onClick={() => libraryRef.current?.click()}
+            loading={busy === "preparing"}
+          >
             Choose a photo
           </Button>
         </div>
-        <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="sr-only" aria-label="Take a photo" onChange={(e) => pick(e.currentTarget)} />
-        <input ref={libraryRef} type="file" accept="image/jpeg,image/png,image/webp,image/*" className="sr-only" aria-label="Choose a photo" onChange={(e) => pick(e.currentTarget)} />
+        <input
+          ref={cameraRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="sr-only"
+          aria-label="Take a photo"
+          onChange={(e) => pick(e.currentTarget)}
+        />
+        <input
+          ref={libraryRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/*"
+          className="sr-only"
+          aria-label="Choose a photo"
+          onChange={(e) => pick(e.currentTarget)}
+        />
         {error && !file ? (
           <p role="alert" className="mt-3 rounded-row bg-danger-soft px-4 py-2 text-footnote text-danger">
             {error}
@@ -161,7 +198,14 @@ function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
                 {error}
               </p>
             ) : null}
-            <Button size="lg" full accent="green" onClick={share} loading={busy === "uploading"} icon={<Upload className="size-4" aria-hidden />}>
+            <Button
+              size="lg"
+              full
+              accent="green"
+              onClick={share}
+              loading={busy === "uploading"}
+              icon={<Upload className="size-4" aria-hidden />}
+            >
               Share photo
             </Button>
             {finishPending ? <Button onClick={finishPending}>Finish pending action</Button> : null}
@@ -171,7 +215,11 @@ function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
         {file ? (
           <div className="flex flex-col gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={file.previewUrl} alt="Preview of your photo" className="max-h-[40dvh] w-full rounded-row bg-fill object-contain" />
+            <img
+              src={file.previewUrl}
+              alt="Preview of your photo"
+              className="max-h-[40dvh] w-full rounded-row bg-fill object-contain"
+            />
             <label className="block">
               <span className="mb-1 block text-footnote font-semibold text-ink-2">Caption (optional)</span>
               <textarea
@@ -193,19 +241,44 @@ function UploadCard({ sessionId }: { gardenId: string; sessionId: string }) {
   );
 }
 
-function DeleteOwnPhoto({ gardenId, sessionId, photoId, inline }: { gardenId: string; sessionId: string; photoId: string; inline?: boolean }) {
+function DeleteOwnPhoto({
+  gardenId,
+  sessionId,
+  photoId,
+  inline,
+}: {
+  gardenId: string;
+  sessionId: string;
+  photoId: string;
+  inline?: boolean;
+}) {
   const { deletePhotoAction, finishPending, initialError } = useGameActions();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();
   const button = (
-    <Button variant={inline ? "plain" : "danger"} size={inline ? "sm" : "md"} icon={<Trash2 className="size-4" aria-hidden />} onClick={() => setOpen(true)} className={cn("h-auto! min-h-11 max-w-full whitespace-normal! py-3", inline && "mt-3 -ml-3 text-danger")}>
+    <Button
+      variant={inline ? "plain" : "danger"}
+      size={inline ? "sm" : "md"}
+      icon={<Trash2 className="size-4" aria-hidden />}
+      onClick={() => setOpen(true)}
+      className={cn("h-auto! min-h-11 max-w-full whitespace-normal! py-3", inline && "mt-3 -ml-3 text-danger")}
+    >
       Delete my photo
     </Button>
   );
   return (
     <>
-      {inline ? button : <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-footnote text-ink-2">You can remove your photo at any time. The round keeps a note that it was removed.</p><span className="min-w-0 max-w-full">{button}</span></Card>}
+      {inline ? (
+        button
+      ) : (
+        <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-footnote text-ink-2">
+            You can remove your photo at any time. The round keeps a note that it was removed.
+          </p>
+          <span className="min-w-0 max-w-full">{button}</span>
+        </Card>
+      )}
       <Sheet
         open={open}
         onClose={() => setOpen(false)}
@@ -240,7 +313,9 @@ function DeleteOwnPhoto({ gardenId, sessionId, photoId, inline }: { gardenId: st
           </div>
         }
       >
-        <p className="text-callout text-ink-2">If the round is still open you can share a different photo afterwards.</p>
+        <p className="text-callout text-ink-2">
+          If the round is still open you can share a different photo afterwards.
+        </p>
       </Sheet>
     </>
   );

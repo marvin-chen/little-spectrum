@@ -18,7 +18,8 @@ type Props = {
 const ORDINALS = ["1st", "2nd", "3rd", "4th", "5th"];
 
 export function PalettePicksReveal({ session, result, items, userId, compact = false }: Props) {
-  const nameOf = (id: string) => (id === userId ? "You" : session.participants.find((p) => p.userId === id)?.name ?? "Someone");
+  const nameOf = (id: string) =>
+    id === userId ? "You" : (session.participants.find((p) => p.userId === id)?.name ?? "Someone");
   const avatarOf = (id: string) => session.participants.find((p) => p.userId === id)?.avatar ?? "sun:amber";
   const favorites = new Set(result.sharedFavorites);
   const splits = new Set(result.biggestDisagreements);
@@ -31,13 +32,20 @@ export function PalettePicksReveal({ session, result, items, userId, compact = f
         <div className="flex items-baseline justify-between gap-3">
           <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Overall similarity</p>
           {result.overallSimilarity !== null ? (
-            <p className={cn("font-display font-bold text-amber-ink tabular-nums", compact ? "text-title-2" : "text-title-1")}>
+            <p
+              className={cn(
+                "font-display font-bold text-amber-ink tabular-nums",
+                compact ? "text-title-2" : "text-title-1",
+              )}
+            >
               <CountUp value={result.overallSimilarity} />
             </p>
           ) : null}
         </div>
         {result.overallSimilarity === null ? (
-          <p className="mt-1 text-callout text-ink-2">Not enough rankings to compare. One is a taste, two is a conversation.</p>
+          <p className="mt-1 text-callout text-ink-2">
+            Not enough rankings to compare. One is a taste, two is a conversation.
+          </p>
         ) : null}
         {showPairs ? (
           <div className={cn("border-t border-line", compact ? "mt-3 pt-3" : "mt-4 pt-4")}>
@@ -91,7 +99,9 @@ export function PalettePicksReveal({ session, result, items, userId, compact = f
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="sr-only">{ORDINALS[position]}</span>
                     <span className="text-body font-semibold">{items[item]}</span>
-                    {stats ? <span className="text-footnote text-ink-3 tabular-nums">avg {stats.averageRank.toFixed(1)}</span> : null}
+                    {stats ? (
+                      <span className="text-footnote text-ink-3 tabular-nums">avg {stats.averageRank.toFixed(1)}</span>
+                    ) : null}
                     {favorites.has(item) ? <Badge tone="amber">Shared favorite</Badge> : null}
                     {splits.has(item) ? <Badge>Biggest split</Badge> : null}
                   </div>

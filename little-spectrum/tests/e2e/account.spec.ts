@@ -5,10 +5,15 @@ const MAIL_API = process.env.MAILPIT_URL ?? "http://127.0.0.1:54324";
 
 async function latestLinkFor(email: string): Promise<string> {
   for (let attempt = 0; attempt < 20; attempt += 1) {
-    const list = (await (await fetch(`${MAIL_API}/api/v1/messages?limit=20`)).json()) as { messages: Array<{ ID: string; To: Array<{ Address: string }> }> };
+    const list = (await (await fetch(`${MAIL_API}/api/v1/messages?limit=20`)).json()) as {
+      messages: Array<{ ID: string; To: Array<{ Address: string }> }>;
+    };
     const match = list.messages.find((m) => m.To.some((t) => t.Address.toLowerCase() === email));
     if (match) {
-      const message = (await (await fetch(`${MAIL_API}/api/v1/message/${match.ID}`)).json()) as { HTML: string; Text: string };
+      const message = (await (await fetch(`${MAIL_API}/api/v1/message/${match.ID}`)).json()) as {
+        HTML: string;
+        Text: string;
+      };
       const body = `${message.HTML}\n${message.Text}`;
       const link = body.match(/https?:\/\/[^\s"'<>]+auth\/v1\/verify[^\s"'<>]*type=magiclink[^\s"'<>]*/)?.[0];
       if (link) return link.replace(/&amp;/g, "&");

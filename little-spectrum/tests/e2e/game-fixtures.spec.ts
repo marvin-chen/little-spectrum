@@ -4,12 +4,18 @@ import sharp from "sharp";
 
 test("clue-giver errors retry locally and completed games restart in the fixture route", async ({ page }) => {
   const writes: string[] = [];
-  page.on("request", (r) => { if (!["GET", "HEAD"].includes(r.method())) writes.push(r.url()); });
+  page.on("request", (r) => {
+    if (!["GET", "HEAD"].includes(r.method())) writes.push(r.url());
+  });
   await page.goto("/styleguide/games?game=hue-knew&scenario=error&players=2");
-  await expect(page.getByRole("region", { name: "Play preview" }).getByRole("alert")).toContainText("Simulated request failed");
+  await expect(page.getByRole("region", { name: "Play preview" }).getByRole("alert")).toContainText(
+    "Simulated request failed",
+  );
   await page.getByPlaceholder("Your clue").fill("Warm breeze");
   await page.getByRole("button", { name: "Send clue", exact: true }).click();
-  await expect(page.getByRole("region", { name: "Play preview" }).getByText("Warm breeze", { exact: false })).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Play preview" }).getByText("Warm breeze", { exact: false }),
+  ).toBeVisible();
   await page.goto("/styleguide/games?game=true-colors&scenario=revealed&players=2");
   await page.getByRole("button", { name: "Play another question", exact: true }).click();
   await expect(page).toHaveURL(/scenario=initial/);
@@ -20,7 +26,9 @@ test("clue-giver errors retry locally and completed games restart in the fixture
 for (const game of ["hue-knew", "hue-clue", "true-colors", "same-wavelength", "palette-picks", "color-quest"]) {
   test(`${game} preview holds, fails, and retries real controls without writes`, async ({ page }) => {
     const writes: string[] = [];
-    page.on("request", (request) => { if (!["GET", "HEAD"].includes(request.method())) writes.push(request.url()); });
+    page.on("request", (request) => {
+      if (!["GET", "HEAD"].includes(request.method())) writes.push(request.url());
+    });
     await page.goto(`/styleguide/games?game=${game}&scenario=answering&players=8&viewer=last`);
     if (game === "palette-picks") await expect.poll(() => page.getByRole("status").count()).toBeGreaterThan(1);
     await page.getByLabel("Fail next action", { exact: true }).check();
@@ -40,11 +48,18 @@ for (const game of ["hue-knew", "hue-clue", "true-colors", "same-wavelength", "p
     } else if (game === "hue-knew") {
       action = play.getByRole("button", { name: /^Lock in \d+$/ });
     } else if (game === "palette-picks") {
-      await play.getByRole("button", { name: /Move .* down/ }).first().click();
+      await play
+        .getByRole("button", { name: /Move .* down/ })
+        .first()
+        .click();
       action = play.getByRole("button", { name: "Confirm ranking", exact: true });
     } else {
-      const buffer = await sharp({ create: { width: 40, height: 30, channels: 3, background: "#b1d5b6" } }).png().toBuffer();
-      await play.getByLabel("Choose a photo", { exact: true }).setInputFiles({ name: "fixture.png", mimeType: "image/png", buffer });
+      const buffer = await sharp({ create: { width: 40, height: 30, channels: 3, background: "#b1d5b6" } })
+        .png()
+        .toBuffer();
+      await play
+        .getByLabel("Choose a photo", { exact: true })
+        .setInputFiles({ name: "fixture.png", mimeType: "image/png", buffer });
       await page.getByPlaceholder("A few words about it").fill("Local only");
       action = page.getByRole("button", { name: "Share photo", exact: true });
     }
@@ -52,14 +67,17 @@ for (const game of ["hue-knew", "hue-clue", "true-colors", "same-wavelength", "p
     await expect(action).toBeDisabled();
     await shot(page, `interactive-${game}-pending`);
     const dialog = page.getByRole("dialog");
-    if (game === "color-quest") await dialog.getByRole("button", { name: "Finish pending action", exact: true }).click();
+    if (game === "color-quest")
+      await dialog.getByRole("button", { name: "Finish pending action", exact: true }).click();
     else await page.getByRole("button", { name: "Finish pending action", exact: true }).click();
     await expect(page.getByRole("alert").filter({ hasText: "Simulated request failed" })).toBeVisible();
     await shot(page, `interactive-${game}-error`);
     if (game === "same-wavelength") await expect(play.getByRole("textbox")).toHaveValue("Moon");
     if (game === "color-quest") await expect(page.getByPlaceholder("A few words about it")).toHaveValue("Local only");
     await action.click();
-    await expect(page.getByRole("status", { name: "Preview action status", exact: true })).toContainText("Your preview submission is in");
+    await expect(page.getByRole("status", { name: "Preview action status", exact: true })).toContainText(
+      "Your preview submission is in",
+    );
     await page.getByText("Viewer-safe fixture data", { exact: true }).click();
     const data = JSON.parse((await page.getByTestId("fixture-data").textContent())!);
     expect(data.turn.needsYou).toBe(false);
@@ -103,7 +121,10 @@ for (const appearance of ["light", "dark"] as const) {
       await shot(page, `game-fixture-${i}-${appearance}`);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     }
-    await page.getByRole("navigation", { name: "Fixture state" }).getByRole("link", { name: "initial", exact: true }).click();
+    await page
+      .getByRole("navigation", { name: "Fixture state" })
+      .getByRole("link", { name: "initial", exact: true })
+      .click();
     await expect(page.getByRole("region", { name: "Reveal preview" })).toHaveCount(0);
     await page.getByRole("link", { name: "Switch viewer" }).click();
     await expect(page.getByText(/Viewing as Harper/)).toBeVisible();
@@ -111,7 +132,10 @@ for (const appearance of ["light", "dark"] as const) {
     const active = JSON.parse((await page.getByTestId("fixture-data").textContent())!);
     expect(active.view.myPhoto).toBeNull();
     expect(active.view.gallery).toBeNull();
-    await page.getByRole("navigation", { name: "Fixture state" }).getByRole("link", { name: "early", exact: true }).click();
+    await page
+      .getByRole("navigation", { name: "Fixture state" })
+      .getByRole("link", { name: "early", exact: true })
+      .click();
     await expect(page.getByRole("region", { name: "Reveal preview" })).toBeVisible();
     await expect(page.getByText("Didn't play this round", { exact: true })).toHaveCount(6);
     await page.getByRole("link", { name: "2 players", exact: true }).click();
@@ -120,7 +144,6 @@ for (const appearance of ["light", "dark"] as const) {
     expect(writes).toEqual([]);
   });
 }
-
 
 test("Palette Picks keeps server-rendered drag instructions and keyboard sorting accessible", async ({ page }) => {
   const hydrationErrors: string[] = [];
@@ -145,7 +168,9 @@ test("Palette Picks keeps server-rendered drag instructions and keyboard sorting
     await page.keyboard.press("Space");
     await expect(ranking.getByRole("listitem").nth(1)).toContainText("Flight");
     await expect(handle).toBeFocused();
-    await expect(page.getByRole("status", { name: "Preview action status", exact: true })).toContainText("Your ranking is needed");
+    await expect(page.getByRole("status", { name: "Preview action status", exact: true })).toContainText(
+      "Your ranking is needed",
+    );
   }
   expect(hydrationErrors).toEqual([]);
 });

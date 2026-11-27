@@ -11,14 +11,20 @@ export type SignInState = { sent?: string; error?: string };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function requestMagicLink(_prev: SignInState, formData: FormData): Promise<SignInState> {
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
   const next = safeNextPath(formData.get("next"), "/");
   if (!EMAIL_RE.test(email)) return { error: "That does not look like an email address." };
-  if (!throttle(`magic:${email}`, 4, 15 * 60 * 1000)) return { error: "A few links were sent already. Check your inbox or wait a bit." };
+  if (!throttle(`magic:${email}`, 4, 15 * 60 * 1000))
+    return { error: "A few links were sent already. Check your inbox or wait a bit." };
   const supabase = await createUserClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    options: { shouldCreateUser: false, emailRedirectTo: `${getSiteUrl()}/auth/callback?next=${encodeURIComponent(next)}` },
+    options: {
+      shouldCreateUser: false,
+      emailRedirectTo: `${getSiteUrl()}/auth/callback?next=${encodeURIComponent(next)}`,
+    },
   });
   if (error) {
     const text = error.message.toLowerCase();
@@ -34,7 +40,9 @@ export async function requestMagicLink(_prev: SignInState, formData: FormData): 
 }
 
 export async function verifyCode(_prev: SignInState, formData: FormData): Promise<SignInState> {
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
   const token = String(formData.get("code") ?? "").replace(/\s+/g, "");
   const next = safeNextPath(formData.get("next"), "/");
   if (!/^\d{6,8}$/.test(token)) return { sent: email, error: "Enter the code from the email." };

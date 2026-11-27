@@ -23,7 +23,7 @@ export function ProductionGameActions({ children }: { children: ReactNode }) {
     },
     async uploadPhoto(form) {
       const response = await fetch("/api/photos", { method: "POST", body: form });
-      const body = await response.json().catch(() => ({})) as { error?: string };
+      const body = (await response.json().catch(() => ({}))) as { error?: string };
       if (!response.ok) return { error: body.error ?? "Upload failed. Please try again." };
       toast.success("Photo shared");
       router.refresh();

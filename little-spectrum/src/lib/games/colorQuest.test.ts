@@ -28,9 +28,36 @@ function state(overrides: Partial<SessionState> = {}): SessionState {
     submissions: [],
     secret: null,
     photos: [
-      { id: "p1", userId: "a", storagePath: "sessions/s1/a-p1.jpg", caption: null, width: 1200, height: 900, status: "ready", createdAt: "" },
-      { id: "p2", userId: "b", storagePath: "sessions/s1/b-p2.jpg", caption: null, width: 900, height: 1200, status: "ready", createdAt: "" },
-      { id: "p3", userId: "b", storagePath: "sessions/s1/b-p3.jpg", caption: null, width: 1, height: 1, status: "pending", createdAt: "" },
+      {
+        id: "p1",
+        userId: "a",
+        storagePath: "sessions/s1/a-p1.jpg",
+        caption: null,
+        width: 1200,
+        height: 900,
+        status: "ready",
+        createdAt: "",
+      },
+      {
+        id: "p2",
+        userId: "b",
+        storagePath: "sessions/s1/b-p2.jpg",
+        caption: null,
+        width: 900,
+        height: 1200,
+        status: "ready",
+        createdAt: "",
+      },
+      {
+        id: "p3",
+        userId: "b",
+        storagePath: "sessions/s1/b-p3.jpg",
+        caption: null,
+        width: 1,
+        height: 1,
+        status: "pending",
+        createdAt: "",
+      },
     ],
     ...overrides,
   };
@@ -56,14 +83,19 @@ describe("colorQuest engine", () => {
         { userId: "b", round: 1, kind: "answer", payload: { photoId: "p2", caption: "hi" }, createdAt: "" },
       ],
     });
-    const before = (await colorQuest.hydrateView!(s, "a", colorQuest.view(s, "a"))) as { myPhoto: { url: string }; gallery: unknown };
+    const before = (await colorQuest.hydrateView!(s, "a", colorQuest.view(s, "a"))) as {
+      myPhoto: { url: string };
+      gallery: unknown;
+    };
     expect(before.myPhoto.url).toBe("https://signed/sessions/s1/a-p1.jpg");
     expect(before.gallery).toBeNull();
     expect(JSON.stringify(before)).not.toContain("b-p2");
 
     const outcome = colorQuest.computeReveal(s, false);
     const revealed = state({ ...s, status: "revealed", result: outcome.result });
-    const after = (await colorQuest.hydrateView!(revealed, "a", colorQuest.view(revealed, "a"))) as { gallery: Array<{ url: string | null; removed: boolean }> };
+    const after = (await colorQuest.hydrateView!(revealed, "a", colorQuest.view(revealed, "a"))) as {
+      gallery: Array<{ url: string | null; removed: boolean }>;
+    };
     expect(after.gallery).toHaveLength(2);
     expect(after.gallery[1].url).toBe("https://signed/sessions/s1/b-p2.jpg");
   });

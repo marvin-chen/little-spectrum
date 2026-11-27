@@ -30,7 +30,8 @@ export async function POST(request: Request) {
   if (!state || !isParticipant(state, user.id) || state.game !== "color-quest") {
     return NextResponse.json({ error: "This game is not yours to play." }, { status: 403 });
   }
-  if (state.status !== "active") return NextResponse.json({ error: "This round is already revealed." }, { status: 409 });
+  if (state.status !== "active")
+    return NextResponse.json({ error: "This round is already revealed." }, { status: 409 });
   if (state.submissions.some((s) => s.userId === user.id)) {
     return NextResponse.json({ error: "Your photo is already in." }, { status: 409 });
   }

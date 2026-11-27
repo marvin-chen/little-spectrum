@@ -7,8 +7,22 @@ const PALETTES = [
   { leaf: "#8bd1a0", leafDark: "#5fb37c", berry: "#ff7a59", berryDark: "#e0603f" },
 ];
 
-const BLOBS = [[50, 92, 20], [33, 100, 12], [67, 100, 12], [40, 84, 12], [60, 84, 12]];
-const BERRIES = [[40, 90], [58, 82], [50, 100], [34, 103], [67, 97], [62, 106], [46, 78]];
+const BLOBS = [
+  [50, 92, 20],
+  [33, 100, 12],
+  [67, 100, 12],
+  [40, 84, 12],
+  [60, 84, 12],
+];
+const BERRIES = [
+  [40, 90],
+  [58, 82],
+  [50, 100],
+  [34, 103],
+  [67, 97],
+  [62, 106],
+  [46, 78],
+];
 
 export function BerryBush({ variant = 0, className, title }: GardenItemProps) {
   const titleId = useId();

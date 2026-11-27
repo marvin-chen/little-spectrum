@@ -27,7 +27,13 @@ export function Butterfly({ variant = 0, className, title }: GardenItemProps) {
         <circle cx="7" cy="5" r="1.2" fill={p.spot} opacity="0.7" />
         <ellipse cx="0" cy="0" rx="1.8" ry="8" fill="#1f1b2e" />
         <circle cx="0" cy="-8.5" r="2" fill="#1f1b2e" />
-        <path d="M-1 -10 Q-4 -15 -6 -16 M1 -10 Q4 -15 6 -16" stroke="#1f1b2e" strokeWidth="1" strokeLinecap="round" fill="none" />
+        <path
+          d="M-1 -10 Q-4 -15 -6 -16 M1 -10 Q4 -15 6 -16"
+          stroke="#1f1b2e"
+          strokeWidth="1"
+          strokeLinecap="round"
+          fill="none"
+        />
         <circle cx="-6" cy="-16" r="0.9" fill="#1f1b2e" />
         <circle cx="6" cy="-16" r="0.9" fill="#1f1b2e" />
       </g>

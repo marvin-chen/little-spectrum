@@ -130,7 +130,8 @@ export const getGardenContext = cache(async (gardenId: string, userId: string): 
     })),
     inviteToken: (invitation?.token as string | undefined) ?? null,
     inviteCard: parseInviteCard((garden as unknown as { invite_card?: unknown }).invite_card),
-    inviteCardUpdatedAt: (garden as unknown as { invite_card_updated_at?: string }).invite_card_updated_at ?? garden.created_at,
+    inviteCardUpdatedAt:
+      (garden as unknown as { invite_card_updated_at?: string }).invite_card_updated_at ?? garden.created_at,
   };
 });
 
@@ -188,8 +189,16 @@ export async function getInviteInfo(token: string): Promise<InviteInfo> {
     .maybeSingle();
   if (!invitation || invitation.revoked_at) return { status: "invalid" };
   const [{ data: garden }, { data: memberships }] = await Promise.all([
-    db.from("gardens").select("id, name, theme, capacity, timezone, created_by, invite_card, invite_card_updated_at").eq("id", invitation.garden_id).single(),
-    db.from("memberships").select("user_id").eq("garden_id", invitation.garden_id).order("joined_at", { ascending: true }),
+    db
+      .from("gardens")
+      .select("id, name, theme, capacity, timezone, created_by, invite_card, invite_card_updated_at")
+      .eq("id", invitation.garden_id)
+      .single(),
+    db
+      .from("memberships")
+      .select("user_id")
+      .eq("garden_id", invitation.garden_id)
+      .order("joined_at", { ascending: true }),
   ]);
   if (!garden) return { status: "invalid" };
   const ids = (memberships ?? []).map((m) => m.user_id as string);
@@ -203,7 +212,11 @@ export async function getInviteInfo(token: string): Promise<InviteInfo> {
     theme: garden.theme,
     capacity: garden.capacity,
     memberCount: ids.length,
-    members: ids.map((id) => ({ id, name: byId.get(id)?.display_name ?? "Friend", avatar: byId.get(id)?.avatar ?? "sun:amber" })),
+    members: ids.map((id) => ({
+      id,
+      name: byId.get(id)?.display_name ?? "Friend",
+      avatar: byId.get(id)?.avatar ?? "sun:amber",
+    })),
     creatorName: byId.get(garden.created_by as string)?.display_name ?? "A friend",
     timezone: garden.timezone as string,
     card: parseInviteCard(garden.invite_card),
@@ -237,7 +250,13 @@ export async function updateProfile(userId: string, displayName: string, avatar:
 
 // The creator row and the update are one statement, so a non-creator changes nothing.
 async function updateAsCreator(userId: string, gardenId: string, patch: Record<string, unknown>): Promise<void> {
-  const { data, error } = await createServiceClient().from("gardens").update(patch).eq("id", gardenId).eq("created_by", userId).select("id").maybeSingle();
+  const { data, error } = await createServiceClient()
+    .from("gardens")
+    .update(patch)
+    .eq("id", gardenId)
+    .eq("created_by", userId)
+    .select("id")
+    .maybeSingle();
   if (error) throw new Error(error.message);
   if (!data) throw new Error("not_creator");
 }

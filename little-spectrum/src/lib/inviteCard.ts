@@ -41,9 +41,16 @@ function cleanLine(value: unknown, max: number, fallback: string): string {
 // Accepts anything stored or submitted and returns a safe card.
 export function parseInviteCard(input: unknown): InviteCard {
   const raw = (typeof input === "object" && input !== null ? input : {}) as Record<string, unknown>;
-  const layout = (INVITE_LAYOUTS as readonly string[]).includes(String(raw.layout)) ? (raw.layout as InviteLayout) : DEFAULT_INVITE_CARD.layout;
-  const sticker = raw.sticker === "none" || (GAME_KEYS as string[]).includes(String(raw.sticker)) ? (raw.sticker as InviteSticker) : "none";
-  const accent = (ACCENTS as readonly string[]).includes(String(raw.accent)) ? (raw.accent as InviteCard["accent"]) : "theme";
+  const layout = (INVITE_LAYOUTS as readonly string[]).includes(String(raw.layout))
+    ? (raw.layout as InviteLayout)
+    : DEFAULT_INVITE_CARD.layout;
+  const sticker =
+    raw.sticker === "none" || (GAME_KEYS as string[]).includes(String(raw.sticker))
+      ? (raw.sticker as InviteSticker)
+      : "none";
+  const accent = (ACCENTS as readonly string[]).includes(String(raw.accent))
+    ? (raw.accent as InviteCard["accent"])
+    : "theme";
   return {
     layout,
     headline: cleanLine(raw.headline, HEADLINE_MAX, DEFAULT_INVITE_CARD.headline),

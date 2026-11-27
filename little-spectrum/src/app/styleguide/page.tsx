@@ -13,7 +13,9 @@ export default function StyleguidePage() {
         title="Style guide"
         subtitle="Shared components, interactive examples, and contributor guidance."
       />
-      <Link href="/styleguide/games" className="text-footnote underline">Explore game fixtures</Link>
+      <Link href="/styleguide/games" className="text-footnote underline">
+        Explore game fixtures
+      </Link>
       <StyleguideClient />
     </AppShell>
   );

@@ -87,7 +87,20 @@ export function buttonClasses({ variant = "prominent", size = "md", accent, full
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   ButtonStyleProps & { loading?: boolean; icon?: ReactNode };
 
-export function Button({ variant, size, accent, full, round, loading, icon, className, children, disabled, type = "button", ...rest }: ButtonProps) {
+export function Button({
+  variant,
+  size,
+  accent,
+  full,
+  round,
+  loading,
+  icon,
+  className,
+  children,
+  disabled,
+  type = "button",
+  ...rest
+}: ButtonProps) {
   return (
     <button
       type={type}
@@ -112,9 +125,28 @@ type ButtonLinkProps = ButtonStyleProps & {
   "aria-label"?: string;
 };
 
-export function ButtonLink({ href, variant, size, accent, full, round, className, children, icon, replace, prefetch, ...rest }: ButtonLinkProps) {
+export function ButtonLink({
+  href,
+  variant,
+  size,
+  accent,
+  full,
+  round,
+  className,
+  children,
+  icon,
+  replace,
+  prefetch,
+  ...rest
+}: ButtonLinkProps) {
   return (
-    <Link href={href} replace={replace} prefetch={prefetch} className={cn(buttonClasses({ variant, size, accent, full, round }), className)} {...rest}>
+    <Link
+      href={href}
+      replace={replace}
+      prefetch={prefetch}
+      className={cn(buttonClasses({ variant, size, accent, full, round }), className)}
+      {...rest}
+    >
       {icon}
       {children}
     </Link>

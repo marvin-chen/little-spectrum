@@ -2,7 +2,13 @@ import { expect, test, type Page } from "@playwright/test";
 import sharp from "sharp";
 import { createGarden, createProfile, inviteUrlFor, joinGarden, newPlayer, shot } from "./helpers";
 
-async function startGame(page: Page, gardenId: string, gameName: RegExp, expectedPeople: number, deselect: string[] = []) {
+async function startGame(
+  page: Page,
+  gardenId: string,
+  gameName: RegExp,
+  expectedPeople: number,
+  deselect: string[] = [],
+) {
   await page.goto(`/g/${gardenId}/games`);
   await page.getByRole("button", { name: gameName }).click();
   for (const name of deselect) await page.getByRole("checkbox", { name: new RegExp(`^${name}`) }).click();
@@ -11,7 +17,9 @@ async function startGame(page: Page, gardenId: string, gameName: RegExp, expecte
   return new URL(page.url()).pathname;
 }
 
-test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, and Color Quest", async ({ browser }) => {
+test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, and Color Quest", async ({
+  browser,
+}) => {
   test.setTimeout(240_000);
   const ada = await newPlayer(browser, "Ada");
   const bo = await newPlayer(browser, "Bo");
@@ -33,7 +41,11 @@ test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, 
     await expect(answers.nth(1)).toBeChecked();
     await answers.nth(1).press("ArrowUp");
     await expect(answers.first()).toBeChecked();
-    await p.page.getByRole("radiogroup", { name: /Your prediction/i }).getByRole("radio").first().click();
+    await p.page
+      .getByRole("radiogroup", { name: /Your prediction/i })
+      .getByRole("radio")
+      .first()
+      .click();
     if (p === ada) await shot(p.page, "true-colors-answer");
     await p.page.getByRole("button", { name: "Lock in both" }).click();
   }
@@ -82,7 +94,11 @@ test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, 
   url = await startGame(ada.page, gardenId, /Palette Picks/, 3);
   for (const p of [ada, bo]) {
     await p.page.goto(url);
-    if (p === bo) await p.page.getByRole("button", { name: /Move .* down/ }).first().click();
+    if (p === bo)
+      await p.page
+        .getByRole("button", { name: /Move .* down/ })
+        .first()
+        .click();
     if (p === ada) await shot(p.page, "palette-picks-rank");
     await p.page.getByRole("button", { name: "Confirm ranking" }).click();
   }
@@ -96,13 +112,26 @@ test("three friends play True Colors, Hue Clue, Same Wavelength, Palette Picks, 
 
   // Color Quest with Ada and Cy.
   url = await startGame(cy.page, gardenId, /Color Quest/, 2, ["Bo"]);
-  const jpeg = await sharp({ create: { width: 2400, height: 1600, channels: 3, background: { r: 79, g: 179, b: 122 } } }).jpeg().toBuffer();
-  const png = await sharp({ create: { width: 800, height: 1200, channels: 3, background: { r: 242, g: 169, b: 59 } } }).png().toBuffer();
+  const jpeg = await sharp({
+    create: { width: 2400, height: 1600, channels: 3, background: { r: 79, g: 179, b: 122 } },
+  })
+    .jpeg()
+    .toBuffer();
+  const png = await sharp({ create: { width: 800, height: 1200, channels: 3, background: { r: 242, g: 169, b: 59 } } })
+    .png()
+    .toBuffer();
   // A text file is refused with a useful message before anything is uploaded.
   await cy.page.goto(url);
-  await cy.page.getByLabel("Choose a photo").setInputFiles({ name: "notes.txt", mimeType: "text/plain", buffer: Buffer.from("not an image") });
-  await expect(cy.page.getByRole("alert").filter({ hasText: /image/ }).first()).toContainText(/could not read that image|JPEG, PNG, or WebP/);
-  for (const [p, buffer, mime] of [[cy, jpeg, "image/jpeg"], [ada, png, "image/png"]] as const) {
+  await cy.page
+    .getByLabel("Choose a photo")
+    .setInputFiles({ name: "notes.txt", mimeType: "text/plain", buffer: Buffer.from("not an image") });
+  await expect(cy.page.getByRole("alert").filter({ hasText: /image/ }).first()).toContainText(
+    /could not read that image|JPEG, PNG, or WebP/,
+  );
+  for (const [p, buffer, mime] of [
+    [cy, jpeg, "image/jpeg"],
+    [ada, png, "image/png"],
+  ] as const) {
     await p.page.goto(url);
     await p.page.getByLabel("Choose a photo").setInputFiles({ name: "test.img", mimeType: mime, buffer });
     await expect(p.page.getByText("Ready to share?")).toBeVisible();

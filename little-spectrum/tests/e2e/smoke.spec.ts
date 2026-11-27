@@ -6,7 +6,8 @@ function watchErrors(page: Page): string[] {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
   page.on("console", (m) => {
-    if (m.type() === "error" && !/favicon|Download the React DevTools/i.test(m.text())) errors.push(`console: ${m.text()}`);
+    if (m.type() === "error" && !/favicon|Download the React DevTools/i.test(m.text()))
+      errors.push(`console: ${m.text()}`);
   });
   return errors;
 }
@@ -37,7 +38,9 @@ test("main navigation, catalog, garden, memories, and settings work without erro
   await last.click({ timeout: 5_000 });
   await expect(page.getByRole("dialog")).toBeVisible();
   // The dialog traps focus and closes with Escape.
-  await expect(page.getByRole("dialog").getByRole("button", { name: /Invite a friend first|Start with/ })).toBeVisible();
+  await expect(
+    page.getByRole("dialog").getByRole("button", { name: /Invite a friend first|Start with/ }),
+  ).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toBeHidden();
 

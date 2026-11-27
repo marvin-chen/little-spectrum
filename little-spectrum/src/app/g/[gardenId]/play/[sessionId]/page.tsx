@@ -24,10 +24,11 @@ export default async function PlayPage({ params }: { params: Promise<{ gardenId:
   const view = await getSessionView(sessionId, user.id);
   if (!view || view.gardenId !== gardenId) notFound();
 
-
   return (
     <SessionFrame gardenId={gardenId} session={view}>
-      <ProductionGameActions><GamePlay session={view} userId={user.id} live /></ProductionGameActions>
+      <ProductionGameActions>
+        <GamePlay session={view} userId={user.id} live />
+      </ProductionGameActions>
     </SessionFrame>
   );
 }

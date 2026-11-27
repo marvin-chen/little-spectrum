@@ -96,7 +96,13 @@ export function TabBar({ base, action, hidden }: { base: string; action?: TabAct
                   isActive ? "text-ink" : "text-ink-2",
                 )}
               >
-                <Icon active={isActive} className={cn("transition-transform duration-200 ease-[var(--ease-out-soft)] text-[22px]", compact && "scale-90")} />
+                <Icon
+                  active={isActive}
+                  className={cn(
+                    "transition-transform duration-200 ease-[var(--ease-out-soft)] text-[22px]",
+                    compact && "scale-90",
+                  )}
+                />
                 {!compact ? <span className="leading-none">{label}</span> : <span className="sr-only">{label}</span>}
               </Link>
             </li>
@@ -141,7 +147,10 @@ export function SideNav({ base }: { base: string }) {
               <Link
                 href={href}
                 aria-current={isActive ? "page" : undefined}
-                className={cn("pressable relative z-10 flex h-11 items-center gap-3 rounded-row px-3 text-callout font-semibold", isActive ? "text-ink" : "text-ink-2 hover:bg-fill")}
+                className={cn(
+                  "pressable relative z-10 flex h-11 items-center gap-3 rounded-row px-3 text-callout font-semibold",
+                  isActive ? "text-ink" : "text-ink-2 hover:bg-fill",
+                )}
               >
                 <Icon active={isActive} className="text-[20px]" />
                 <span>{label}</span>

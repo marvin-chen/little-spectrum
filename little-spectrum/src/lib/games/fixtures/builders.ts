@@ -8,17 +8,30 @@ const NAMES = ["Ada", "Bo", "Cy", "Dee", "Eli", "Fern", "Gus", "Harper with a lo
 /** Synthetic server/test state. Never pass this object to a client component. */
 export function createFixture(engine: GameEngine, players: 2 | 3 | 8 = 3): SessionState {
   const participants = NAMES.slice(0, players).map((name, i) => ({
-    userId: `fixture-player-${i + 1}`, name, avatar: "sun:amber", predictsUserId: null as string | null,
+    userId: `fixture-player-${i + 1}`,
+    name,
+    avatar: "sun:amber",
+    predictsUserId: null as string | null,
   }));
   const pick = engine.pickPrompt([], participants, () => 0.37);
   for (const p of participants) p.predictsUserId = pick.predictions?.[p.userId] ?? null;
   return {
-    id: `fixture-${engine.key}`, gardenId: "fixture-garden", game: engine.key,
-    status: "active", createdBy: participants[0].userId,
+    id: `fixture-${engine.key}`,
+    gardenId: "fixture-garden",
+    game: engine.key,
+    status: "active",
+    createdBy: participants[0].userId,
     clueGiverId: GAMES[engine.key].kind === "clue" ? participants[0].userId : null,
-    prompt: structuredClone(pick.prompt), secret: structuredClone(pick.secret),
-    round: 1, result: null, earlyReveal: false, createdAt: FIXTURE_TIME, revealedAt: null,
-    participants, submissions: [], photos: [],
+    prompt: structuredClone(pick.prompt),
+    secret: structuredClone(pick.secret),
+    round: 1,
+    result: null,
+    earlyReveal: false,
+    createdAt: FIXTURE_TIME,
+    revealedAt: null,
+    participants,
+    submissions: [],
+    photos: [],
   };
 }
 
@@ -33,7 +46,13 @@ export function submitFixture(engine: GameEngine, state: SessionState, userId: s
   if (next.submissions.some((s) => s.userId === userId && s.round === next.round && s.kind === result.kind)) {
     throw new Error("Fixture submission is already locked in.");
   }
-  next.submissions.push({ userId, round: next.round, kind: result.kind, payload: result.payload, createdAt: FIXTURE_TIME });
+  next.submissions.push({
+    userId,
+    round: next.round,
+    kind: result.kind,
+    payload: result.payload,
+    createdAt: FIXTURE_TIME,
+  });
   return next;
 }
 

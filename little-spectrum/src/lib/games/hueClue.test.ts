@@ -62,9 +62,15 @@ describe("hueClue engine", () => {
   });
 
   it("validates guesses as grid cells after the clue", () => {
-    const s = state({ submissions: [{ userId: "a", round: 1, kind: "clue", payload: { clue: "lemon" }, createdAt: "" }] });
+    const s = state({
+      submissions: [{ userId: "a", round: 1, kind: "clue", payload: { clue: "lemon" }, createdAt: "" }],
+    });
     expect(hueClue.validateSubmission(s, "b", { col: 12, row: 0 }).ok).toBe(false);
-    expect(hueClue.validateSubmission(s, "b", { col: 5, row: 2 })).toEqual({ ok: true, kind: "answer", payload: { col: 5, row: 2 } });
+    expect(hueClue.validateSubmission(s, "b", { col: 5, row: 2 })).toEqual({
+      ok: true,
+      kind: "answer",
+      payload: { col: 5, row: 2 },
+    });
     expect(hueClue.validateSubmission(state(), "b", { col: 5, row: 2 }).ok).toBe(false);
   });
 
@@ -89,7 +95,9 @@ describe("hueClue engine", () => {
 
   it("describes turns", () => {
     expect(hueClue.turnStatus(state(), "b")).toEqual({ needsYou: false, line: "Waiting for Ada's clue." });
-    const s = state({ submissions: [{ userId: "a", round: 1, kind: "clue", payload: { clue: "lemon" }, createdAt: "" }] });
+    const s = state({
+      submissions: [{ userId: "a", round: 1, kind: "clue", payload: { clue: "lemon" }, createdAt: "" }],
+    });
     expect(hueClue.turnStatus(s, "b")).toEqual({ needsYou: true, line: "Your clue is ready." });
     expect(hueClue.turnStatus(s, "a")).toEqual({ needsYou: false, line: "Waiting for Bo and Cy." });
   });

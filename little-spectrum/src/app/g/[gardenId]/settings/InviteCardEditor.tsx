@@ -21,17 +21,14 @@ type Props = { gardenId: string; data: InviteCardData; isCreator: boolean; previ
 export function InviteCardEditor({ gardenId, data, isCreator, previewImageUrl }: Props) {
   const [open, setOpen] = useState(false);
   const [card, setCard] = useState<InviteCard>(data.card);
-  const [state, action, pending] = useActionState<InviteCardState, FormData>(
-    async (prev, formData) => {
-      const next = await saveInviteCardAction(gardenId, prev, formData);
-      if (next.saved) {
-        setOpen(false);
-        toast.success("Invite card saved");
-      }
-      return next;
-    },
-    {},
-  );
+  const [state, action, pending] = useActionState<InviteCardState, FormData>(async (prev, formData) => {
+    const next = await saveInviteCardAction(gardenId, prev, formData);
+    if (next.saved) {
+      setOpen(false);
+      toast.success("Invite card saved");
+    }
+    return next;
+  }, {});
   const preview: InviteCardData = { ...data, card };
   const update = (patch: Partial<InviteCard>) => setCard((prev) => ({ ...prev, ...patch }));
 
@@ -45,12 +42,19 @@ export function InviteCardEditor({ gardenId, data, isCreator, previewImageUrl }:
           </Button>
         ) : null}
         {previewImageUrl ? (
-          <ButtonLink href={previewImageUrl} variant="glass" icon={<Download className="size-4" aria-hidden />} prefetch={false}>
+          <ButtonLink
+            href={previewImageUrl}
+            variant="glass"
+            icon={<Download className="size-4" aria-hidden />}
+            prefetch={false}
+          >
             Save as image
           </ButtonLink>
         ) : null}
       </div>
-      <p className="px-1 text-footnote text-ink-3">This card is what friends see when the link is shared in a chat, and what they land on when they tap it.</p>
+      <p className="px-1 text-footnote text-ink-3">
+        This card is what friends see when the link is shared in a chat, and what they land on when they tap it.
+      </p>
 
       <Sheet
         open={open}
@@ -92,10 +96,21 @@ export function InviteCardEditor({ gardenId, data, isCreator, previewImageUrl }:
           />
 
           <Field label="Headline" hint={`${card.headline.length}/${HEADLINE_MAX}`}>
-            <TextInput value={card.headline} maxLength={HEADLINE_MAX} onChange={(e) => update({ headline: e.target.value })} placeholder="Come grow a garden with me" />
+            <TextInput
+              value={card.headline}
+              maxLength={HEADLINE_MAX}
+              onChange={(e) => update({ headline: e.target.value })}
+              placeholder="Come grow a garden with me"
+            />
           </Field>
           <Field label="A note from you" hint={`${card.note.length}/${NOTE_MAX}. Leave empty to skip.`}>
-            <TextArea value={card.note} maxLength={NOTE_MAX} rows={2} onChange={(e) => update({ note: e.target.value })} placeholder="Short games, a few times a week." />
+            <TextArea
+              value={card.note}
+              maxLength={NOTE_MAX}
+              rows={2}
+              onChange={(e) => update({ note: e.target.value })}
+              placeholder="Short games, a few times a week."
+            />
           </Field>
 
           <fieldset>
@@ -110,7 +125,10 @@ export function InviteCardEditor({ gardenId, data, isCreator, previewImageUrl }:
                   type="button"
                   aria-pressed={Boolean(on)}
                   onClick={() => update({ [key as "showGarden" | "showMembers"]: !on })}
-                  className={cn("pressable h-10 rounded-capsule px-4 text-footnote font-semibold", on ? "bg-ink text-canvas" : "glass text-ink-2")}
+                  className={cn(
+                    "pressable h-10 rounded-capsule px-4 text-footnote font-semibold",
+                    on ? "bg-ink text-canvas" : "glass text-ink-2",
+                  )}
                 >
                   {label}
                 </button>
@@ -121,11 +139,28 @@ export function InviteCardEditor({ gardenId, data, isCreator, previewImageUrl }:
           <fieldset>
             <legend className="mb-2 px-1 text-footnote font-semibold text-ink-2">Sticker</legend>
             <div role="radiogroup" aria-label="Sticker" className="flex flex-wrap gap-2">
-              <button type="button" role="radio" aria-checked={card.sticker === "none"} onClick={() => update({ sticker: "none" })} className={cn("pressable flex h-12 items-center rounded-control px-3 text-footnote font-semibold", card.sticker === "none" ? "bg-ink text-canvas" : "glass text-ink-2")}>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={card.sticker === "none"}
+                onClick={() => update({ sticker: "none" })}
+                className={cn(
+                  "pressable flex h-12 items-center rounded-control px-3 text-footnote font-semibold",
+                  card.sticker === "none" ? "bg-ink text-canvas" : "glass text-ink-2",
+                )}
+              >
                 None
               </button>
               {GAME_KEYS.map((key) => (
-                <button key={key} type="button" role="radio" aria-checked={card.sticker === key} aria-label={GAMES[key].name} onClick={() => update({ sticker: key as InviteSticker })} className={cn("pressable rounded-control p-1", card.sticker === key && "ring-2 ring-ink")}>
+                <button
+                  key={key}
+                  type="button"
+                  role="radio"
+                  aria-checked={card.sticker === key}
+                  aria-label={GAMES[key].name}
+                  onClick={() => update({ sticker: key as InviteSticker })}
+                  className={cn("pressable rounded-control p-1", card.sticker === key && "ring-2 ring-ink")}
+                >
                   <GameMotif game={key} size={40} />
                 </button>
               ))}
@@ -135,11 +170,32 @@ export function InviteCardEditor({ gardenId, data, isCreator, previewImageUrl }:
           <fieldset>
             <legend className="mb-2 px-1 text-footnote font-semibold text-ink-2">Accent</legend>
             <div role="radiogroup" aria-label="Accent" className="flex flex-wrap gap-2">
-              <button type="button" role="radio" aria-checked={card.accent === "theme"} onClick={() => update({ accent: "theme" })} className={cn("pressable h-10 rounded-capsule px-3.5 text-footnote font-semibold", card.accent === "theme" ? "bg-ink text-canvas" : "glass text-ink-2")}>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={card.accent === "theme"}
+                onClick={() => update({ accent: "theme" })}
+                className={cn(
+                  "pressable h-10 rounded-capsule px-3.5 text-footnote font-semibold",
+                  card.accent === "theme" ? "bg-ink text-canvas" : "glass text-ink-2",
+                )}
+              >
                 Garden theme
               </button>
               {COLOR_KEYS.map((key: ColorKey) => (
-                <button key={key} type="button" role="radio" aria-checked={card.accent === key} onClick={() => update({ accent: key })} className={cn("pressable flex h-10 items-center gap-1.5 rounded-capsule pr-3.5 pl-2.5 text-footnote font-semibold", COLOR_CLASSES[key].soft, COLOR_CLASSES[key].ink, card.accent === key && "ring-2 ring-ink")}>
+                <button
+                  key={key}
+                  type="button"
+                  role="radio"
+                  aria-checked={card.accent === key}
+                  onClick={() => update({ accent: key })}
+                  className={cn(
+                    "pressable flex h-10 items-center gap-1.5 rounded-capsule pr-3.5 pl-2.5 text-footnote font-semibold",
+                    COLOR_CLASSES[key].soft,
+                    COLOR_CLASSES[key].ink,
+                    card.accent === key && "ring-2 ring-ink",
+                  )}
+                >
                   <span className={cn("size-2.5 rounded-full", COLOR_CLASSES[key].bg)} aria-hidden />
                   {COLOR_NAMES[key]}
                 </button>

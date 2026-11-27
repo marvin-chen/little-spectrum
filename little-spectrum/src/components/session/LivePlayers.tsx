@@ -28,7 +28,13 @@ export function LivePlayers({ sessionId, active, userId, userName, participants,
 }
 
 // Pure presentation is also used by previews, with no subscription or polling.
-export function SessionPlayers({ active, userId, participants, submitted, online = new Set<string>() }: Pick<Props, "active" | "userId" | "participants" | "submitted"> & { online?: Set<string> }) {
+export function SessionPlayers({
+  active,
+  userId,
+  participants,
+  submitted,
+  online = new Set<string>(),
+}: Pick<Props, "active" | "userId" | "participants" | "submitted"> & { online?: Set<string> }) {
   const done = new Set(submitted);
   return (
     <ul className="flex flex-col gap-3" aria-label="Players">
@@ -39,8 +45,14 @@ export function SessionPlayers({ active, userId, participants, submitted, online
           <li key={p.userId} className="flex min-w-0 items-center gap-3">
             <Avatar avatar={p.avatar} name={p.name} size="sm" ring />
             <div className="min-w-0 flex-1">
-              <p className="text-callout font-semibold">{p.name}{p.userId === userId ? " (you)" : ""}</p>
-              <p className={cn("text-footnote", state === "Submitted" ? "text-green-ink" : "text-ink-2")}>{state}{here ? " · Here now" : ""}</p>
+              <p className="text-callout font-semibold">
+                {p.name}
+                {p.userId === userId ? " (you)" : ""}
+              </p>
+              <p className={cn("text-footnote", state === "Submitted" ? "text-green-ink" : "text-ink-2")}>
+                {state}
+                {here ? " · Here now" : ""}
+              </p>
             </div>
           </li>
         );

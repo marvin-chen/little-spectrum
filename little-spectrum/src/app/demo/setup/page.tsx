@@ -11,8 +11,7 @@ const STEPS: Array<{ title: string; body: ReactNode }> = [
     title: "Create a free Supabase project",
     body: (
       <>
-        Sign up at supabase.com and create a project on the Free plan. Any region works, but pick one near your
-        friends.
+        Sign up at supabase.com and create a project on the Free plan. Any region works, but pick one near your friends.
       </>
     ),
   },
@@ -30,8 +29,8 @@ const STEPS: Array<{ title: string; body: ReactNode }> = [
     body: (
       <>
         From the project directory run <code>pnpm supabase link</code> followed by <code>pnpm supabase db push</code>.
-        If you would rather skip the CLI, paste the SQL from <code>supabase/migrations</code> into the SQL editor in
-        the dashboard.
+        If you would rather skip the CLI, paste the SQL from <code>supabase/migrations</code> into the SQL editor in the
+        dashboard.
       </>
     ),
   },
@@ -50,8 +49,7 @@ const STEPS: Array<{ title: string; body: ReactNode }> = [
     body: (
       <>
         Import the repository into Vercel on the Hobby plan, set <strong>Root Directory</strong> to{" "}
-        <code>little-spectrum</code>, and add the same three environment variables. Every push to main becomes a
-        deploy.
+        <code>little-spectrum</code>, and add the same three environment variables. Every push to main becomes a deploy.
       </>
     ),
   },
@@ -86,13 +84,15 @@ export default function DemoSetupPage() {
       </ol>
 
       <section className="mt-6">
-        <h2 className="mb-2 px-1 text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">About the free plans</h2>
+        <h2 className="mb-2 px-1 text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">
+          About the free plans
+        </h2>
         <Card className="p-4">
           <p className="text-footnote text-ink-2">
-            Supabase Free pauses a project after about a week without traffic. Open the dashboard and press restore
-            and it comes back with everything intact. It also includes 500 MB of database space and 1 GB of file
-            storage, which is plenty for a group of friends and their photos. Vercel Hobby is free for personal,
-            non-commercial use, which is exactly what this is.
+            Supabase Free pauses a project after about a week without traffic. Open the dashboard and press restore and
+            it comes back with everything intact. It also includes 500 MB of database space and 1 GB of file storage,
+            which is plenty for a group of friends and their photos. Vercel Hobby is free for personal, non-commercial
+            use, which is exactly what this is.
           </p>
         </Card>
       </section>

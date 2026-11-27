@@ -58,8 +58,17 @@ function contextFor(session: SessionView): string | null {
   }
 }
 
-
-export function MemoryCard({ gardenId, memory, userId, timeZone }: { gardenId: string; memory: Memory; userId: string; timeZone: string }) {
+export function MemoryCard({
+  gardenId,
+  memory,
+  userId,
+  timeZone,
+}: {
+  gardenId: string;
+  memory: Memory;
+  userId: string;
+  timeZone: string;
+}) {
   const { session } = memory;
   const game = GAMES[session.game];
   const date = formatRevealedDate(session.revealedAt ?? session.createdAt, timeZone);
@@ -84,7 +93,11 @@ export function MemoryCard({ gardenId, memory, userId, timeZone }: { gardenId: s
             {context ? <span className="text-ink-3"> · {context}</span> : null}
           </span>
         </span>
-        <AvatarStack people={session.participants.map((p) => ({ id: p.userId, name: p.name, avatar: p.avatar }))} size="xs" max={4} />
+        <AvatarStack
+          people={session.participants.map((p) => ({ id: p.userId, name: p.name, avatar: p.avatar }))}
+          size="xs"
+          max={4}
+        />
         <ChevronRight className="size-5 shrink-0 text-ink-3" aria-hidden />
       </Link>
       <GameReveal session={session} userId={userId} compact />

@@ -1,4 +1,15 @@
-export type { Participant, Submission, PhotoRef, SessionState, ValidationResult, RevealOutcome, EarlyRevealCheck, TurnStatus, PromptPick, GameEngine } from "./contract";
+export type {
+  Participant,
+  Submission,
+  PhotoRef,
+  SessionState,
+  ValidationResult,
+  RevealOutcome,
+  EarlyRevealCheck,
+  TurnStatus,
+  PromptPick,
+  GameEngine,
+} from "./contract";
 import type { Participant, SessionState, Submission, TurnStatus, EarlyRevealCheck } from "./contract";
 
 // Shared helpers used by every game.
@@ -41,11 +52,7 @@ export function countWord(n: number): string {
   return COUNT_WORDS[n] ?? String(n);
 }
 
-export function pickUnused<T extends { id: string }>(
-  items: T[],
-  recentIds: string[],
-  random: () => number,
-): T {
+export function pickUnused<T extends { id: string }>(items: T[], recentIds: string[], random: () => number): T {
   const recent = new Set(recentIds);
   const fresh = items.filter((item) => !recent.has(item.id));
   const pool = fresh.length > 0 ? fresh : items;

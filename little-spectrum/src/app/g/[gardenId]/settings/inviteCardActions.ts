@@ -8,7 +8,11 @@ import { throttle } from "@/lib/ratelimit";
 
 export type InviteCardState = { saved?: boolean; error?: string };
 
-export async function saveInviteCardAction(gardenId: string, _prev: InviteCardState, formData: FormData): Promise<InviteCardState> {
+export async function saveInviteCardAction(
+  gardenId: string,
+  _prev: InviteCardState,
+  formData: FormData,
+): Promise<InviteCardState> {
   const user = await requireUser(`/g/${gardenId}/settings`);
   if (!throttle(`invite-card:${user.id}`, 30, 60 * 1000)) return { error: "Too many saves. Give it a minute." };
   try {

@@ -1,12 +1,7 @@
 import "server-only";
 import type { ParticipantRow, PhotoRow, ProfileRow, SessionRow, SubmissionRow } from "@/lib/db";
 import { GAMES, type GameKey, isGameKey } from "@/lib/games";
-import {
-  pendingParticipants,
-  type Participant,
-  type SessionState,
-  type TurnStatus,
-} from "@/lib/games/engine";
+import { pendingParticipants, type Participant, type SessionState, type TurnStatus } from "@/lib/games/engine";
 import { getEngine, isGameAvailable } from "@/lib/games/registry";
 import { createServiceClient } from "@/lib/supabase/server";
 import { UUID_RE } from "./gardens";
@@ -258,7 +253,12 @@ export async function revealEarly(userId: string, sessionId: string): Promise<Re
 }
 
 // Every active session plus the newest revealed ones, drawn from the player's latest `limit` sessions.
-export async function listSessionCards(gardenId: string, userId: string, limit = 60, revealed = 4): Promise<SessionCard[]> {
+export async function listSessionCards(
+  gardenId: string,
+  userId: string,
+  limit = 60,
+  revealed = 4,
+): Promise<SessionCard[]> {
   const db = createServiceClient();
   const { data: mine } = await db
     .from("sessions")

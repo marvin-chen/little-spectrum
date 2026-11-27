@@ -27,14 +27,18 @@ export default async function LandingPage() {
 
   return (
     <PlainShell narrow>
-      <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[46vh]" style={{ background: "linear-gradient(180deg, #dbeeff 0%, rgba(245,241,234,0) 100%)" }} />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[46vh]"
+        style={{ background: "linear-gradient(180deg, #dbeeff 0%, rgba(245,241,234,0) 100%)" }}
+      />
       <div className="flex flex-1 flex-col justify-center gap-8 py-8">
         <Wordmark />
         <div className="anim-rise">
           <h1 className="font-display text-large-title font-bold text-ink">A little color. A little closer.</h1>
           <p className="mt-3 text-body text-ink-2">
-            A private place for far-apart friends to play short games, swap moments from the day, and grow a
-            garden together.
+            A private place for far-apart friends to play short games, swap moments from the day, and grow a garden
+            together.
           </p>
         </div>
         <ul className="anim-rise grid gap-2" style={{ "--i": 1 } as React.CSSProperties}>

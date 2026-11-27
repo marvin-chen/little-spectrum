@@ -46,7 +46,9 @@ export function PalettePicksPlay({ gardenId, session, game, userId }: Props) {
   }
 
   if (game.phase === "waiting" && game.myOrder) {
-    const waiting = session.participants.filter((p) => p.userId !== userId && !game.submitted.includes(p.userId)).map((p) => p.name);
+    const waiting = session.participants
+      .filter((p) => p.userId !== userId && !game.submitted.includes(p.userId))
+      .map((p) => p.name);
     return (
       <Card className="p-5">
         <PromptHeading title={game.title} prompt={game.prompt} />
@@ -139,7 +141,9 @@ function RankPanel({ gardenId, session, game }: { gardenId: string; session: Ses
     <div className="flex flex-col gap-4">
       <Card className="p-5">
         <PromptHeading title={game.title} prompt={game.prompt} />
-        <p className="mt-2 text-callout text-ink-2">First place goes on top. Drag the grip or tap the arrows to shuffle things around.</p>
+        <p className="mt-2 text-callout text-ink-2">
+          First place goes on top. Drag the grip or tap the arrows to shuffle things around.
+        </p>
         <DndContext id={dragContextId} sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={order.map(String)} strategy={verticalListSortingStrategy}>
             <ol className="mt-5 flex select-none flex-col gap-2" aria-label="Your ranking">
@@ -167,7 +171,15 @@ function RankPanel({ gardenId, session, game }: { gardenId: string; session: Ses
             {error}
           </p>
         ) : null}
-        <Button className="mt-4" size="lg" full accent="amber" onClick={confirm} loading={pending} icon={<Lock className="size-4" aria-hidden />}>
+        <Button
+          className="mt-4"
+          size="lg"
+          full
+          accent="amber"
+          onClick={confirm}
+          loading={pending}
+          icon={<Lock className="size-4" aria-hidden />}
+        >
           Confirm ranking
         </Button>
       </Card>

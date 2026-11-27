@@ -87,14 +87,7 @@ export function AvatarStack({
   return (
     <span className={cn("inline-flex items-center", className)}>
       {shown.map((p, i) => (
-        <Avatar
-          key={p.id}
-          avatar={p.avatar}
-          name={p.name}
-          size={size}
-          ring
-          className={i > 0 ? "-ml-2" : undefined}
-        />
+        <Avatar key={p.id} avatar={p.avatar} name={p.name} size={size} ring className={i > 0 ? "-ml-2" : undefined} />
       ))}
       {extra > 0 ? (
         <span

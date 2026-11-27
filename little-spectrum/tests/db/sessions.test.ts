@@ -29,19 +29,54 @@ describe("session lifecycle", () => {
   it("rejects submissions after a session is closed and keeps the first answer", async () => {
     const { ada, bo, gardenId } = await twoPlayerGarden();
     const id = await hueKnewSession(gardenId, ada, bo);
-    await service().rpc("submit_answer", { p_user: ada.id, p_session: id, p_round: 1, p_kind: "clue", p_payload: { clue: "blanket" } });
-    await service().rpc("submit_answer", { p_user: bo.id, p_session: id, p_round: 1, p_kind: "answer", p_payload: { guess: 40 } });
-    await service().rpc("reveal_round", { p_session: id, p_round: 1, p_result: { target: 42 }, p_final: true, p_early: false, p_expected_submissions: 2 });
-    const { data: late } = await service().rpc("submit_answer", { p_user: bo.id, p_session: id, p_round: 1, p_kind: "answer", p_payload: { guess: 99 } });
+    await service().rpc("submit_answer", {
+      p_user: ada.id,
+      p_session: id,
+      p_round: 1,
+      p_kind: "clue",
+      p_payload: { clue: "blanket" },
+    });
+    await service().rpc("submit_answer", {
+      p_user: bo.id,
+      p_session: id,
+      p_round: 1,
+      p_kind: "answer",
+      p_payload: { guess: 40 },
+    });
+    await service().rpc("reveal_round", {
+      p_session: id,
+      p_round: 1,
+      p_result: { target: 42 },
+      p_final: true,
+      p_early: false,
+      p_expected_submissions: 2,
+    });
+    const { data: late } = await service().rpc("submit_answer", {
+      p_user: bo.id,
+      p_session: id,
+      p_round: 1,
+      p_kind: "answer",
+      p_payload: { guess: 99 },
+    });
     expect(late).toMatchObject({ status: "closed" });
-    const { data: rows } = await service().from("submissions").select("payload").eq("session_id", id).eq("user_id", bo.id);
+    const { data: rows } = await service()
+      .from("submissions")
+      .select("payload")
+      .eq("session_id", id)
+      .eq("user_id", bo.id);
     expect(rows).toEqual([{ payload: { guess: 40 } }]);
   });
 
   it("does not award growth while a session is still active", async () => {
     const { ada, bo, gardenId } = await twoPlayerGarden();
     const id = await hueKnewSession(gardenId, ada, bo);
-    await service().rpc("submit_answer", { p_user: ada.id, p_session: id, p_round: 1, p_kind: "clue", p_payload: { clue: "blanket" } });
+    await service().rpc("submit_answer", {
+      p_user: ada.id,
+      p_session: id,
+      p_round: 1,
+      p_kind: "clue",
+      p_payload: { clue: "blanket" },
+    });
     const { data: events } = await service().from("growth_events").select("id").eq("session_id", id);
     expect(events).toHaveLength(0);
   });
@@ -49,13 +84,34 @@ describe("session lifecycle", () => {
   it("keeps secrets and photos from non participants even after the reveal", async () => {
     const { ada, bo, cy, gardenId } = await twoPlayerGarden();
     const id = await hueKnewSession(gardenId, ada, bo);
-    await service().rpc("submit_answer", { p_user: ada.id, p_session: id, p_round: 1, p_kind: "clue", p_payload: { clue: "blanket" } });
-    await service().rpc("submit_answer", { p_user: bo.id, p_session: id, p_round: 1, p_kind: "answer", p_payload: { guess: 40 } });
-    await service().from("photos").insert({ session_id: id, user_id: bo.id, storage_path: `sessions/${id}/${bo.id}-x.jpg`, status: "ready" });
+    await service().rpc("submit_answer", {
+      p_user: ada.id,
+      p_session: id,
+      p_round: 1,
+      p_kind: "clue",
+      p_payload: { clue: "blanket" },
+    });
+    await service().rpc("submit_answer", {
+      p_user: bo.id,
+      p_session: id,
+      p_round: 1,
+      p_kind: "answer",
+      p_payload: { guess: 40 },
+    });
+    await service()
+      .from("photos")
+      .insert({ session_id: id, user_id: bo.id, storage_path: `sessions/${id}/${bo.id}-x.jpg`, status: "ready" });
     // Before the reveal, Ada cannot see Bo's photo row, after it she can. Cy never can.
     const { data: adaBefore } = await ada.client.from("photos").select("id").eq("session_id", id);
     expect(adaBefore).toHaveLength(0);
-    await service().rpc("reveal_round", { p_session: id, p_round: 1, p_result: { target: 42 }, p_final: true, p_early: false, p_expected_submissions: 2 });
+    await service().rpc("reveal_round", {
+      p_session: id,
+      p_round: 1,
+      p_result: { target: 42 },
+      p_final: true,
+      p_early: false,
+      p_expected_submissions: 2,
+    });
     const { data: adaAfter } = await ada.client.from("photos").select("id").eq("session_id", id);
     expect(adaAfter).toHaveLength(1);
     const { data: cyPhotos } = await cy.client.from("photos").select("id").eq("session_id", id);
@@ -87,7 +143,14 @@ describe("week boundaries in the garden timezone", () => {
     ["America/Los_Angeles", "2026-10-25T16:30:00Z", "2026-10-19"],
   ])("uses %s so %s starts the week of %s", async (timezone, at, expected) => {
     const creator = await anonymousUser("Clock");
-    const { data: gardenId, error } = await service().rpc("create_garden", { p_user: creator.id, p_name: "Clock", p_capacity: 2, p_theme: "meadow", p_timezone: timezone, p_token: token() });
+    const { data: gardenId, error } = await service().rpc("create_garden", {
+      p_user: creator.id,
+      p_name: "Clock",
+      p_capacity: 2,
+      p_theme: "meadow",
+      p_timezone: timezone,
+      p_token: token(),
+    });
     if (error) throw new Error(error.message);
     expect(await weekStart(gardenId as string, at)).toBe(expected);
   });
@@ -97,14 +160,39 @@ describe("rewards across weeks", () => {
   it("keeps earlier keepsakes after a missed week and numbers the next one correctly", async () => {
     const { ada, bo, gardenId } = await twoPlayerGarden();
     // An old reward from three weeks ago, with no activity since.
-    await service().from("weekly_rewards").insert({ garden_id: gardenId, week_start: "2026-10-05", ordinal: 1, item_key: "sprout", variant: 0 });
+    await service()
+      .from("weekly_rewards")
+      .insert({ garden_id: gardenId, week_start: "2026-10-05", ordinal: 1, item_key: "sprout", variant: 0 });
     for (let i = 0; i < 3; i += 1) {
       const id = await hueKnewSession(gardenId, ada, bo);
-      await service().rpc("submit_answer", { p_user: ada.id, p_session: id, p_round: 1, p_kind: "clue", p_payload: { clue: "blanket" } });
-      await service().rpc("submit_answer", { p_user: bo.id, p_session: id, p_round: 1, p_kind: "answer", p_payload: { guess: 40 } });
-      await service().rpc("reveal_round", { p_session: id, p_round: 1, p_result: { target: 42 }, p_final: true, p_early: false, p_expected_submissions: 2 });
+      await service().rpc("submit_answer", {
+        p_user: ada.id,
+        p_session: id,
+        p_round: 1,
+        p_kind: "clue",
+        p_payload: { clue: "blanket" },
+      });
+      await service().rpc("submit_answer", {
+        p_user: bo.id,
+        p_session: id,
+        p_round: 1,
+        p_kind: "answer",
+        p_payload: { guess: 40 },
+      });
+      await service().rpc("reveal_round", {
+        p_session: id,
+        p_round: 1,
+        p_result: { target: 42 },
+        p_final: true,
+        p_early: false,
+        p_expected_submissions: 2,
+      });
     }
-    const { data: rewards } = await service().from("weekly_rewards").select("ordinal, week_start, item_key").eq("garden_id", gardenId).order("ordinal");
+    const { data: rewards } = await service()
+      .from("weekly_rewards")
+      .select("ordinal, week_start, item_key")
+      .eq("garden_id", gardenId)
+      .order("ordinal");
     expect(rewards).toHaveLength(2);
     expect(rewards![0]).toMatchObject({ ordinal: 1, week_start: "2026-10-05", item_key: "sprout" });
     expect(rewards![1].ordinal).toBe(2);

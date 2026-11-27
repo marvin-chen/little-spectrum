@@ -40,11 +40,18 @@ export function useLiveChannel({ channel, table, filter, presence, fallbackMs = 
         .on("postgres_changes", { event: "*", schema: "public", table, filter }, refresh)
         .on("presence", { event: "sync" }, () => {
           const state = ch.presenceState<{ userId: string }>();
-          setOnline(new Set(Object.values(state).flat().map((p) => p.userId)));
+          setOnline(
+            new Set(
+              Object.values(state)
+                .flat()
+                .map((p) => p.userId),
+            ),
+          );
         })
         .subscribe(async (status) => {
           setConnected(status === "SUBSCRIBED");
-          if (status === "SUBSCRIBED" && presence) await ch.track({ userId: presence.userId, name: presence.name, at: Date.now() });
+          if (status === "SUBSCRIBED" && presence)
+            await ch.track({ userId: presence.userId, name: presence.name, at: Date.now() });
         });
       live = ch;
     })();

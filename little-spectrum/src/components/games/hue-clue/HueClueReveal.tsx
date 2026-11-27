@@ -8,7 +8,17 @@ import type { HueClueResult } from "@/lib/games/hueClue";
 import { PALETTE } from "@/lib/games/hueCluePalette";
 import { ColorGrid } from "./ColorGrid";
 
-export function HueClueReveal({ session, result, userId, compact }: { session: SessionView; result: HueClueResult; userId: string; compact?: boolean }) {
+export function HueClueReveal({
+  session,
+  result,
+  userId,
+  compact,
+}: {
+  session: SessionView;
+  result: HueClueResult;
+  userId: string;
+  compact?: boolean;
+}) {
   const nameOf = (id: string) => session.participants.find((p) => p.userId === id)?.name ?? "Someone";
   const avatarOf = (id: string) => session.participants.find((p) => p.userId === id)?.avatar ?? "sun:amber";
   const clueGiverName = nameOf(session.clueGiverId ?? session.createdBy);
@@ -16,14 +26,25 @@ export function HueClueReveal({ session, result, userId, compact }: { session: S
   return (
     <div className={cn("flex flex-col", compact ? "gap-3" : "gap-4")}>
       <Card className={compact ? "p-4" : "p-5"}>
-        <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">{clueGiverName}&apos;s clue</p>
-        <p className={cn("mt-1 font-display font-bold", compact ? "text-title-3" : "text-title-2")}>&ldquo;{result.clue}&rdquo;</p>
+        <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">
+          {clueGiverName}&apos;s clue
+        </p>
+        <p className={cn("mt-1 font-display font-bold", compact ? "text-title-3" : "text-title-2")}>
+          &ldquo;{result.clue}&rdquo;
+        </p>
         <div className="mt-4">
           <ColorGrid
             label="Revealed color grid"
             selected={null}
             target={result.target}
-            markers={result.guesses.map((g) => ({ userId: g.userId, col: g.col, row: g.row, avatar: avatarOf(g.userId), name: nameOf(g.userId), mine: g.userId === userId }))}
+            markers={result.guesses.map((g) => ({
+              userId: g.userId,
+              col: g.col,
+              row: g.row,
+              avatar: avatarOf(g.userId),
+              name: nameOf(g.userId),
+              mine: g.userId === userId,
+            }))}
           />
         </div>
         <p className="mt-3 flex items-center gap-2 text-callout text-ink-2">
@@ -36,7 +57,14 @@ export function HueClueReveal({ session, result, userId, compact }: { session: S
       <Card className={compact ? "p-4" : "p-5"}>
         <div className="flex items-baseline justify-between">
           <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Shared score</p>
-          <p className={cn("font-display font-bold text-violet-ink tabular-nums", compact ? "text-title-2" : "text-title-1")}>{result.shared === null ? "–" : <CountUp value={result.shared} />}</p>
+          <p
+            className={cn(
+              "font-display font-bold text-violet-ink tabular-nums",
+              compact ? "text-title-2" : "text-title-1",
+            )}
+          >
+            {result.shared === null ? "–" : <CountUp value={result.shared} />}
+          </p>
         </div>
         <ul className="mt-2 divide-y divide-line">
           {result.guesses
@@ -54,7 +82,11 @@ export function HueClueReveal({ session, result, userId, compact }: { session: S
                       picked {c.coord}, {g.distance === 0 ? "spot on" : `${g.distance} away`}
                     </span>
                   </span>
-                  <span className="size-5 shrink-0 rounded-[5px] ring-1 ring-line" style={{ backgroundColor: c.hex }} aria-hidden />
+                  <span
+                    className="size-5 shrink-0 rounded-[5px] ring-1 ring-line"
+                    style={{ backgroundColor: c.hex }}
+                    aria-hidden
+                  />
                   <span className="text-body font-semibold tabular-nums">{g.score}</span>
                 </li>
               );

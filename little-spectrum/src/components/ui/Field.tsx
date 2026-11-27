@@ -1,6 +1,13 @@
 "use client";
 
-import { cloneElement, useId, type InputHTMLAttributes, type ReactElement, type ReactNode, type TextareaHTMLAttributes } from "react";
+import {
+  cloneElement,
+  useId,
+  type InputHTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+  type TextareaHTMLAttributes,
+} from "react";
 import { cn } from "@/lib/cn";
 
 export const inputClass =
@@ -22,13 +29,29 @@ export function Field({ label, hint, error, children, className }: FieldProps) {
   const id = children.props.id ?? generatedId;
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
-  const describedBy = [children.props["aria-describedby"], hint ? hintId : null, error ? errorId : null].filter(Boolean).join(" ") || undefined;
+  const describedBy =
+    [children.props["aria-describedby"], hint ? hintId : null, error ? errorId : null].filter(Boolean).join(" ") ||
+    undefined;
   return (
     <div className={cn("block", className)}>
-      <label htmlFor={id} className="mb-1.5 block px-1 text-footnote font-semibold text-ink-2">{label}</label>
-      {cloneElement(children, { id, "aria-describedby": describedBy, "aria-invalid": error ? true : children.props["aria-invalid"] })}
-      {hint ? <p id={hintId} className="mt-1.5 block px-1 text-caption text-ink-3">{hint}</p> : null}
-      {error ? <p id={errorId} role="alert" className="mt-1.5 px-1 text-footnote text-danger">{error}</p> : null}
+      <label htmlFor={id} className="mb-1.5 block px-1 text-footnote font-semibold text-ink-2">
+        {label}
+      </label>
+      {cloneElement(children, {
+        id,
+        "aria-describedby": describedBy,
+        "aria-invalid": error ? true : children.props["aria-invalid"],
+      })}
+      {hint ? (
+        <p id={hintId} className="mt-1.5 block px-1 text-caption text-ink-3">
+          {hint}
+        </p>
+      ) : null}
+      {error ? (
+        <p id={errorId} role="alert" className="mt-1.5 px-1 text-footnote text-danger">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

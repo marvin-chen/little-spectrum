@@ -10,7 +10,11 @@ import { SignInForm } from "./SignInForm";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Sign in" };
 
-export default async function SignInPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   if (!isSupabaseConfigured()) redirect("/");
   const params = await searchParams;
   const next = safeNextPath(params.next, "/");
@@ -23,9 +27,16 @@ export default async function SignInPage({ searchParams }: { searchParams: Promi
         <Wordmark />
         <div className="anim-rise">
           <h1 className="font-display text-large-title font-bold text-ink">Welcome back</h1>
-          <p className="mt-2 text-callout text-ink-2">Enter the email you attached to your account and we will send a sign-in link. Your gardens come with it.</p>
+          <p className="mt-2 text-callout text-ink-2">
+            Enter the email you attached to your account and we will send a sign-in link. Your gardens come with it.
+          </p>
         </div>
-        <SignInForm next={next} initialError={params.error === "link" ? "That link has expired or was already used. Request a new one." : undefined} />
+        <SignInForm
+          next={next}
+          initialError={
+            params.error === "link" ? "That link has expired or was already used. Request a new one." : undefined
+          }
+        />
         <p className="text-footnote text-ink-3">
           New here?{" "}
           <Link href="/welcome" className="font-semibold text-tint">

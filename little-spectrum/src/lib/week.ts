@@ -63,7 +63,12 @@ export function isValidTimeZone(value: string): boolean {
 export function formatRevealedDate(iso: string, timeZone: string): string {
   const date = new Date(iso);
   const sameYear = partsInZone(date, timeZone).year === partsInZone(new Date(), timeZone).year;
-  return new Intl.DateTimeFormat("en-US", { timeZone, month: "short", day: "numeric", year: sameYear ? undefined : "numeric" }).format(date);
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    month: "short",
+    day: "numeric",
+    year: sameYear ? undefined : "numeric",
+  }).format(date);
 }
 
 export function formatWeekReset(weekStart: string, timeZone: string): string {

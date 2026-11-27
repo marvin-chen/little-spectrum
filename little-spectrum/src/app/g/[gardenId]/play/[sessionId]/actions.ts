@@ -29,7 +29,8 @@ export async function revealEarlyAction(gardenId: string, sessionId: string): Pr
 export async function playAgainAction(gardenId: string, sessionId: string): Promise<PlayActionState> {
   const user = await requireUser(`/g/${gardenId}/play/${sessionId}`);
   const state = await loadState(sessionId);
-  if (!state || !state.participants.some((p) => p.userId === user.id)) return { error: "This game is not yours to replay." };
+  if (!state || !state.participants.some((p) => p.userId === user.id))
+    return { error: "This game is not yours to replay." };
   if (!throttle(`start:${user.id}`, 30, 60 * 60 * 1000)) return { error: "Slow down a little. Try again in a bit." };
   const result = await createSession(
     user.id,

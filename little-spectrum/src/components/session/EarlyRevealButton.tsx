@@ -9,7 +9,12 @@ import type { EarlyRevealCheck } from "@/lib/games/engine";
 import { joinNames } from "@/lib/games/engine";
 import type { GameKey } from "@/lib/games";
 
-type Props = { gardenId: string; sessionId: string; check: EarlyRevealCheck & { pendingNames: string[] }; game: GameKey };
+type Props = {
+  gardenId: string;
+  sessionId: string;
+  check: EarlyRevealCheck & { pendingNames: string[] };
+  game: GameKey;
+};
 
 export function EarlyRevealButton({ gardenId, sessionId, check, game }: Props) {
   const [open, setOpen] = useState(false);
@@ -65,7 +70,9 @@ export function EarlyRevealButton({ gardenId, sessionId, check, game }: Props) {
         )}
         {!check.ok ? <p className="mt-3 text-footnote text-ink-2">{check.reason}</p> : null}
         {game === "same-wavelength" ? (
-          <p className="mt-3 text-footnote text-ink-2">Revealing early ends the whole session, with no further attempts.</p>
+          <p className="mt-3 text-footnote text-ink-2">
+            Revealing early ends the whole session, with no further attempts.
+          </p>
         ) : null}
       </Sheet>
     </>

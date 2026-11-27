@@ -46,11 +46,16 @@ export async function listMemories(
       game: r.game as string,
       revealedAt: (r.revealed_at as string | null) ?? (r.created_at as string),
     }))
-    .filter((r): r is { id: string; game: GameKey; revealedAt: string } => isGameKey(r.game) && isGameAvailable(r.game));
+    .filter(
+      (r): r is { id: string; game: GameKey; revealedAt: string } => isGameKey(r.game) && isGameAvailable(r.game),
+    );
   if (revealed.length === 0) return { memories: [], activity: [] };
 
   const ids = revealed.map((r) => r.id);
-  const { data: participants } = await db.from("session_participants").select("session_id, user_id").in("session_id", ids);
+  const { data: participants } = await db
+    .from("session_participants")
+    .select("session_id, user_id")
+    .in("session_id", ids);
   const countBy = new Map<string, number>();
   const mine = new Set<string>();
   for (const p of participants ?? []) {
@@ -67,7 +72,11 @@ export async function listMemories(
 
   const [states, { data: reactions }, { data: comments }] = await Promise.all([
     loadStates(mineIds),
-    db.from("reactions").select("session_id, user_id, emoji, created_at").in("session_id", mineIds).order("created_at", { ascending: true }),
+    db
+      .from("reactions")
+      .select("session_id, user_id, emoji, created_at")
+      .in("session_id", mineIds)
+      .order("created_at", { ascending: true }),
     db.from("comments").select("session_id, user_id, body, updated_at").in("session_id", mineIds),
   ]);
   const stateBy = new Map(states.map((s) => [s.id, s]));
@@ -82,7 +91,9 @@ export async function listMemories(
     session,
     reactions: REACTION_EMOJI.map((r) => ({
       emoji: r.key,
-      userIds: (reactions ?? []).filter((row) => row.session_id === session.id && row.emoji === r.key).map((row) => row.user_id as string),
+      userIds: (reactions ?? [])
+        .filter((row) => row.session_id === session.id && row.emoji === r.key)
+        .map((row) => row.user_id as string),
     })).filter((r) => r.userIds.length > 0),
     comments: (comments ?? [])
       .filter((row) => row.session_id === session.id)
@@ -126,6 +137,9 @@ export async function saveComment(userId: string, sessionId: string, body: unkno
   if (!text) return { ok: false, error: `Keep it under ${MAX_COMMENT_LENGTH} characters.` };
   const { error } = await db
     .from("comments")
-    .upsert({ session_id: sessionId, user_id: userId, body: text, updated_at: new Date().toISOString() }, { onConflict: "session_id,user_id" });
+    .upsert(
+      { session_id: sessionId, user_id: userId, body: text, updated_at: new Date().toISOString() },
+      { onConflict: "session_id,user_id" },
+    );
   return error ? { ok: false, error: "Could not save that. Please try again." } : { ok: true };
 }

@@ -18,7 +18,9 @@ describe("garden capacity", () => {
     const invite = token();
     const gardenId = await createGarden(creator, 8, invite);
     const friends = await Promise.all(Array.from({ length: 8 }, (_, i) => anonymousUser(`F${i}`)));
-    const results = await Promise.all(friends.map((f) => service().rpc("join_garden", { p_user: f.id, p_token: invite })));
+    const results = await Promise.all(
+      friends.map((f) => service().rpc("join_garden", { p_user: f.id, p_token: invite })),
+    );
     const statuses = results.map((r) => (r.data as { status: string }).status).sort();
     expect(statuses).toEqual(["full", "joined", "joined", "joined", "joined", "joined", "joined", "joined"]);
     const { data: again } = await service().rpc("join_garden", { p_user: creator.id, p_token: invite });

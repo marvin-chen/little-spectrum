@@ -24,7 +24,10 @@ export function ColorGrid({ selected, onSelect, target, markers = [], disabled, 
   const focusCell = selected ?? { col: 0, row: 0 };
 
   function move(from: Cell, dc: number, dr: number) {
-    const next = { col: Math.min(HUE_CLUE_COLS - 1, Math.max(0, from.col + dc)), row: Math.min(HUE_CLUE_ROWS - 1, Math.max(0, from.row + dr)) };
+    const next = {
+      col: Math.min(HUE_CLUE_COLS - 1, Math.max(0, from.col + dc)),
+      row: Math.min(HUE_CLUE_ROWS - 1, Math.max(0, from.row + dr)),
+    };
     onSelect?.(next);
     requestAnimationFrame(() => {
       ref.current?.querySelector<HTMLButtonElement>(`[data-col="${next.col}"][data-row="${next.row}"]`)?.focus();
@@ -32,7 +35,13 @@ export function ColorGrid({ selected, onSelect, target, markers = [], disabled, 
   }
 
   return (
-    <div ref={ref} role="grid" aria-label={label} className="grid gap-[3px] rounded-row bg-fill p-1.5" style={{ gridTemplateColumns: `repeat(${HUE_CLUE_COLS}, minmax(0, 1fr))` }}>
+    <div
+      ref={ref}
+      role="grid"
+      aria-label={label}
+      className="grid gap-[3px] rounded-row bg-fill p-1.5"
+      style={{ gridTemplateColumns: `repeat(${HUE_CLUE_COLS}, minmax(0, 1fr))` }}
+    >
       {PALETTE.map((row, r) => (
         <div key={r} role="row" className="contents">
           {row.map((c) => {
@@ -53,7 +62,12 @@ export function ColorGrid({ selected, onSelect, target, markers = [], disabled, 
                 disabled={!interactive}
                 onClick={() => onSelect?.({ col: c.col, row: c.row })}
                 onKeyDown={(e) => {
-                  const map: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+                  const map: Record<string, [number, number]> = {
+                    ArrowLeft: [-1, 0],
+                    ArrowRight: [1, 0],
+                    ArrowUp: [0, -1],
+                    ArrowDown: [0, 1],
+                  };
                   if (map[e.key]) {
                     e.preventDefault();
                     move({ col: c.col, row: c.row }, ...map[e.key]);
@@ -61,7 +75,8 @@ export function ColorGrid({ selected, onSelect, target, markers = [], disabled, 
                 }}
                 className={cn(
                   "relative aspect-square min-w-0 rounded-[5px] outline-none transition-transform duration-150",
-                  interactive && "cursor-pointer hover:scale-110 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-blue",
+                  interactive &&
+                    "cursor-pointer hover:scale-110 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-blue",
                   isSelected && "z-10 scale-110 ring-[3px] ring-ink",
                   isTarget && "z-10 ring-[3px] ring-ink",
                   here.length > 0 && !isTarget && "z-10 ring-2 ring-surface",
@@ -69,11 +84,25 @@ export function ColorGrid({ selected, onSelect, target, markers = [], disabled, 
                 )}
                 style={{ backgroundColor: c.hex }}
               >
-                {isTarget ? <Star className="absolute inset-0 m-auto size-3/5" style={{ color: textOn(c.row) }} fill="currentColor" aria-hidden /> : null}
+                {isTarget ? (
+                  <Star
+                    className="absolute inset-0 m-auto size-3/5"
+                    style={{ color: textOn(c.row) }}
+                    fill="currentColor"
+                    aria-hidden
+                  />
+                ) : null}
                 {here.length > 0 ? (
                   <span className="absolute -top-2 -right-2 flex" aria-hidden>
                     {here.slice(0, 2).map((m, i) => (
-                      <Avatar key={m.userId} avatar={m.avatar} name={m.name} size="xs" ring className={cn("!size-5 [&_svg]:!size-3", i > 0 && "-ml-2", m.mine && "ring-ink")} />
+                      <Avatar
+                        key={m.userId}
+                        avatar={m.avatar}
+                        name={m.name}
+                        size="xs"
+                        ring
+                        className={cn("!size-5 [&_svg]:!size-3", i > 0 && "-ml-2", m.mine && "ring-ink")}
+                      />
                     ))}
                   </span>
                 ) : null}
@@ -86,7 +115,15 @@ export function ColorGrid({ selected, onSelect, target, markers = [], disabled, 
   );
 }
 
-export function Swatch({ cell, size = "lg", className }: { cell: Cell | null; size?: "md" | "lg"; className?: string }) {
+export function Swatch({
+  cell,
+  size = "lg",
+  className,
+}: {
+  cell: Cell | null;
+  size?: "md" | "lg";
+  className?: string;
+}) {
   const def = cell ? PALETTE[cell.row][cell.col] : null;
   return (
     <div className={cn("flex items-center gap-3", className)}>

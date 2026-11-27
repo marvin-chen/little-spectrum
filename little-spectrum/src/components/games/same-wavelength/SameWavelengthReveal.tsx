@@ -85,7 +85,15 @@ export function SameWavelengthRoundTiles({
           </p>
           <ul className="flex flex-wrap gap-2">
             {group.map((id) => (
-              <WordTile key={id} participants={participants} userId={userId} id={id} word={wordOf(id)} matched compact={compact} />
+              <WordTile
+                key={id}
+                participants={participants}
+                userId={userId}
+                id={id}
+                word={wordOf(id)}
+                matched
+                compact={compact}
+              />
             ))}
           </ul>
         </div>
@@ -93,10 +101,26 @@ export function SameWavelengthRoundTiles({
       {solo.length > 0 || round.missing.length > 0 ? (
         <ul className="flex flex-wrap gap-2">
           {solo.map((a) => (
-            <WordTile key={a.userId} participants={participants} userId={userId} id={a.userId} word={a.word} matched={false} compact={compact} />
+            <WordTile
+              key={a.userId}
+              participants={participants}
+              userId={userId}
+              id={a.userId}
+              word={a.word}
+              matched={false}
+              compact={compact}
+            />
           ))}
           {round.missing.map((id) => (
-            <WordTile key={id} participants={participants} userId={userId} id={id} word={null} matched={false} compact={compact} />
+            <WordTile
+              key={id}
+              participants={participants}
+              userId={userId}
+              id={id}
+              word={null}
+              matched={false}
+              compact={compact}
+            />
           ))}
         </ul>
       ) : null}
@@ -120,14 +144,24 @@ export function SameWavelengthReveal({ session, result, userId, compact }: Props
           compact ? "px-4 py-3" : "px-5 py-6",
         )}
       >
-        <span className={cn("flex shrink-0 items-center justify-center rounded-full bg-white/20", compact ? "size-9" : "size-12")} aria-hidden>
+        <span
+          className={cn(
+            "flex shrink-0 items-center justify-center rounded-full bg-white/20",
+            compact ? "size-9" : "size-12",
+          )}
+          aria-hidden
+        >
           <Sparkles className={compact ? "size-5" : "size-6"} />
         </span>
         <div className="min-w-0">
-          <p className={cn("font-display font-bold", compact ? "text-title-3" : "text-title-2")}>Everyone on the same wavelength!</p>
+          <p className={cn("font-display font-bold", compact ? "text-title-3" : "text-title-2")}>
+            Everyone on the same wavelength!
+          </p>
           {!compact ? (
             <p className="mt-1 text-callout text-white/85">
-              {last.round === 1 ? "On the very first try. Suspicious, honestly." : `It took ${last.round} attempts, and it still counts.`}
+              {last.round === 1
+                ? "On the very first try. Suspicious, honestly."
+                : `It took ${last.round} attempts, and it still counts.`}
             </p>
           ) : null}
         </div>
@@ -148,7 +182,9 @@ export function SameWavelengthReveal({ session, result, userId, compact }: Props
     headline = (
       <Card className={compact ? "px-4 py-3" : "p-5"}>
         <p className={cn("font-semibold", compact ? "text-callout" : "text-title-3")}>No match this time.</p>
-        <p className={cn("text-ink-2", compact ? "text-footnote" : "mt-1 text-callout")}>Still a good set of answers.</p>
+        <p className={cn("text-ink-2", compact ? "text-footnote" : "mt-1 text-callout")}>
+          Still a good set of answers.
+        </p>
       </Card>
     );
   }
@@ -160,7 +196,9 @@ export function SameWavelengthReveal({ session, result, userId, compact }: Props
         {result.rounds.map((round) => (
           <section key={round.round}>
             <div className="mb-2 flex items-baseline justify-between">
-              <h3 className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Attempt {round.round}</h3>
+              <h3 className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">
+                Attempt {round.round}
+              </h3>
               {round.groups.length === 0 ? <span className="text-caption text-ink-3">No matches</span> : null}
             </div>
             <SameWavelengthRoundTiles round={round} participants={participants} userId={userId} compact={compact} />

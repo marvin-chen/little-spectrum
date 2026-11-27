@@ -118,15 +118,35 @@ export function mix(hex: string, other: string, amount: number): string {
 
 // Sky colors shift with the hour in the garden's timezone: paler mornings, warm evenings, deep nights.
 export function skyFor(theme: Theme, hour: number): { top: string; bottom: string; sun: string; night: boolean } {
-  if (hour >= 21 || hour < 5) return { top: mix(theme.skyTop, "#2b2f55", 0.55), bottom: mix(theme.skyBottom, "#3a3f6b", 0.35), sun: "#f4f1e6", night: true };
-  if (hour >= 18) return { top: mix(theme.skyTop, "#ffb088", 0.35), bottom: mix(theme.skyBottom, "#ffd3b0", 0.3), sun: "#ff9a6b", night: false };
-  if (hour < 8) return { top: mix(theme.skyTop, "#ffffff", 0.25), bottom: mix(theme.skyBottom, "#fff4d6", 0.3), sun: "#ffe08a", night: false };
+  if (hour >= 21 || hour < 5)
+    return {
+      top: mix(theme.skyTop, "#2b2f55", 0.55),
+      bottom: mix(theme.skyBottom, "#3a3f6b", 0.35),
+      sun: "#f4f1e6",
+      night: true,
+    };
+  if (hour >= 18)
+    return {
+      top: mix(theme.skyTop, "#ffb088", 0.35),
+      bottom: mix(theme.skyBottom, "#ffd3b0", 0.3),
+      sun: "#ff9a6b",
+      night: false,
+    };
+  if (hour < 8)
+    return {
+      top: mix(theme.skyTop, "#ffffff", 0.25),
+      bottom: mix(theme.skyBottom, "#fff4d6", 0.3),
+      sun: "#ffe08a",
+      night: false,
+    };
   return { top: theme.skyTop, bottom: theme.skyBottom, sun: theme.sun, night: false };
 }
 
 export function hourIn(timezone: string, at = new Date()): number {
   try {
-    return Number(new Intl.DateTimeFormat("en-US", { timeZone: timezone, hour: "numeric", hour12: false }).format(at)) % 24;
+    return (
+      Number(new Intl.DateTimeFormat("en-US", { timeZone: timezone, hour: "numeric", hour12: false }).format(at)) % 24
+    );
   } catch {
     return 12;
   }

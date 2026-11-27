@@ -3,10 +3,20 @@ import type { GameEngine, SessionState } from "./contract";
 import { projectSession } from "./sessionView";
 
 const state: SessionState = {
-  id: "session", gardenId: "garden", game: "hue-knew", status: "active",
-  round: 1, createdBy: "a", clueGiverId: "a", createdAt: "2026-11-01T00:00:00Z",
-  revealedAt: null, earlyReveal: false, prompt: { internal: true }, result: null,
-  secret: { target: 73 }, photos: [],
+  id: "session",
+  gardenId: "garden",
+  game: "hue-knew",
+  status: "active",
+  round: 1,
+  createdBy: "a",
+  clueGiverId: "a",
+  createdAt: "2026-11-01T00:00:00Z",
+  revealedAt: null,
+  earlyReveal: false,
+  prompt: { internal: true },
+  result: null,
+  secret: { target: 73 },
+  photos: [],
   submissions: [{ userId: "a", round: 1, kind: "clue", payload: "private", createdAt: "" }],
   participants: [
     { userId: "a", name: "Ada", avatar: "sun:amber", predictsUserId: "b" },
@@ -16,9 +26,11 @@ const state: SessionState = {
 
 function engine(): GameEngine<{ visible: string }> {
   return {
-    key: "hue-knew", pickPrompt: () => ({ promptId: "p", prompt: {}, secret: null }),
+    key: "hue-knew",
+    pickPrompt: () => ({ promptId: "p", prompt: {}, secret: null }),
     validateSubmission: () => ({ ok: false, error: "invalid" }),
-    isRoundComplete: () => false, computeReveal: () => ({ result: {}, final: true }),
+    isRoundComplete: () => false,
+    computeReveal: () => ({ result: {}, final: true }),
     earlyRevealCheck: () => ({ ok: false, reason: "Waiting", pending: ["b"] }),
     turnStatus: () => ({ needsYou: true, line: "Your turn" }),
     view: vi.fn(() => ({ visible: "safe" })),
@@ -50,7 +62,9 @@ describe("shared session projection", () => {
     const e = engine();
     delete e.hydrateView;
     expect((await projectSession(e, state, "a")).view).toEqual({ visible: "safe" });
-    e.hydrateView = async () => { throw new Error("storage unavailable"); };
+    e.hydrateView = async () => {
+      throw new Error("storage unavailable");
+    };
     await expect(projectSession(e, state, "a")).rejects.toThrow("storage unavailable");
   });
 });

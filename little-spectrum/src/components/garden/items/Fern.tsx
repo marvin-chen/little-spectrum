@@ -31,8 +31,22 @@ export function Fern({ variant = 0, className, title }: GardenItemProps) {
             const fill = back ? p.leafDark : n >= 6 ? p.leafLight : p.leaf;
             return (
               <g key={n}>
-                <ellipse cx={-5.5 * s} cy={y} rx={7.5 * s} ry={3.2 * s} fill={fill} transform={`rotate(-40 ${-5.5 * s} ${y})`} />
-                <ellipse cx={5.5 * s} cy={y} rx={7.5 * s} ry={3.2 * s} fill={fill} transform={`rotate(40 ${5.5 * s} ${y})`} />
+                <ellipse
+                  cx={-5.5 * s}
+                  cy={y}
+                  rx={7.5 * s}
+                  ry={3.2 * s}
+                  fill={fill}
+                  transform={`rotate(-40 ${-5.5 * s} ${y})`}
+                />
+                <ellipse
+                  cx={5.5 * s}
+                  cy={y}
+                  rx={7.5 * s}
+                  ry={3.2 * s}
+                  fill={fill}
+                  transform={`rotate(40 ${5.5 * s} ${y})`}
+                />
               </g>
             );
           })}

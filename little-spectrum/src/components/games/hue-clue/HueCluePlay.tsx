@@ -27,7 +27,11 @@ export function HueCluePlay({ gardenId, session, game, userId }: Props) {
         <PlayAgain
           gardenId={gardenId}
           sessionId={session.id}
-          line={suggestedIsMe ? "Next time, you give the clue." : `Next time, ${nameOf(game.result.suggestedClueGiverId)} could give the clue.`}
+          line={
+            suggestedIsMe
+              ? "Next time, you give the clue."
+              : `Next time, ${nameOf(game.result.suggestedClueGiverId)} could give the clue.`
+          }
           primary={suggestedIsMe}
         />
       </div>
@@ -40,7 +44,9 @@ export function HueCluePlay({ gardenId, session, game, userId }: Props) {
     return (
       <Card className="p-5">
         <p className="text-title-3 font-semibold">Waiting for {clueGiverName}&apos;s clue</p>
-        <p className="mt-1 text-callout text-ink-2">{clueGiverName} has a secret square on this grid and is describing it in three words or fewer.</p>
+        <p className="mt-1 text-callout text-ink-2">
+          {clueGiverName} has a secret square on this grid and is describing it in three words or fewer.
+        </p>
         <div className="mt-5 opacity-70">
           <ColorGrid label="Color grid preview" selected={null} />
         </div>
@@ -92,14 +98,18 @@ function ClueGiverPanel({ gardenId, session, game }: { gardenId: string; session
           <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">Your clue</p>
           <p className="mt-1 font-display text-title-2 font-bold">&ldquo;{game.clue}&rdquo;</p>
           <p className="mt-4 text-callout text-ink-2">
-            {waiting.length > 0 ? `Waiting for ${joinNames(waiting)} to pick. The reveal happens on its own once everyone is in.` : "Everyone is in. Revealing."}
+            {waiting.length > 0
+              ? `Waiting for ${joinNames(waiting)} to pick. The reveal happens on its own once everyone is in.`
+              : "Everyone is in. Revealing."}
           </p>
         </Card>
       ) : (
         <Card className="p-5">
           <label className="block">
             <span className="text-title-3 font-semibold">Describe it in three words</span>
-            <span className="mt-1 mb-3 block text-callout text-ink-2">Think objects, not color names. &ldquo;Ripe mango&rdquo; says more than &ldquo;orange.&rdquo;</span>
+            <span className="mt-1 mb-3 block text-callout text-ink-2">
+              Think objects, not color names. &ldquo;Ripe mango&rdquo; says more than &ldquo;orange.&rdquo;
+            </span>
             <input
               value={clue}
               onChange={(e) => setClue(e.target.value.slice(0, MAX_CLUE_CHARS))}
@@ -124,7 +134,16 @@ function ClueGiverPanel({ gardenId, session, game }: { gardenId: string; session
               {error}
             </p>
           ) : null}
-          <Button className="mt-4" size="lg" full accent="violet" onClick={send} loading={pending} disabled={!clue.trim() || words > MAX_CLUE_WORDS} icon={<Lock className="size-4" aria-hidden />}>
+          <Button
+            className="mt-4"
+            size="lg"
+            full
+            accent="violet"
+            onClick={send}
+            loading={pending}
+            disabled={!clue.trim() || words > MAX_CLUE_WORDS}
+            icon={<Lock className="size-4" aria-hidden />}
+          >
             Send clue
           </Button>
         </Card>
@@ -133,7 +152,17 @@ function ClueGiverPanel({ gardenId, session, game }: { gardenId: string; session
   );
 }
 
-function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; session: SessionView; game: HueClueView; userId: string }) {
+function GuesserPanel({
+  gardenId,
+  session,
+  game,
+  userId,
+}: {
+  gardenId: string;
+  session: SessionView;
+  game: HueClueView;
+  userId: string;
+}) {
   const { submitAction, initialError } = useGameActions();
   const [selected, setSelected] = useState<Cell | null>(null);
   const [error, setError] = useState<string | null>(initialError ?? null);
@@ -154,7 +183,9 @@ function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; s
   return (
     <div className="flex flex-col gap-4">
       <Card className="p-5">
-        <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">{clueGiverName}&apos;s clue</p>
+        <p className="text-footnote font-semibold uppercase tracking-[0.06em] text-ink-3">
+          {clueGiverName}&apos;s clue
+        </p>
         <p className="mt-1 font-display text-title-2 font-bold">&ldquo;{game.clue}&rdquo;</p>
       </Card>
       {game.myGuess ? (
@@ -165,13 +196,17 @@ function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; s
           </div>
           <Swatch cell={game.myGuess} className="mt-4" />
           <p className="mt-4 text-callout text-ink-2">
-            {waiting.length > 0 ? `Waiting for ${joinNames(waiting)}. The reveal happens on its own once everyone is in.` : "Everyone is in. Revealing."}
+            {waiting.length > 0
+              ? `Waiting for ${joinNames(waiting)}. The reveal happens on its own once everyone is in.`
+              : "Everyone is in. Revealing."}
           </p>
         </Card>
       ) : (
         <Card className="p-5">
           <p className="text-title-3 font-semibold">Find the square</p>
-          <p className="mt-1 mb-4 text-callout text-ink-2">Tap a square to preview it, then confirm. Arrow keys work too.</p>
+          <p className="mt-1 mb-4 text-callout text-ink-2">
+            Tap a square to preview it, then confirm. Arrow keys work too.
+          </p>
           <ColorGrid label="Color grid" selected={selected} onSelect={setSelected} />
           <Swatch cell={selected} className="mt-4" />
           {error ? (
@@ -179,7 +214,16 @@ function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; s
               {error}
             </p>
           ) : null}
-          <Button className="mt-4" size="lg" full accent="violet" onClick={confirm} loading={pending} disabled={!selected} icon={<Lock className="size-4" aria-hidden />}>
+          <Button
+            className="mt-4"
+            size="lg"
+            full
+            accent="violet"
+            onClick={confirm}
+            loading={pending}
+            disabled={!selected}
+            icon={<Lock className="size-4" aria-hidden />}
+          >
             {selected ? `Confirm ${PALETTE[selected.row][selected.col].coord}` : "Pick a square"}
           </Button>
         </Card>
@@ -188,7 +232,17 @@ function GuesserPanel({ gardenId, session, game, userId }: { gardenId: string; s
   );
 }
 
-function PlayAgain({ gardenId, sessionId, line, primary }: { gardenId: string; sessionId: string; line: string; primary: boolean }) {
+function PlayAgain({
+  gardenId,
+  sessionId,
+  line,
+  primary,
+}: {
+  gardenId: string;
+  sessionId: string;
+  line: string;
+  primary: boolean;
+}) {
   const { playAgainAction, initialError } = useGameActions();
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [pending, startTransition] = useTransition();

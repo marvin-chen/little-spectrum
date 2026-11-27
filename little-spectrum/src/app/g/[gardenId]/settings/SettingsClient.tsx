@@ -41,26 +41,45 @@ export function InviteManager({
   return (
     <Card className="p-4">
       {full ? (
-        <p className="text-callout text-ink-2">This garden is full. {isCreator ? "Make room below if you want more friends in." : "Ask the creator to make room for more friends."}</p>
+        <p className="text-callout text-ink-2">
+          This garden is full.{" "}
+          {isCreator
+            ? "Make room below if you want more friends in."
+            : "Ask the creator to make room for more friends."}
+        </p>
       ) : inviteUrl ? (
         <>
           <p className="text-callout text-ink-2">
             Anyone with this link can join. {spotsLeft} {spotsLeft === 1 ? "spot" : "spots"} left.
           </p>
-          <p className="mt-2 mb-3 break-all rounded-row bg-fill px-3 py-2 text-footnote text-ink-2 select-all">{inviteUrl}</p>
+          <p className="mt-2 mb-3 break-all rounded-row bg-fill px-3 py-2 text-footnote text-ink-2 select-all">
+            {inviteUrl}
+          </p>
           <ShareButton url={inviteUrl} full />
         </>
       ) : (
-        <p className="text-callout text-ink-2">Invites are paused. {isCreator ? "Make a new link when you are ready." : "The creator can make a new link."}</p>
+        <p className="text-callout text-ink-2">
+          Invites are paused. {isCreator ? "Make a new link when you are ready." : "The creator can make a new link."}
+        </p>
       )}
 
       {isCreator ? (
         <div className="mt-3 flex flex-wrap gap-2">
-          <Button variant="glass" size="sm" icon={<RefreshCw className="size-4" aria-hidden />} onClick={() => setConfirm("rotate")}>
+          <Button
+            variant="glass"
+            size="sm"
+            icon={<RefreshCw className="size-4" aria-hidden />}
+            onClick={() => setConfirm("rotate")}
+          >
             {inviteUrl ? "New link" : "Make a link"}
           </Button>
           {inviteUrl ? (
-            <Button variant="glass" size="sm" icon={<Link2Off className="size-4" aria-hidden />} onClick={() => setConfirm("revoke")}>
+            <Button
+              variant="glass"
+              size="sm"
+              icon={<Link2Off className="size-4" aria-hidden />}
+              onClick={() => setConfirm("revoke")}
+            >
               Pause invites
             </Button>
           ) : null}
@@ -93,7 +112,14 @@ export function ExpandGarden({ gardenId }: { gardenId: string }) {
   const [pending, startTransition] = useTransition();
   return (
     <>
-      <Button className="mt-3" variant="tinted" accent="green" full icon={<UsersRound className="size-4" aria-hidden />} onClick={() => setOpen(true)}>
+      <Button
+        className="mt-3"
+        variant="tinted"
+        accent="green"
+        full
+        icon={<UsersRound className="size-4" aria-hidden />}
+        onClick={() => setOpen(true)}
+      >
         Make room for more friends
       </Button>
       <ConfirmationSheet
@@ -105,14 +131,16 @@ export function ExpandGarden({ gardenId }: { gardenId: string }) {
         cancelLabel="Not now"
         pending={pending}
         error={error}
-        onConfirm={() => startTransition(async () => {
-          const result = await expandGardenAction(gardenId);
-          if (result.error) setError(result.error);
-          else {
-            setOpen(false);
-            toast.success("Garden expanded to eight spots");
-          }
-        })}
+        onConfirm={() =>
+          startTransition(async () => {
+            const result = await expandGardenAction(gardenId);
+            if (result.error) setError(result.error);
+            else {
+              setOpen(false);
+              toast.success("Garden expanded to eight spots");
+            }
+          })
+        }
       >
         <p className="text-callout text-ink-2">This cannot be shrunk back, but nobody has to join.</p>
       </ConfirmationSheet>

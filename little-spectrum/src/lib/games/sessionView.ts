@@ -24,7 +24,9 @@ export type SessionView<View = unknown> = {
 // Call only on the server for real sessions. Authentication and garden membership
 // belong to the caller; participation is checked here before view or hydration.
 export async function projectSession<View>(
-  engine: GameEngine<View>, state: SessionState, userId: string,
+  engine: GameEngine<View>,
+  state: SessionState,
+  userId: string,
 ): Promise<SessionView<View>> {
   if (engine.key !== state.game) throw new Error("Game engine does not match the session.");
   if (!state.participants.some((p) => p.userId === userId)) {
@@ -34,10 +36,16 @@ export async function projectSession<View>(
   const base = engine.view(state, userId);
   const view = engine.hydrateView ? await engine.hydrateView(state, userId, base) : base;
   return {
-    id: state.id, gardenId: state.gardenId, game: state.game,
-    status: state.status, round: state.round, createdBy: state.createdBy,
-    clueGiverId: state.clueGiverId, createdAt: state.createdAt,
-    revealedAt: state.revealedAt, earlyReveal: state.earlyReveal,
+    id: state.id,
+    gardenId: state.gardenId,
+    game: state.game,
+    status: state.status,
+    round: state.round,
+    createdBy: state.createdBy,
+    clueGiverId: state.clueGiverId,
+    createdAt: state.createdAt,
+    revealedAt: state.revealedAt,
+    earlyReveal: state.earlyReveal,
     participants: state.participants.map(({ userId, name, avatar }) => ({ userId, name, avatar })),
     isCreator: state.createdBy === userId,
     turn: engine.turnStatus(state, userId),

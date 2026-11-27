@@ -24,11 +24,16 @@ type Props = {
 
 export function MemoryFooter({ gardenId, sessionId, userId, participants, reactions, comments }: Props) {
   const [reactedBy, setReactedBy] = useState<Record<ReactionKey, string[]>>(() => {
-    const initial = Object.fromEntries(REACTION_EMOJI.map((r) => [r.key, [] as string[]])) as Record<ReactionKey, string[]>;
+    const initial = Object.fromEntries(REACTION_EMOJI.map((r) => [r.key, [] as string[]])) as Record<
+      ReactionKey,
+      string[]
+    >;
     for (const r of reactions) initial[r.emoji] = r.userIds;
     return initial;
   });
-  const [notes, setNotes] = useState<Record<string, string>>(() => Object.fromEntries(comments.map((c) => [c.userId, c.body])));
+  const [notes, setNotes] = useState<Record<string, string>>(() =>
+    Object.fromEntries(comments.map((c) => [c.userId, c.body])),
+  );
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(notes[userId] ?? "");
   const [error, setError] = useState<string | null>(null);
@@ -101,7 +106,10 @@ export function MemoryFooter({ gardenId, sessionId, userId, participants, reacti
                 {r.glyph}
               </span>
               {ids.length > 0 ? (
-                <span className={cn("text-footnote font-semibold tabular-nums", on ? "text-blue-ink" : "text-ink-2")} aria-hidden>
+                <span
+                  className={cn("text-footnote font-semibold tabular-nums", on ? "text-blue-ink" : "text-ink-2")}
+                  aria-hidden
+                >
                   {ids.length}
                 </span>
               ) : null}
@@ -146,7 +154,9 @@ export function MemoryFooter({ gardenId, sessionId, userId, participants, reacti
           className="flex flex-col gap-2"
         >
           <label className="block">
-            <span className="mb-1 block text-footnote font-semibold text-ink-2">{myNote ? "Your note" : "Add a note"}</span>
+            <span className="mb-1 block text-footnote font-semibold text-ink-2">
+              {myNote ? "Your note" : "Add a note"}
+            </span>
             <textarea
               autoFocus
               value={draft}

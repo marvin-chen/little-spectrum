@@ -8,7 +8,17 @@ import { COLOR_CLASSES } from "@/lib/colors";
 import type { SessionCard } from "@/lib/data/sessions";
 import { GAMES } from "@/lib/games";
 
-export function SessionCardRow({ card, gardenId, emphasize, index = 0 }: { card: SessionCard; gardenId: string; emphasize?: boolean; index?: number }) {
+export function SessionCardRow({
+  card,
+  gardenId,
+  emphasize,
+  index = 0,
+}: {
+  card: SessionCard;
+  gardenId: string;
+  emphasize?: boolean;
+  index?: number;
+}) {
   const game = GAMES[card.game];
   return (
     <Link
@@ -22,12 +32,23 @@ export function SessionCardRow({ card, gardenId, emphasize, index = 0 }: { card:
       </ViewTransition>
       <span className="min-w-0 flex-1">
         <span className="block truncate text-headline font-semibold text-ink">{game.name}</span>
-        <span className={cn("flex items-center gap-1.5 truncate text-footnote", emphasize ? COLOR_CLASSES[game.color].ink : "text-ink-2")}>
-          {emphasize ? <span className={cn("size-1.5 shrink-0 rounded-full", COLOR_CLASSES[game.color].bg)} aria-hidden /> : null}
+        <span
+          className={cn(
+            "flex items-center gap-1.5 truncate text-footnote",
+            emphasize ? COLOR_CLASSES[game.color].ink : "text-ink-2",
+          )}
+        >
+          {emphasize ? (
+            <span className={cn("size-1.5 shrink-0 rounded-full", COLOR_CLASSES[game.color].bg)} aria-hidden />
+          ) : null}
           {card.turn.line}
         </span>
       </span>
-      <AvatarStack people={card.participants.map((p) => ({ id: p.userId, name: p.name, avatar: p.avatar }))} size="xs" max={3} />
+      <AvatarStack
+        people={card.participants.map((p) => ({ id: p.userId, name: p.name, avatar: p.avatar }))}
+        size="xs"
+        max={3}
+      />
       <ChevronRight className="size-5 shrink-0 text-ink-3/70" aria-hidden />
     </Link>
   );

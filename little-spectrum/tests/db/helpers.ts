@@ -29,13 +29,17 @@ export async function anonymousUser(name: string): Promise<TestUser> {
   const client = createClient(URL, PUBLISHABLE, { auth: { persistSession: false, autoRefreshToken: false } });
   const { data, error } = await client.auth.signInAnonymously();
   if (error || !data.user) throw new Error(`sign in failed: ${error?.message}`);
-  const { error: profileError } = await service().from("profiles").insert({ id: data.user.id, display_name: name, avatar: "sun:amber" });
+  const { error: profileError } = await service()
+    .from("profiles")
+    .insert({ id: data.user.id, display_name: name, avatar: "sun:amber" });
   if (profileError) throw new Error(profileError.message);
   return { id: data.user.id, client, name };
 }
 
 export function token(): string {
-  return Array.from({ length: 32 }, () => "abcdefghijklmnopqrstuvwxyz0123456789"[Math.floor(Math.random() * 36)]).join("");
+  return Array.from({ length: 32 }, () => "abcdefghijklmnopqrstuvwxyz0123456789"[Math.floor(Math.random() * 36)]).join(
+    "",
+  );
 }
 
 export async function createGarden(user: TestUser, capacity: 2 | 8, inviteToken = token()): Promise<string> {

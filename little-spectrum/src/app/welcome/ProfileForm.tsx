@@ -17,13 +17,10 @@ export function ProfileForm({ next, initialName, initialAvatar, submitLabel }: P
   const [icon, setIcon] = useState<AvatarIcon>(initial.icon);
   const [color, setColor] = useState<ColorKey>(initial.color);
   const [name, setName] = useState(initialName);
-  const [state, action, pending] = useActionState<ProfileFormState, FormData>(
-    async (prev, formData) => {
-      if (submitLabel === "Save changes") toast.success("Profile updated");
-      return saveProfile(prev, formData);
-    },
-    {},
-  );
+  const [state, action, pending] = useActionState<ProfileFormState, FormData>(async (prev, formData) => {
+    if (submitLabel === "Save changes") toast.success("Profile updated");
+    return saveProfile(prev, formData);
+  }, {});
   const avatar = serializeAvatar({ icon, color });
 
   return (
@@ -34,7 +31,16 @@ export function ProfileForm({ next, initialName, initialAvatar, submitLabel }: P
       <div className="flex items-center gap-4">
         <Avatar avatar={avatar} name={name || "Your avatar"} size="xl" />
         <Field label="Display name" className="flex-1">
-          <TextInput name="displayName" value={name} onChange={(e) => setName(e.target.value)} maxLength={24} autoComplete="nickname" autoCapitalize="words" required placeholder="Jamie" />
+          <TextInput
+            name="displayName"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={24}
+            autoComplete="nickname"
+            autoCapitalize="words"
+            required
+            placeholder="Jamie"
+          />
         </Field>
       </div>
 
@@ -54,7 +60,9 @@ export function ProfileForm({ next, initialName, initialAvatar, submitLabel }: P
                 onClick={() => setIcon(key)}
                 className={cn(
                   "pressable flex aspect-square items-center justify-center rounded-control",
-                  selected ? `${COLOR_CLASSES[color].soft} ${COLOR_CLASSES[color].ink} ring-2 ring-ink` : "bg-surface text-ink-2 shadow-hairline",
+                  selected
+                    ? `${COLOR_CLASSES[color].soft} ${COLOR_CLASSES[color].ink} ring-2 ring-ink`
+                    : "bg-surface text-ink-2 shadow-hairline",
                 )}
               >
                 <Icon className="size-6" aria-hidden strokeWidth={2.25} />

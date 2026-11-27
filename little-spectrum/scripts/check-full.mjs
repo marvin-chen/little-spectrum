@@ -33,10 +33,17 @@ function run(name, command, args, options = {}) {
 
 function assertLocalBackend() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  const local = /^https?:\/\/(127\.0\.0\.1|localhost|supabase_kong_[a-z0-9_-]+|host\.docker\.internal)(:\d+)?/i.test(url);
-  if (!url) throw new Error("NEXT_PUBLIC_SUPABASE_URL is not set. Start the local stack with `pnpm supabase start` and fill .env.local.");
+  const local = /^https?:\/\/(127\.0\.0\.1|localhost|supabase_kong_[a-z0-9_-]+|host\.docker\.internal)(:\d+)?/i.test(
+    url,
+  );
+  if (!url)
+    throw new Error(
+      "NEXT_PUBLIC_SUPABASE_URL is not set. Start the local stack with `pnpm supabase start` and fill .env.local.",
+    );
   if (!local && process.env.ALLOW_REMOTE_TEST_DB !== "1") {
-    throw new Error(`Refusing to run database tests against ${url}. Point .env.local at a local Supabase, or set ALLOW_REMOTE_TEST_DB=1 for a disposable project you own.`);
+    throw new Error(
+      `Refusing to run database tests against ${url}. Point .env.local at a local Supabase, or set ALLOW_REMOTE_TEST_DB=1 for a disposable project you own.`,
+    );
   }
 }
 
@@ -44,7 +51,11 @@ async function waitForBackend() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   for (let i = 0; i < 30; i += 1) {
     try {
-      const res = await fetch(`${url}/auth/v1/health`, { headers: { apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "" } });
+      const res = await fetch(`${url}/auth/v1/health`, {
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+        },
+      });
       if (res.ok) return;
     } catch {}
     await sleep(1000);
@@ -81,7 +92,7 @@ loadEnvLocal();
 process.env.NEXT_PUBLIC_SITE_URL = `http://localhost:${PORT}`;
 let failed = false;
 try {
-  if (!(await run("Fast checks (typecheck, lint, unit)", "pnpm", ["check"]))) failed = true;
+  if (!(await run("Fast checks (format, typecheck, lint, unit)", "pnpm", ["check"]))) failed = true;
   if (!(await run("Production build", "pnpm", ["build"]))) failed = true;
   assertLocalBackend();
   await waitForBackend();
@@ -111,7 +122,10 @@ for (const r of results) console.log(`  ${r.ok ? "✓" : "✗"} ${r.name} (${r.s
 if (process.env.GITHUB_STEP_SUMMARY) {
   const { appendFileSync } = await import("node:fs");
   const rows = results.map((r) => `| ${r.ok ? "✅" : "❌"} | ${r.name} | ${r.seconds}s |`).join("\n");
-  appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## check:full ${failed ? "failed" : "passed"}\n\n| | Step | Time |\n|---|---|---|\n${rows}\n`);
+  appendFileSync(
+    process.env.GITHUB_STEP_SUMMARY,
+    `## check:full ${failed ? "failed" : "passed"}\n\n| | Step | Time |\n|---|---|---|\n${rows}\n`,
+  );
 }
 if (failed) {
   console.log("\ncheck:full failed. Fix the failures above before pushing.");

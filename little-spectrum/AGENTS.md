@@ -92,7 +92,7 @@ little-spectrum/               the Next.js application (Vercel Root Directory)
 
 - Run everything from this directory so asdf picks Node 22 from `.tool-versions`.
 - Local backend: `pnpm supabase start`, then `pnpm supabase db reset` after editing migrations.
-- Before committing: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:db`, `pnpm test:e2e` (dev server on port 3000), `pnpm build`.
+- Before committing: `pnpm format`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:db`, `pnpm test:e2e` (dev server on port 3000), `pnpm build`.
 - Commit messages are concise and imperative, with no agent co-author lines. New branches start with `marvinc/`.
 - Keep `PROGRESS.md` current at every checkpoint so another session can resume.
 

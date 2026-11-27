@@ -45,7 +45,13 @@ describe("row level security", () => {
   });
 
   it("shows unrevealed submissions only to their author", async () => {
-    await service().rpc("submit_answer", { p_user: ada.id, p_session: sessionId, p_round: 1, p_kind: "clue", p_payload: { clue: "blanket" } });
+    await service().rpc("submit_answer", {
+      p_user: ada.id,
+      p_session: sessionId,
+      p_round: 1,
+      p_kind: "clue",
+      p_payload: { clue: "blanket" },
+    });
     const { data: adaSees } = await ada.client.from("submissions").select("id").eq("session_id", sessionId);
     const { data: boSees } = await bo.client.from("submissions").select("id").eq("session_id", sessionId);
     const { data: cySees } = await cy.client.from("submissions").select("id").eq("session_id", sessionId);
@@ -71,14 +77,32 @@ describe("row level security", () => {
   });
 
   it("rejects duplicate and out-of-turn submissions", async () => {
-    const { data: dup } = await service().rpc("submit_answer", { p_user: ada.id, p_session: sessionId, p_round: 1, p_kind: "clue", p_payload: { clue: "other" } });
+    const { data: dup } = await service().rpc("submit_answer", {
+      p_user: ada.id,
+      p_session: sessionId,
+      p_round: 1,
+      p_kind: "clue",
+      p_payload: { clue: "other" },
+    });
     expect(dup).toMatchObject({ status: "duplicate" });
-    const { error } = await service().rpc("submit_answer", { p_user: cy.id, p_session: sessionId, p_round: 1, p_kind: "answer", p_payload: { guess: 1 } });
+    const { error } = await service().rpc("submit_answer", {
+      p_user: cy.id,
+      p_session: sessionId,
+      p_round: 1,
+      p_kind: "answer",
+      p_payload: { guess: 1 },
+    });
     expect(error?.message).toContain("not_participant");
   });
 
   it("reveals once and awards growth exactly once under concurrent reveals", async () => {
-    await service().rpc("submit_answer", { p_user: bo.id, p_session: sessionId, p_round: 1, p_kind: "answer", p_payload: { guess: 40 } });
+    await service().rpc("submit_answer", {
+      p_user: bo.id,
+      p_session: sessionId,
+      p_round: 1,
+      p_kind: "answer",
+      p_payload: { guess: 40 },
+    });
     const reveal = () =>
       service().rpc("reveal_round", {
         p_session: sessionId,

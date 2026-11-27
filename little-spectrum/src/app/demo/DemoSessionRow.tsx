@@ -17,7 +17,11 @@ export function DemoSessionRow({ card, emphasize }: { card: SessionCard; emphasi
         </span>
         <span className="block truncate text-footnote text-ink-2">{card.turn.line}</span>
       </span>
-      <AvatarStack people={card.participants.map((p) => ({ id: p.userId, name: p.name, avatar: p.avatar }))} size="xs" max={4} />
+      <AvatarStack
+        people={card.participants.map((p) => ({ id: p.userId, name: p.name, avatar: p.avatar }))}
+        size="xs"
+        max={4}
+      />
     </div>
   );
 }

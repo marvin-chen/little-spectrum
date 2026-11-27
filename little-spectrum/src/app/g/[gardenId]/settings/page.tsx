@@ -14,7 +14,13 @@ import { ExpandGarden, InviteManager } from "./SettingsClient";
 
 export const metadata = { title: "Settings" };
 
-export default async function SettingsPage({ params, searchParams }: { params: Promise<{ gardenId: string }>; searchParams: Promise<Record<string, string | undefined>> }) {
+export default async function SettingsPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ gardenId: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   const { gardenId } = await params;
   const query = await searchParams;
   const user = await requireUser(`/g/${gardenId}/settings`);
@@ -45,7 +51,11 @@ export default async function SettingsPage({ params, searchParams }: { params: P
         <InviteCardEditor
           gardenId={gardenId}
           isCreator={isCreator}
-          previewImageUrl={garden.inviteToken ? `/join/${garden.inviteToken}/opengraph-image?v=${new Date(garden.inviteCardUpdatedAt).getTime()}` : null}
+          previewImageUrl={
+            garden.inviteToken
+              ? `/join/${garden.inviteToken}/opengraph-image?v=${new Date(garden.inviteCardUpdatedAt).getTime()}`
+              : null
+          }
           data={{
             gardenName: garden.name,
             theme: garden.theme,
@@ -59,14 +69,26 @@ export default async function SettingsPage({ params, searchParams }: { params: P
       </section>
 
       <section className="mb-6">
-        <SectionLabel action={<Badge>{garden.members.length} of {garden.capacity}</Badge>}>Members</SectionLabel>
+        <SectionLabel
+          action={
+            <Badge>
+              {garden.members.length} of {garden.capacity}
+            </Badge>
+          }
+        >
+          Members
+        </SectionLabel>
         <Group>
           {garden.members.map((m) => (
             <Row
               key={m.userId}
               icon={<Avatar avatar={m.avatar} name={m.name} size="sm" />}
               label={m.userId === user.id ? `${m.name} (you)` : m.name}
-              detail={m.role === "creator" ? "Planted this garden" : `Joined ${new Date(m.joinedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}
+              detail={
+                m.role === "creator"
+                  ? "Planted this garden"
+                  : `Joined ${new Date(m.joinedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
+              }
             />
           ))}
         </Group>
@@ -76,9 +98,28 @@ export default async function SettingsPage({ params, searchParams }: { params: P
       <section className="mb-6">
         <SectionLabel>Garden</SectionLabel>
         <Group>
-          <Row icon={<Users className="size-5 text-ink-2" aria-hidden />} label="Size" trailing={garden.capacity === 2 ? "Just us two" : "A group of friends"} />
-          <Row icon={<span className="size-5 rounded-full" style={{ background: themeFor(garden.theme).hillFront }} aria-hidden />} label="Theme" trailing={themeFor(garden.theme).name} />
-          <Row icon={<Clock className="size-5 text-ink-2" aria-hidden />} label="Week resets" detail="Mondays, in the creator's timezone" trailing={garden.timezone.split("/").pop()?.replace(/_/g, " ")} />
+          <Row
+            icon={<Users className="size-5 text-ink-2" aria-hidden />}
+            label="Size"
+            trailing={garden.capacity === 2 ? "Just us two" : "A group of friends"}
+          />
+          <Row
+            icon={
+              <span
+                className="size-5 rounded-full"
+                style={{ background: themeFor(garden.theme).hillFront }}
+                aria-hidden
+              />
+            }
+            label="Theme"
+            trailing={themeFor(garden.theme).name}
+          />
+          <Row
+            icon={<Clock className="size-5 text-ink-2" aria-hidden />}
+            label="Week resets"
+            detail="Mondays, in the creator's timezone"
+            trailing={garden.timezone.split("/").pop()?.replace(/_/g, " ")}
+          />
         </Group>
       </section>
 
@@ -96,16 +137,32 @@ export default async function SettingsPage({ params, searchParams }: { params: P
 
       <section className="mb-6">
         <SectionLabel>Account</SectionLabel>
-        <AccountSection gardenId={gardenId} email={user.email} isAnonymous={user.isAnonymous} justKept={query.kept === "1"} />
+        <AccountSection
+          gardenId={gardenId}
+          email={user.email}
+          isAnonymous={user.isAnonymous}
+          justKept={query.kept === "1"}
+        />
       </section>
 
       <section className="mb-6">
         <SectionLabel>Your gardens</SectionLabel>
         <Group>
           {gardens.map((g) => (
-            <RowLink key={g.id} href={`/g/${g.id}`} icon={<Pencil className="size-4 text-ink-2" aria-hidden />} label={g.name} detail={`${g.memberCount} of ${g.capacity}`} trailing={g.id === gardenId ? "Current" : undefined} />
+            <RowLink
+              key={g.id}
+              href={`/g/${g.id}`}
+              icon={<Pencil className="size-4 text-ink-2" aria-hidden />}
+              label={g.name}
+              detail={`${g.memberCount} of ${g.capacity}`}
+              trailing={g.id === gardenId ? "Current" : undefined}
+            />
           ))}
-          <RowLink href="/start" icon={<Plus className="size-5 text-ink-2" aria-hidden />} label="Plant another garden" />
+          <RowLink
+            href="/start"
+            icon={<Plus className="size-5 text-ink-2" aria-hidden />}
+            label="Plant another garden"
+          />
         </Group>
       </section>
     </>

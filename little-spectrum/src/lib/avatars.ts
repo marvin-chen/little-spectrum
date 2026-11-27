@@ -36,9 +36,7 @@ export function serializeAvatar(avatar: Avatar): string {
 export function isValidAvatar(value: string): boolean {
   const [icon, color, rest] = value.split(":");
   return (
-    rest === undefined &&
-    (AVATAR_ICONS as readonly string[]).includes(icon) &&
-    (COLORS as string[]).includes(color)
+    rest === undefined && (AVATAR_ICONS as readonly string[]).includes(icon) && (COLORS as string[]).includes(color)
   );
 }
 

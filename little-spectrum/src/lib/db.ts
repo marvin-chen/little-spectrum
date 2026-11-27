@@ -42,7 +42,13 @@ export type SubmissionRow = {
   created_at: string;
 };
 
-export type GrowthEventRow = { id: string; garden_id: string; session_id: string; week_start: string; created_at: string };
+export type GrowthEventRow = {
+  id: string;
+  garden_id: string;
+  session_id: string;
+  week_start: string;
+  created_at: string;
+};
 
 export type WeeklyRewardRow = {
   id: string;
