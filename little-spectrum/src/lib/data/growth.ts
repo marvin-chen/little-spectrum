@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import type { GrowthEventRow, WeeklyRewardRow } from "@/lib/db";
+import type { WeeklyRewardRow } from "@/lib/db";
 import type { GameKey } from "@/lib/games";
 import { createServiceClient } from "@/lib/supabase/server";
 import { formatWeekReset, streakWeeks, weekStartFor } from "@/lib/week";
@@ -28,28 +28,25 @@ export type GrowthSummary = {
 
 export const WEEKLY_GOAL = 3;
 
-const getGrowthEvents = cache(async (gardenId: string): Promise<GrowthEventRow[]> => {
-  const { data } = await createServiceClient().from("growth_events").select("*").eq("garden_id", gardenId);
-  return (data ?? []) as GrowthEventRow[];
-});
-
 export const getGrowthSummary = cache(async (gardenId: string, timezone: string): Promise<GrowthSummary> => {
   const db = createServiceClient();
-  const [eventRows, { data: rewards }] = await Promise.all([
-    getGrowthEvents(gardenId),
+  const [counts, { data: rewards, error: rewardsError }] = await Promise.all([
+    db.rpc("garden_week_counts", { p_garden: gardenId }),
     db.from("weekly_rewards").select("*").eq("garden_id", gardenId).order("ordinal", { ascending: true }),
   ]);
+  const failure = counts.error ?? rewardsError;
+  if (failure) throw new Error(failure.message);
+  const weekCounts = (counts.data ?? []) as Array<{ week_start: string; completions: number }>;
   const rewardRows = (rewards ?? []) as WeeklyRewardRow[];
   const weekStart = weekStartFor(new Date(), timezone);
-  const weeks = new Set(eventRows.map((e) => e.week_start));
   return {
     weekStart,
     weekResetLabel: formatWeekReset(weekStart, timezone),
-    completionsThisWeek: eventRows.filter((e) => e.week_start === weekStart).length,
+    completionsThisWeek: weekCounts.find((w) => w.week_start === weekStart)?.completions ?? 0,
     goal: WEEKLY_GOAL,
     rewardedThisWeek: rewardRows.some((r) => r.week_start === weekStart),
-    totalCompletions: eventRows.length,
-    streak: streakWeeks(weeks, weekStart),
+    totalCompletions: weekCounts.reduce((total, w) => total + w.completions, 0),
+    streak: streakWeeks(new Set(weekCounts.map((w) => w.week_start)), weekStart),
     rewards: rewardRows.map((r) => ({
       id: r.id,
       itemKey: r.item_key,
@@ -81,51 +78,55 @@ export type GardenDetails = {
 // Rewards with the completed rounds of their week. Only participants get names and links.
 export async function getGardenDetails(gardenId: string, userId: string, timezone: string): Promise<GardenDetails> {
   const db = createServiceClient();
-  const [growth, eventRows] = await Promise.all([getGrowthSummary(gardenId, timezone), getGrowthEvents(gardenId)]);
-  const sessionIds = eventRows.map((e) => e.session_id);
-  const [{ data: sessions }, { data: participants }] = sessionIds.length
-    ? await Promise.all([
-        db.from("sessions").select("id, game, revealed_at").in("id", sessionIds),
-        db.from("session_participants").select("session_id, user_id").in("session_id", sessionIds),
-      ])
-    : [{ data: [] }, { data: [] }];
-  const participantRows = (participants ?? []) as Array<{ session_id: string; user_id: string }>;
-  const myIds = new Set(participantRows.filter((p) => p.user_id === userId).map((p) => p.session_id));
-  const peopleIds = [...new Set(participantRows.filter((p) => myIds.has(p.session_id)).map((p) => p.user_id))];
+  const growth = await getGrowthSummary(gardenId, timezone);
+  const weeks = [...new Set([growth.weekStart, ...growth.rewards.map((r) => r.weekStart)])];
+  // One embedded query, so the request does not grow with every round. Newest first, so the 1000 row
+  // API limit can only drop the rounds behind the oldest keepsakes.
+  const { data, error } = await db
+    .from("growth_events")
+    .select("session_id, week_start, sessions!inner(game, revealed_at, session_participants(user_id))")
+    .eq("garden_id", gardenId)
+    .in("week_start", weeks)
+    .order("created_at", { ascending: false })
+    .limit(1000);
+  if (error) throw new Error(error.message);
+  const events = (
+    (data ?? []) as unknown as Array<{
+      session_id: string;
+      week_start: string;
+      sessions: { game: GameKey; revealed_at: string | null; session_participants: Array<{ user_id: string }> };
+    }>
+  ).map((e) => ({
+    id: e.session_id,
+    weekStart: e.week_start,
+    game: e.sessions.game,
+    revealedAt: e.sessions.revealed_at,
+    people: e.sessions.session_participants.map((p) => p.user_id),
+  }));
+
+  const mine = new Set(events.filter((e) => e.people.includes(userId)).map((e) => e.id));
+  const peopleIds = [...new Set(events.filter((e) => mine.has(e.id)).flatMap((e) => e.people))];
   const { data: profiles } = peopleIds.length
     ? await db.from("profiles").select("id, display_name").in("id", peopleIds)
     : { data: [] };
   const nameBy = new Map(
     ((profiles ?? []) as Array<{ id: string; display_name: string }>).map((p) => [p.id, p.display_name]),
   );
-  const sessionBy = new Map(
-    ((sessions ?? []) as Array<{ id: string; game: GameKey; revealed_at: string | null }>).map((s) => [s.id, s]),
-  );
-
-  const activityFor = (sessionId: string): WeekActivity | null => {
-    const s = sessionBy.get(sessionId);
-    if (!s) return null;
-    const people = participantRows.filter((p) => p.session_id === sessionId);
-    const mine = myIds.has(sessionId);
-    return {
-      id: sessionId,
-      game: s.game,
-      revealedAt: s.revealed_at,
-      participantCount: people.length,
-      isParticipant: mine,
-      participantNames: mine ? people.map((p) => nameBy.get(p.user_id) ?? "Friend") : [],
-    };
-  };
 
   const items = growth.rewards.map((reward) => ({
     ...reward,
-    activities: eventRows
-      .filter((e) => e.week_start === reward.weekStart)
-      .map((e) => activityFor(e.session_id))
-      .filter((a): a is WeekActivity => a !== null)
+    activities: events
+      .filter((e) => e.weekStart === reward.weekStart)
+      .map((e): WeekActivity => ({
+        id: e.id,
+        game: e.game,
+        revealedAt: e.revealedAt,
+        participantCount: e.people.length,
+        isParticipant: mine.has(e.id),
+        participantNames: mine.has(e.id) ? e.people.map((id) => nameBy.get(id) ?? "Friend") : [],
+      }))
       .sort((a, b) => (a.revealedAt ?? "").localeCompare(b.revealedAt ?? "")),
   }));
-  const thisWeekSessions = new Set(eventRows.filter((e) => e.week_start === growth.weekStart).map((e) => e.session_id));
-  const contributors = new Set(participantRows.filter((p) => thisWeekSessions.has(p.session_id)).map((p) => p.user_id));
+  const contributors = new Set(events.filter((e) => e.weekStart === growth.weekStart).flatMap((e) => e.people));
   return { items, contributorsThisWeek: contributors.size };
 }
