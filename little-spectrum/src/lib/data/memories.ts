@@ -25,12 +25,6 @@ type Outcome = { ok: true } | { ok: false; error: string };
 
 export const MAX_COMMENT_LENGTH = 300;
 
-export function formatRevealedDate(iso: string): string {
-  const date = new Date(iso);
-  const sameYear = date.getFullYear() === new Date().getFullYear();
-  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: sameYear ? undefined : "numeric" }).format(date);
-}
-
 export async function listMemories(
   gardenId: string,
   userId: string,
