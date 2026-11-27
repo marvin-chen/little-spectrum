@@ -260,12 +260,13 @@ export async function revealEarly(userId: string, sessionId: string): Promise<Re
 export async function listSessionCards(gardenId: string, userId: string, limit = 60): Promise<SessionCard[]> {
   const db = createServiceClient();
   const { data: mine } = await db
-    .from("session_participants")
-    .select("session_id, sessions!inner(garden_id, created_at)")
-    .eq("user_id", userId)
-    .eq("sessions.garden_id", gardenId)
+    .from("sessions")
+    .select("id, session_participants!inner(user_id)")
+    .eq("garden_id", gardenId)
+    .eq("session_participants.user_id", userId)
+    .order("created_at", { ascending: false })
     .limit(limit);
-  const ids = (mine ?? []).map((row) => row.session_id as string);
+  const ids = (mine ?? []).map((row) => row.id as string);
   const states = await loadStates(ids);
   const settled = await Promise.all(states.map((s) => ensureRevealed(s)));
   return settled
