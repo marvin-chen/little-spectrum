@@ -1,0 +1,4 @@
+{
+  "printWidth": 120,
+  "ignorePatterns": ["**/*.md", "**/pnpm-lock.yaml", "**/tsconfig.json", "**/next-env.d.ts"]
+}
